@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.GoodsReviewMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`parentId`,`orderSn`,`goodsId`,`memberId`,`content`,`ip`,`score`,`isShow`,`buyDate`,`whichSys`,`createUser`,`createDate`,`modifyUser`,`modifyDate`, `isRead`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.GoodsReview">
+		select
+		<include refid="columnList" />
+		from wp_goods_review
+		where id = #{id} and parentId is null
+	</select>
+
+	<select id="getReply" resultType="net.deepdragon.entity.weipu.GoodsReview">
+		select
+		<include refid="columnList" />
+		from wp_goods_review
+		where parentId = #{parentId}
+	</select>
+
+	<select id="getAllByCriteria" resultType="net.deepdragon.entity.weipu.GoodsReview">
+		select
+		<include refid="columnList" />
+		from wp_goods_review
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.GoodsReview">
+		select
+		<include refid="columnList" />
+		from wp_goods_review
+		where tenantId = #{tenantId} and ${property}=#{value} and parentId is null
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.GoodsReview">
+		select
+		<include refid="columnList" />
+		from wp_goods_review
+		where tenantId = #{tenantId} and ${property}=#{value} and parentId is null
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.GoodsReview">
+		select
+		<include refid="columnList" />
+		from wp_goods_review
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach> and parentId is null
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.GoodsReview">
+		select
+		<include refid="columnList" />
+		from wp_goods_review 
+		where tenantId = #{tenantId} and parentId is null
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.GoodsReview">
+		select
+		<include refid="columnList" />
+		from wp_goods_review 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if> and parentId is null
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.GoodsReview">
+		select
+		<include refid="columnList" />
+		from wp_goods_review 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if> and parentId is null
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_goods_review where tenantId = #{tenantId} and parentId is null
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_goods_review 
+		where tenantId = #{tenantId} and ${property}=#{value} and parentId is null
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.GoodsReview"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_goods_review
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`,`score`
+			<if test="orderSn != null">,`orderSn`</if>
+			<if test="goodsId != null">,`goodsId`</if>
+			<if test="parentId != null">,`parentId`</if>
+			<if test="memberId != null">,`memberId`</if>
+			<if test="content != null">,`content`</if>
+			<if test="ip != null">,`ip`</if>
+			<if test="isShow != null">,`isShow`</if>
+			<if test="buyDate != null">,`buyDate`</if>
+			<if test="whichSys != null">,`whichSys`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+			<if test="isRead != null">,`isRead`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="score != null">,#{score}</if>
+			<if test="score == null">,0</if>
+			<if test="orderSn != null">,#{orderSn}</if>
+			<if test="goodsId != null">,#{goodsId}</if>
+			<if test="parentId != null">,#{parentId}</if>
+			<if test="memberId != null">,#{memberId}</if>
+			<if test="content != null">,#{content}</if>
+			<if test="ip != null">,#{ip}</if>
+			<if test="isShow != null">,#{isShow}</if>
+			<if test="buyDate != null">,#{buyDate}</if>
+			<if test="whichSys != null">,#{whichSys}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+			<if test="isRead != null">,#{isRead}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.GoodsReview">
+		update wp_goods_review
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="orderSn != null">,`orderSn` = #{orderSn}</if>
+			<if test="parentId != null">,`parentId` = #{parentId}</if>
+			<if test="goodsId != null">,`goodsId` = #{goodsId}</if>
+			<if test="memberId != null">,`memberId` = #{memberId}</if>
+			<if test="content != null">,`content` = #{content}</if>
+			<if test="ip != null">,`ip` = #{ip}</if>
+			<if test="score != null">,`score` = #{score}</if>
+			<if test="isShow != null">,`isShow` = #{isShow}</if>
+			<if test="buyDate != null">,`buyDate` = #{buyDate}</if>
+			<if test="whichSys != null">,`whichSys` = #{whichSys}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+			<if test="isRead != null">,`isRead` = #{isRead}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_goods_review
+		where id =	#{id}
+	</delete>
+	
+	<update id="updateGoodsScore" parameterType="java.util.Map">
+		UPDATE wp_goods w SET w.scoreCount = w.scoreCount + 1 ,w.scoreTotal = IFNULL(w.scoreTotal,0) + #{score}
+		where id = #{id}
+	</update>
+	
+</mapper>

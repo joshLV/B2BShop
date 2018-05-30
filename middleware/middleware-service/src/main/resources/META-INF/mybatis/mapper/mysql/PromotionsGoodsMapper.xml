@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.cuxiao.PromotionsGoodsMapper">
+    <sql id="columnList">
+      `id`,`tenantId`,`promotionsId`,`goodsId`,`goodsPrice`,`promotionsPrice`,`description`,`orderNo`,`isDelete`, oldStartNum, oldLimitNum, newStartNum, newLimitNum, oldStock, newStock
+    </sql>
+
+    <select id="get" resultType="net.deepdragon.entity.cuxiao.PromotionsGoods">
+        SELECT
+        <include refid="columnList" />
+        FROM cx_promotions_goods
+        WHERE isDelete = 'N' and id = #{id} and tenantId = #{tenantId}
+    </select>
+
+    <select id="find" resultType="net.deepdragon.entity.cuxiao.PromotionsGoods">
+        select
+        <include refid="columnList"/>
+        from cx_promotions_goods
+        where tenantId = #{tenantId} and ${property}=#{value}
+    </select>
+
+    <select id="findList" resultType="net.deepdragon.entity.cuxiao.PromotionsGoods">
+        select
+        <include refid="columnList"/>
+        from cx_promotions_goods
+        where tenantId = #{tenantId} and ${property}=#{value} and isDelete='N'
+    </select>
+
+    <select id="findListByIds" parameterType="java.lang.String"
+            resultType="net.deepdragon.entity.cuxiao.PromotionsGoods">
+        select
+        <include refid="columnList"/>
+        from cx_promotions_goods
+        where id in
+        <foreach collection="list" item="id" index="index" open="("
+                 close=")" separator=",">#{id}
+        </foreach>
+        and status='5'
+    </select>
+
+    <select id="getAll" resultType="net.deepdragon.entity.cuxiao.PromotionsGoods">
+        select
+        <include refid="columnList"/>
+        from cx_promotions_goods
+        where tenantId = #{tenantId}
+    </select>
+
+    <select id="listPromotionsGoods" resultType="net.deepdragon.entity.weipu.Goods">
+         SELECT
+        g.id,
+        g.tenantId,
+        g.categoryId,
+        g.categoryPath,
+        g.brandId,
+        g.shopId,
+        g.productId,
+        g.name,
+        g.sn,
+        g.barcode,
+        g.phoneShopNo,
+        g.fullName,
+        g.shortName,
+        g.price,
+        g.cost,
+        g.marketPrice,
+        g.defaultPrice,
+        g.isMemberPrice,
+        g.unit,
+        g.weight,
+        g.adwords,
+        g.image,
+        g.stock,
+        g.stockMemo,
+        g.point,
+        g.isMarketable,
+        g.isTop,
+        g.isList,
+        g.isGift,
+        g.isLianYing,
+        g.introduction,
+        g.keywords,
+        g.hits,
+        g.weekHits,
+        g.weekHitsDate,
+        g.monthHits,
+        g.monthHitsDate,
+        g.sales,
+        g.weekSales,
+        g.weekSalesDate,
+        g.monthSales,
+        g.monthSalesDate,
+        g.scoreCount,
+        g.scoreTotal,
+        g.score,
+        g.isIndex,
+        g.indexOrder,
+        g.createUser,
+        g.createDate,
+        g.modifyUser,
+        g.modifyDate,
+        g.shippingOrderUrl,
+        g.predictDay,
+        g.hasRebate,
+        g.startNum,
+        g.limitNum,
+        g.packageModulus,
+        g.packageUnit,
+        g.packageBarCode,
+        g.phoneIntroduction,
+        g.enableBatchPrice,
+        pg.goodsPrice,
+        pg.promotionsPrice,
+        g.description,
+        g.isPost,CONCAT((SELECT setvalue FROM shared_system_set WHERE setKey='imageUrl'),CONCAT(CONCAT(groupName,'/'),d.url)) AS pic
+        FROM wp_goods g RIGHT JOIN cx_promotions_goods pg ON g.id = pg.goodsId LEFT JOIN wp_goods_images d ON d.goodsId = g.id
+        WHERE g.isMarketable = 1 AND g. STATUS = 5 AND g.isDelete = 1 AND pg.promotionsId = #{promotionsId} AND pg.isDelete='N' GROUP BY g.id
+        ORDER BY pg.orderNo
+    </select>
+    <select id="getPromotionsGoods" resultType="net.deepdragon.entity.cuxiao.PromotionsGoods">
+        select <include refid="columnList" /> from cx_promotions_goods where isDelete = 'N'and goodsId=#{goodsId} and promotionsId=#{promotionsId}
+    </select>
+    <select id="getList" resultType="net.deepdragon.entity.cuxiao.PromotionsGoods">
+        SELECT
+          <include refid="columnList" />
+        from cx_promotions_goods
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+
+
+
+    <update id="update" parameterType="net.deepdragon.entity.cuxiao.Promotions">
+        update cx_promotions_goods
+        <set>
+            tenantId = #{tenantId}
+            <if test="promotionsId!=null and promotionsId!=''">, promotionsId = #{promotionsId}</if>
+            <if test="goodsId!=null and goodsId!=''">, goodsId = #{goodsId}</if>
+            <if test="goodsPrice!=null and goodsPrice!=''">, goodsPrice = #{goodsPrice}</if>
+            <if test="promotionsPrice!=null and promotionsPrice!=''">, promotionsPrice = #{promotionsPrice}</if>
+            <if test="description!=null and description!=''">, description = #{description}</if>
+            <if test="isDelete!=null and isDelete!=''">, isDelete = #{isDelete}</if>
+            <if test="createUser!=null and createUser!=''">, createUser = #{createUser}</if>
+            <if test="createDate!=null and createDate!=''">, createDate = #{createDate}</if>
+            <if test="modifyUser!=null and modifyUser!=''">, modifyUser = #{modifyUser}</if>
+            <if test="modifyDate!=null and modifyDate!=''">, modifyDate = #{modifyDate}</if>
+            <if test="orderNo!=null and orderNo!=''">, orderNo = #{orderNo}</if>
+            <if test="oldStartNum!=null and oldStartNum!=''">, oldStartNum = #{oldStartNum}</if>
+            <if test="oldLimitNum!=null and oldLimitNum!=''">, oldLimitNum = #{oldLimitNum}</if>
+            <if test="newStartNum!=null and newStartNum!=''">, newStartNum = #{newStartNum}</if>
+            <if test="newLimitNum!=null and newLimitNum!=''">, newLimitNum = #{newLimitNum}</if>
+            <if test="oldStock!=null and oldStock!=''">, oldStock = #{oldStock}</if>
+            <if test="newStock!=null and newStock!=''">, newStock = #{newStock}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

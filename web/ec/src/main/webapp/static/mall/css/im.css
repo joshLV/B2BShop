@@ -1,0 +1,68 @@
+@CHARSET "UTF-8";
+
+/* ---------- InstantMessaging begin ---------- */
+.instantMessagingLayer {
+	height: 136px;
+	display: none;
+	position: absolute;
+	z-index: 100;
+	top: 215px;
+}
+.leftInstantMessagingLayer {
+	left: 0px;
+}
+.rightInstantMessagingLayer {
+	right: 0px;
+}
+.instantMessagingMin {
+	height: 136px;
+	width: 26px;
+	background: url(../img/instant_messaging_bg.gif) 0px 0px no-repeat;
+}
+.leftInstantMessagingLayer .instantMessagingMin {
+	background-position: left -120px;
+}
+.rightInstantMessagingLayer .instantMessagingMin {
+	background-position: right -270px;
+}
+.instantMessagingMain {
+	display: none;
+}
+.instantMessagingMain .top {
+	width: 123px;
+	height: 29px;
+	clear: both;
+	background: url(../img/instant_messaging_bg.gif) 0px 0px no-repeat;
+}
+.instantMessagingMain .middle {
+	width: 115px;
+	clear: both;
+	padding: 0px 4px;
+	background: url(../img/instant_messaging_y_bg.gif) 0px 0px repeat-y;
+}
+.instantMessagingMain .middle dl {
+	line-height: 30px;
+	width: 115px;
+	clear: both;
+}
+.instantMessagingMain .middle dl dt {
+	height: 30px;
+	width: 105px;
+	clear: both;
+	padding-left: 10px;
+	overflow: hidden;
+	background: url(../img/instant_messaging_bg.gif) 0px -60px no-repeat;
+}
+.instantMessagingMain .middle dl dd {
+	padding: 0px 0px 0px 10px;
+	_padding: 5px 0px 5px 10px;
+}
+.instantMessagingMain .bottom {
+	width: 123px;
+	height: 22px;
+	clear: both;
+	cursor: pointer;
+	background: url(../img/instant_messaging_bg.gif) 0px -30px no-repeat;
+}
+/* ---------- InstantMessaging end ---------- */
+

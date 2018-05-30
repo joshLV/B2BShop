@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.GhjRedenvelopRangerebateruleMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`redEnvelopId`,`rStartRange`,`rEndRange`,`rRangeOrder`,`rAmount`,`isDelete`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.GhjRedenvelopRangerebaterule">
+		select
+		<include refid="columnList" />
+		from ghj_redenvelop_rangerebaterule
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.GhjRedenvelopRangerebaterule">
+		select
+		<include refid="columnList" />
+		from ghj_redenvelop_rangerebaterule
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.GhjRedenvelopRangerebaterule">
+		select
+		<include refid="columnList" />
+		from ghj_redenvelop_rangerebaterule
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.GhjRedenvelopRangerebaterule">
+		select
+		<include refid="columnList" />
+		from ghj_redenvelop_rangerebaterule
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.GhjRedenvelopRangerebaterule">
+		select
+		<include refid="columnList" />
+		from ghj_redenvelop_rangerebaterule 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.GhjRedenvelopRangerebaterule">
+		select
+		<include refid="columnList" />
+		from ghj_redenvelop_rangerebaterule 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.GhjRedenvelopRangerebaterule">
+		select
+		<include refid="columnList" />
+		from ghj_redenvelop_rangerebaterule 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from ghj_redenvelop_rangerebaterule where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from ghj_redenvelop_rangerebaterule 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.GhjRedenvelopRangerebaterule"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into ghj_redenvelop_rangerebaterule
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="redEnvelopId != null">,`redEnvelopId`</if>
+			<if test="rStartRange != null">,`rStartRange`</if>
+			<if test="rEndRange != null">,`rEndRange`</if>
+			<if test="rRangeOrder != null">,`rRangeOrder`</if>
+			<if test="rAmount != null">,`rAmount`</if>
+			<if test="isDelete != null">,`isDelete`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="redEnvelopId != null">,#{redEnvelopId}</if>
+			<if test="rStartRange != null">,#{rStartRange}</if>
+			<if test="rEndRange != null">,#{rEndRange}</if>
+			<if test="rRangeOrder != null">,#{rRangeOrder}</if>
+			<if test="rAmount != null">,#{rAmount}</if>
+			<if test="isDelete != null">,#{isDelete}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.GhjRedenvelopRangerebaterule">
+		update ghj_redenvelop_rangerebaterule
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="redEnvelopId != null">,`redEnvelopId` = #{redEnvelopId}</if>
+			<if test="rStartRange != null">,`rStartRange` = #{rStartRange}</if>
+			<if test="rEndRange != null">,`rEndRange` = #{rEndRange}</if>
+			<if test="rRangeOrder != null">,`rRangeOrder` = #{rRangeOrder}</if>
+			<if test="rAmount != null">,`rAmount` = #{rAmount}</if>
+			<if test="isDelete != null">,`isDelete` = #{isDelete}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from ghj_redenvelop_rangerebaterule
+		where id =	#{id}
+	</delete>
+	
+</mapper>

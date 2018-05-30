@@ -1,0 +1,47 @@
+/*注册页面 last time:2015-10-14  author:zyf*/
+.reg{ width:1000px; margin:0 auto;}
+.reg h1{width:1000px; padding:10px 0; margin-bottom:20px; text-align:center; font-size:20px;}
+.reg_main{box-shadow: 0px 0px 6px #ccc; padding:60px 30px 70px 30px; width:938px; border:1px solid #dfdfdf; min-height:500px; height:auto !important; height:500px; }
+.reg_tit{ width:650px; margin:0 auto; height:35px; line-height:35px; overflow:hidden;}
+.reg_tit li{ float:left; width:310px; text-align:center;font-family:"微软雅黑","宋体"; background:#eee url(../images/reg_arr.png) right top no-repeat;border-radius:3px 0 0 3px; font-size:14px;}
+.reg_tit li.on{color:#fff; font-weight:bold;background:#db0000 url(../images/reg_arr.png) right -35px no-repeat;}
+.reg_tit li.lase{ background-image:none;border-radius:0 3px 3px 0;}
+.reg_tab{ margin:0 auto; width:850px;}
+.reg_tab table{ width:100%; margin-top:30px;}
+.reg_tab td{ padding:10px 0; font-size:14px; color:#777;}
+input.inp_text{ width:260px; padding-left:5px; margin-left:10px; height:34px; line-height:34px; border:1px solid #dfdfdf; color:#999; font-size:14px;font-family:"微软雅黑","宋体";}
+input.inp_text2{margin-left:10px; padding:8px; width:270px; border:none;}
+input.city_input{margin-left:10px;height:34px; line-height:34px;font-family:"微软雅黑","宋体"; color:#999; font-size:14px;width:260px; padding-left:5px;}
+input.w120{ width:120px;float:left;}
+.reg_tab td b{margin-right: 5px;font-weight: normal; color:#f00;font-family:"宋体";}
+input.inp_sub{ font-size:16px;height: 38px;line-height: 38px;padding: 0 95px;*padding: 0 55px;font-size: 16px;text-align: center;background: #ededed;border: 0;border-radius: 3px;cursor: pointer; margin-top:20px; color:#fff;font-family:"微软雅黑","宋体"; margin-left:10px;}
+input.inp_sub2{background: #0099f1;}
+input.inp_sub:hover{ background:#008cdd;}
+.yzm{ float:left; margin-left:20px; height:20px; line-height:20px; margin-top:8px; font-size:14px;}
+.item-ifo{position: relative;width: 500px; height:38px; line-height:38px;}
+.item-ifo .img{margin-left: 2px; float:left;}
+.item-ifo .blank{width: 16px;height: 16px;position: absolute;right: 4px;top: 9px;padding: 3px;float: none;}
+.item-ifo span{float: left; margin-top: 7px;}
+.provinceCityAll{ line-height:1.8;}
+
+
+.blue{ color:#0171bc;}
+input.checkbox { margin:20px 10px 0 10px;}
+.wby{ border:none;width:260px; padding-left:5px; margin-left:10px; height:66px; line-height:22px; border:1px solid #dfdfdf; color:#999; font-size:14px;font-family:"微软雅黑","宋体";}
+
+#popupdiv{width: 924px; height: 500px;position:fixed;z-index:999; background:#fff; border:1px solid #ccc; padding:10px 20px;overflow: hidden;padding: 0;border: 4px solid rgba(0, 0, 0, 0.1);border-radius: 5px;-moz-border-radius: 5px;-webkit-border-radius: 5px;}
+.zxbox{ width:924px; height:300px; display:block; float:left; position:relative;}
+.gb{ width:904px;padding: 0 10px;line-height:30px; float:left; border-bottom:1px solid #C4C4C4;background: #F3F3F3;}
+.gb h2{ float:left; font-size:14px;}
+.gb a{ float:right; margin-top:7px;}
+.zxbox p{ width:100%; float:left; padding:5px 0;}
+.user_xy{overflow: auto;background: #fff;border: solid #C4C4C4; border-width: 1px;padding: 10px;width: 922px; height: 450px;padding-left: 0px;padding-right: 0px;border-left-width: 1px; border-right-width: 1px; position:relative;}
+
+.regist-2013 .btnt{width:322px;margin:20px auto 0; line-height:34px; text-align:center;}
+input.btn-img{width:322px;background:#db0000;color:#FFF; -moz-border-radius:3px; -webkit-border-radius:3px;border-radius:3px;-moz-border-radius: 3px;-webkit-border-radius: 3px;font-family:"微软雅黑";font-size:16px; font-weight:bold; border:none; text-align:center;height:34px;line-heiht:34px; cursor:pointer;}
+#protocol-con{height:356px;overflow:auto;*overflow-y:auto;*overflow-x:hidden;padding:10px 20px 0 10px;}
+#protocol-con h5{line-height:30px;}
+#protocol-con p{line-height:20px;}
+#protocol-con p strong{font-weight:normal;}
+.thicktitle{padding:0;text-align:center;}
+

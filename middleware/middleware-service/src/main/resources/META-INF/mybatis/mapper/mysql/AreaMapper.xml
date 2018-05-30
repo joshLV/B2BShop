@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.AreaMapper">
+
+	<sql id="columnList">
+		`id`,`name`,`fullName`,`parentId`,`path`,`lng`,`lat`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.Area">
+		select
+		<include refid="columnList" />
+		from shared_area
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.Area">
+		select
+		<include refid="columnList" />
+		from shared_area
+		where ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.Area">
+		select
+		<include refid="columnList" />
+		from shared_area
+		where ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.Area">
+		select
+		<include refid="columnList" />
+		from shared_area
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.Area">
+		select
+		<include refid="columnList" />
+		from shared_area 
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.Area">
+		select
+		<include refid="columnList" />
+		from shared_area 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.Area">
+		select
+		<include refid="columnList" />
+		from shared_area 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from shared_area 
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from shared_area 
+		where ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.Area"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into shared_area
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`
+			<if test="name != null">,`name`</if>
+			<if test="fullName != null">,`fullName`</if>
+			<if test="parentId != null">,`parentId`</if>
+			<if test="path != null">,`path`</if>
+			<if test="lng != null">,`lng`</if>
+			<if test="lat != null">,`lat`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id}
+			<if test="name != null">,#{name}</if>
+			<if test="fullName != null">,#{fullName}</if>
+			<if test="parentId != null">,#{parentId}</if>
+			<if test="path != null">,#{path}</if>
+			<if test="lng != null">,#{lng}</if>
+			<if test="lat != null">,#{lat}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.Area">
+		update shared_area
+		<set>
+			<if test="name != null">`name` = #{name},</if>
+			<if test="fullName != null">`fullName` = #{fullName},</if>
+			<if test="parentId != null">`parentId` = #{parentId},</if>
+			<if test="path != null">`path` = #{path},</if>
+			<if test="lng != null">`lng` = #{lng},</if>
+			<if test="lat != null">`lat` = #{lat},</if>
+			<if test="modifyUser != null">`modifyUser` = #{modifyUser},</if>
+			<if test="modifyDate != null">`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from shared_area
+		where id =	#{id}
+	</delete>
+	
+</mapper>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>net.deepdragon.weipu</groupId>
+        <artifactId>weipu</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>web</artifactId>
+    <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>The web project of weipu</description>
+    <url>http://maven.apache.org</url>
+
+	<repositories>
+        <repository>
+            <id>nexus-oschina</id>
+            <name>oschina maven source</name>
+            <url>http://maven.oschina.net/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+	</repositories> 
+	
+    <modules>
+        <module>ec</module>
+        <module>bec</module>
+    </modules>
+
+    <properties>
+        <shared-api.version>1.0.0-SNAPSHOT</shared-api.version>
+        <weipu-api.version>1.0.0-SNAPSHOT</weipu-api.version>
+        <common-util.version>1.0.0-SNAPSHOT</common-util.version>
+        <jetty.version>8.1.14.v20131031</jetty.version>
+        <contextPath>web</contextPath>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>net.deepdragon.weipu</groupId>
+                <artifactId>common-util</artifactId>
+                <version>${common-util.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.deepdragon.weipu</groupId>
+                <artifactId>shared-api</artifactId>
+                <version>${shared-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.deepdragon.weipu</groupId>
+                <artifactId>weipu-api</artifactId>
+                <version>${weipu-api.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>${jetty.version}</version>
+                <configuration>
+                    <webAppConfig>
+                        <contextPath>/${contextPath}</contextPath>
+                    </webAppConfig>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <connectors>
+                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                            <port>8081</port>
+                            <maxIdleTime>60000</maxIdleTime>
+                            <requestHeaderSize>163840</requestHeaderSize>
+                            <requestBufferSize>2097152</requestBufferSize>
+                        </connector>
+                    </connectors>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

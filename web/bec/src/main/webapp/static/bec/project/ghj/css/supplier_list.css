@@ -1,0 +1,52 @@
+/* ==================================== 我的供应商列表页 =============================================== */ 
+.supplier_main{width:1190px; height:auto; margin:0 auto;}
+.supplier_left{width:200px; height:auto; border:1px solid #e8e8e8; float:left; overflow:hidden; font-size:14px;}
+.supplier_left h3{height:50px; line-height:50px; border-bottom:1px solid #e8e8e8; font-size:18px; text-align:center;}
+.supplier_left ul li{ line-height:30px; padding-left:15px;}
+.supplier_left ul li h5{color:#9ea9c0; height:40px; line-height:40px; background:url(../images/supplier_list/sup_left_icon.png) no-repeat left center; padding-left:15px;}
+/* 我的供应商列表 */
+.supplier_right{width:980px; height:auto; float:right; overflow:hidden; border-top:2px solid #0171bb;}
+.sup_r_tit{ margin-top:15px; margin-bottom:10px;}
+.sup_r_tit h5{ border-left:5px solid #0171bb; padding-left:10px; font-size:16px;}
+/* 添加供应商 */
+.sup_add{width:978px; height:58px; border:1px solid #e8e8e8; background:#f8f8f8; line-height:58px;}
+.sup_add h6{ font-size:16px; background:url(../images/supplier_list/sup_ts_icon.png) no-repeat 10px center; padding-left:40px; float:left;}
+.sup_add h6 em{color:#f96f00;}
+.sup_add a{display:block; width:132px; height:39px; background:#0171bb; border-radius:3px; float:right; margin-top:10px; color:#FFF; margin-right:15px; line-height:39px; text-align:center; font-size:16px;}
+.sup_search{height:53px; width:978px; border:1px solid #e8e8e8; margin-top:15px; line-height:65px; padding-top:12px;}
+.sup_dq{width:195px; height:41px; border:1px solid #e8e8e8; margin-left:15px; float:left; }
+.sup_styled_select{width:180px; height: 41px; overflow: hidden; background: transparent; -webkit-appearance: none; /*for chrome*/ -moz-appearance: none; /*for Firefox*/  background:url(../images/supplier_list/sup_input_icon.png) no-repeat 145px #fff;}
+.sup_search_input{width:527px;  height:41px; border:1px solid #e8e8e8; margin-left:122px; font-size:16px; color:#d2d2d2; padding-left:10px; line-height:41px; float:left;}
+.sup_search_button{border-radius:3px; width:81px; height:41px; line-height:41px; text-align:center; background:#9bbb58; color:#FFF; display:block; float:left; font-size:16px; margin-left:12px;}
+/* 供应商列表名称 */
+.sup_list_names{width:978px; height:44px; border:1px solid #e8e8e8; background:#f8f8f8; line-height:44px; margin-top:15px; font-size:16px;}
+.sup_list_names table td{float:left; padding-left:10px;}
+/* 供应商列表内容 */
+.sup_list_con{ width:980px; height:auto; font-size:16px;}
+.sup_list_con table{border-top:1px solid #e8e8e8; border-right:1px solid #e8e8e8; width:980px; margin-top:15px;}
+.sup_list_con table td{border-bottom:1px solid #e8e8e8; border-left:1px solid #e8e8e8; padding-left:10px;}
+.sup_list_con table p{line-height:40px;}
+.sup_list_con table p em{ color:#9a9999; font-weight:normal;}
+.sup_person{height:46px; line-height:46px; font-size:18px; color:#0171bb;}
+.sup_person td{padding-left:10px;}
+.sup_operate{text-align:center;}
+.sup_evaluate{width:102px; height:34px; text-align:center; background:#9bbb58; color:#FFF !important; display:block; line-height:34px; border-radius:3px; margin-left:15px;}
+.sup_operate a{color:#486ab6;}
+.sup_operate a:hover{color:#ff7300;}
+.sup_wangwang_icon{margin-left:8px;}
+
+/**/
+.choose_gys{padding-left: 20px;  width: 978px; display: block;}
+.choose_gys table{width: 978px;}
+.sup_mycgs td{border-top: 1px solid #E8E8E8; background: #ffffff; width: 978px;}
+.sup_button{background: #0077bd; color: #ffffff; text-align: center; width: 80px; height: 30px; line-height:30px; border: none; border-radius: 3px;}
+/* 分页 */
+.sup_pages{width:528px; height:60px; border:1px solid #e8e8e8; background:#f8f8f8; line-height:60px; margin-top:15px; padding-left:450px;}
+.sup_pages a{margin:0px 1px;padding:8px;text-align:center;border:1px solid #e8e8e8; background:#FFF;}
+.sup_pages a:hover{color:#2D94FF;}
+.sup_pages .pagesNum,.pages .pagesnone{text-decoration:none; border:none;background:none;}
+.sup_pages .pagesnone{border:none; background:none;}
+.sup_pages .pagesInput,.pages .pagesnone,.pages .pagego{border:0px;padding:2px 0px;margin:0px 2px;color:#FF8FC2;}
+.sup_pages .pagesInput input{width:46px;margin:0px 2px; border:1px solid #a1a0a7;height:16px;text-align:center; height:27px; background:#c7edcd;}
+.sup_pages .pagego{border:none; background:none;}
+.sup_pages .pagego input{width:55px; height:29px; background:#9bbb58; cursor:pointer; border-radius:3px; border:none; color:#FFF;}

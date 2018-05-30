@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.GhjCreditReplyMapper">
+
+	<sql id="columnList">
+		`replyId` as id,`tenantId`,`platform`,`creditId`,`buyerId`,`bankName`,`bankDept`,`creditAmount`,`totalAmount`,`usedAmount`,`creditStartDate`,`creditEndDate`,`bankrate`,`operator`,`operatTime`,`remark`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.GhjCreditReply">
+		select
+		<include refid="columnList" />
+		from ghj_credit_reply
+		where replyId = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.GhjCreditReply">
+		select
+		<include refid="columnList" />
+		from ghj_credit_reply
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.GhjCreditReply">
+		select
+		<include refid="columnList" />
+		from ghj_credit_reply
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.GhjCreditReply">
+		select
+		<include refid="columnList" />
+		from ghj_credit_reply
+		where replyId in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.GhjCreditReply">
+		select
+		<include refid="columnList" />
+		from ghj_credit_reply
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.GhjCreditReply">
+		SELECT
+		cr.*, (cr.creditAmount-cr.totalAmount) residualCredit,
+		IFNULL(loan.loanStatus, '0') loanStatus
+		FROM
+		ghj_credit_reply cr
+		LEFT JOIN (
+		SELECT
+		replyId,
+		loanStatus
+		FROM
+		ghj_credit_loan_log
+		WHERE
+		loanStatus = 'apply_loaning'
+		) loan ON cr.replyId = loan.replyId
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.GhjCreditReply">
+		select
+		<include refid="columnList" />
+		from ghj_credit_reply
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(replyId) as result
+		from ghj_credit_reply where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(replyId) as result from ghj_credit_reply
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.GhjCreditReply"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into ghj_credit_reply
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`replyId`,`tenantId`
+			<if test="platform != null">,`platform`</if>
+			<if test="creditId != null">,`creditId`</if>
+			<if test="buyerId != null">,`buyerId`</if>
+			<if test="bankName != null">,`bankName`</if>
+			<if test="creditAmount != null">,`creditAmount`</if>
+			<if test="totalAmount != null">,`totalAmount`</if>
+			<if test="usedAmount != null">,`usedAmount`</if>
+			<if test="creditStartDate != null">,`creditStartDate`</if>
+			<if test="creditEndDate != null">,`creditEndDate`</if>
+			<if test="bankrate != null">,`bankrate`</if>
+			<if test="operator != null">,`operator`</if>
+			<if test="operatTime != null">,`operatTime`</if>
+			<if test="remark != null">,`remark`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="platform != null">,#{platform}</if>
+			<if test="creditId != null">,#{creditId}</if>
+			<if test="buyerId != null">,#{buyerId}</if>
+			<if test="bankName != null">,#{bankName}</if>
+			<if test="creditAmount != null">,#{creditAmount}</if>
+			<if test="totalAmount != null">,#{totalAmount}</if>
+			<if test="usedAmount != null">,#{usedAmount}</if>
+			<if test="creditStartDate != null">,#{creditStartDate}</if>
+			<if test="creditEndDate != null">,#{creditEndDate}</if>
+			<if test="bankrate != null">,#{bankrate}</if>
+			<if test="operator != null">,#{operator}</if>
+			<if test="operatTime != null">,#{operatTime}</if>
+			<if test="remark != null">,#{remark}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.GhjCreditReply">
+		update ghj_credit_reply
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="platform != null">,`platform` = #{platform}</if>
+			<if test="creditId != null">,`creditId` = #{creditId}</if>
+			<if test="buyerId != null">,`buyerId` = #{buyerId}</if>
+			<if test="bankName != null">,`bankName` = #{bankName}</if>
+			<if test="creditAmount != null">,`creditAmount` = #{creditAmount}</if>
+			<if test="totalAmount != null">,`totalAmount` = #{totalAmount}</if>
+			<if test="usedAmount != null">,`usedAmount` = #{usedAmount}</if>
+			<if test="creditStartDate != null">,`creditStartDate` = #{creditStartDate}</if>
+			<if test="creditEndDate != null">,`creditEndDate` = #{creditEndDate}</if>
+			<if test="bankrate != null">,`bankrate` = #{bankrate}</if>
+			<if test="operator != null">,`operator` = #{operator}</if>
+			<if test="operatTime != null">,`operatTime` = #{operatTime}</if>
+			<if test="remark != null">,`remark` = #{remark}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where replyId = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from ghj_credit_reply
+		where replyId =	#{id}
+	</delete>
+	
+</mapper>

@@ -1,0 +1,78 @@
+/* CSS Document */
+.price_box {
+	width:1100px;
+	margin-top:34px;
+	float:left;
+	overflow:hidden;
+}
+.price_details_main{
+	margin-top:34px;
+	width:1100px;
+	margin:0 auto;
+	-webkit-box-shadow:0 0 2px 2px #e2e2e2;
+	-moz-box-shadow:0 0 2px 2px #e2e2e2;
+	box-shadow:0 0 2px 2px #e2e2e2;
+	border-top:2px solid #0171bb;
+	padding-left:45px;
+	padding-right:45px;
+	overflow:hidden;
+	padding-bottom:20px;
+}
+.price_details_title{
+	font-size:24px;
+	text-align:center;
+	background:url(../images/inquiry/xj_tit.png) no-repeat center top;
+	height:63px;
+	line-height:63px;
+	color:#FFF;
+	margin-bottom:10px;
+}
+.price_title{
+	font-size:18px;
+	padding-bottom:14px;
+	overflow:hidden;
+	float:left;
+	width:1100px;
+}
+.price_title_line{
+	font-size:18px;
+	padding-bottom:14px;
+	overflow:hidden;
+	float:left;
+	width:1100px;
+	border-bottom:1px dashed #e8e8e8;
+	margin-bottom:15px;
+}
+.price_title h3{
+	border-left:5px solid #0171bb;
+	padding-left:10px;
+}
+.price_title_line h3{
+	border-left:5px solid #0171bb;
+	padding-left:10px;
+}
+.price_xjf{width:1078px; height:auto; float:left; line-height:30px; border:1px solid #e8e8e8; font-size:16px; padding:10px;}
+/* 报价信息 */
+.price_bjxx{ width:1100px; height:auto; float:left; overflow:hidden; line-height:30px; font-size:16px;}
+.price_bjxx table{border:1px solid #e8e8e8; width:1100px; font-size:14px; margin-top:15px;}
+.price_bjxx td{border-bottom:1px solid #e8e8e8;  padding-left:10px;}
+.price_bjxx span{color:#ff8212;}
+.price_bjxx em{color:#d0d0d0; font-weight:normal;}
+.price_p{font-size:24px;}
+.price_order_button{width:122px; height:41px; background:#0171bb; line-height:41px; color:#FFF; border-radius:3px; display:block; text-align:center; float:right; margin-right:10px; margin-left:10px; font-size:16px;}
+.price_order_button:hover{ background:#025084; color:#FFF; text-decoration: none;}
+.price_order_buttons {
+	width: 122px;
+	height: 41px;
+	background: #BBBBBB none repeat scroll 0% 0%;
+	line-height: 41px;
+	color: #FFF;
+	border-radius: 3px;
+	display: block;
+	text-align: center;
+	float: right;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-size: 16px;
+}
+.price_order_buttons:hover{ background:#BBBBBB; color:#FFF; text-decoration: none;}

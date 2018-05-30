@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.B2BGoodsAttentionMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`buyerId`,`goodsId`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.B2BGoodsAttention">
+		select
+		<include refid="columnList" />
+		from b2b_goods_attention
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.B2BGoodsAttention">
+		select
+		<include refid="columnList" />
+		from b2b_goods_attention
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.B2BGoodsAttention">
+		select
+		<include refid="columnList" />
+		from b2b_goods_attention
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.B2BGoodsAttention">
+		select
+		<include refid="columnList" />
+		from b2b_goods_attention
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.B2BGoodsAttention">
+		select
+		<include refid="columnList" />
+		from b2b_goods_attention 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.B2BGoodsAttention">
+		select
+			c.*
+			, a.name
+			, a.sn
+			, a.price
+			, a.marketPrice
+			, a.type
+			, a.isMarketable
+			, CONCAT(
+				(select setvalue from shared_system_set where setKey = 'imageUrl')
+				, CONCAT(CONCAT((select woi.groupName from wp_goods_images woi where woi.goodsId=a.id order by woi.createDate desc limit 1), '/'))
+				, (select woi.url from wp_goods_images woi where woi.goodsId=a.id order by woi.createDate desc limit 1)
+			) as image
+			from
+		b2b_goods_attention c
+		left join wp_goods a on c.goodsId = a.id
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getList" resultType="net.deepdragon.entity.weipu.B2BGoodsAttention">
+		select c.*,a.name,a.sn,a.price,a.marketPrice, CONCAT((SELECT
+		setvalue FROM shared_system_set WHERE
+		setKey='imageUrl'),CONCAT(CONCAT(groupName,'/'),d.url)) AS image from
+		b2b_goods_attention c
+		LEFT JOIN wp_goods a ON c.goodsId = a.id
+		LEFT JOIN (select * from wp_goods_images LIMIT 1 ORDER BY createDate) d ON d.goodsId = a.id
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from b2b_goods_attention where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from b2b_goods_attention 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="getListByBuyerId" resultType="net.deepdragon.entity.weipu.B2BGoodsAttention">
+		select c.*,a.name,a.sn,a.price,a.marketPrice, CONCAT((SELECT
+		setvalue FROM shared_system_set WHERE
+		setKey='imageUrl'),CONCAT(CONCAT(groupName,'/'),d.url)) AS image from
+		b2b_goods_attention c
+		LEFT JOIN wp_goods a ON c.goodsId = a.id
+		LEFT JOIN (select * from wp_goods_images LIMIT 1 ORDER BY createDate) d ON d.goodsId = a.id
+		where c.buyerId = #{buyerId} order by c.createDate desc /*limit 0,6 */
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.B2BGoodsAttention"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into b2b_goods_attention
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="buyerId != null">,`buyerId`</if>
+			<if test="goodsId != null">,`goodsId`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="buyerId != null">,#{buyerId}</if>
+			<if test="goodsId != null">,#{goodsId}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.B2BGoodsAttention">
+		update b2b_goods_attention
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="buyerId != null">,`buyerId` = #{buyerId}</if>
+			<if test="goodsId != null">,`goodsId` = #{goodsId}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from b2b_goods_attention
+		where id =	#{id}
+	</delete>
+	
+	<delete id="deleteAllByBuyerId">
+		delete from b2b_goods_attention
+		where buyerId = #{buyerId}
+	</delete>
+	
+</mapper>

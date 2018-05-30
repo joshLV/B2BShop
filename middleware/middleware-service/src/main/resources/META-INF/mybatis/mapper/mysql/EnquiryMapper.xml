@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.EnquiryMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`title`,`isSpot`,`offerEndDateTime`,`expectReceivDate`,`isContainTax`,`recAreaId`,`recAreaPath`,`recAddress`,`tradeExchange`,`otherTrade`,`invoiceRequire`,`manageArea`,`registeredCapital`,`certification`,`isSecrecyAgreement`,`replenishExplain`,`accessory`,`enquiryMode`,`purchasePortal`,`contactMode`,`linkman`,`phone`,`enquiryState`,`buyerId`,`releaseDateTime`,`viewCount`,`isDelete`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<sql id="columnList2">
+		e.`id`,e.`tenantId`,e.`title`,e.`isSpot`,e.`offerEndDateTime`,e.`expectReceivDate`,e.`isContainTax`,e.`recAreaId`,e.`recAreaPath`,e.`recAddress`,e.`tradeExchange`,e.`otherTrade`,e.`invoiceRequire`,e.`manageArea`,e.`registeredCapital`,e.`certification`,e.`isSecrecyAgreement`,e.`replenishExplain`,e.`accessory`,e.`enquiryMode`,e.`purchasePortal`,e.`contactMode`,e.`linkman`,e.`phone`,e.`enquiryState`,e.`buyerId`,e.`releaseDateTime`,e.`viewCount`,e.`isDelete`,e.`createUser`,e.`createDate`,e.`modifyUser`,e.`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.Enquiry">
+		select
+		<include refid="columnList" />
+		from b2b_enquiry
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.Enquiry">
+		select
+		<include refid="columnList" />
+		from b2b_enquiry
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.Enquiry">
+		select
+		<include refid="columnList2" />
+		, (
+		SELECT
+		count(1)
+		FROM
+		b2b_quotation q
+		WHERE
+		q.isDelete = '1'
+		AND q.quotationState = '1'
+		AND q.enquiryId = e.id
+		) quotationCount,
+		(select l.content from b2b_enquiry_log l where l.enquiryId = e.id and l.content like '撤销询价单%' order by l.createDate desc limit 0,1 ) cxContent
+		from b2b_enquiry e
+		where e.tenantId = #{tenantId} and e.${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.Enquiry">
+		select
+		<include refid="columnList" />
+		from b2b_enquiry
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.Enquiry">
+		select
+		<include refid="columnList2" />
+		, (
+		SELECT
+		count(1)
+		FROM
+		b2b_quotation q
+		WHERE
+		q.isDelete = '1'
+		AND q.quotationState = '1'
+		AND q.enquiryId = e.id
+		) quotationCount,
+		(select l.content from b2b_enquiry_log l where l.enquiryId = e.id and l.content like '撤销询价单%' order by l.createDate desc limit 0,1 ) cxContent
+		from b2b_enquiry e
+		where e.tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.Enquiry">
+		select
+		<include refid="columnList2" />
+		, (
+		SELECT
+		count(1)
+		FROM
+		b2b_quotation q
+		WHERE
+		q.isDelete = '1'
+		AND q.quotationState = '1'
+		AND q.enquiryId = e.id
+		) quotationCount,
+		(select l.content from b2b_enquiry_log l where l.enquiryId = e.id and l.content like '撤销询价单%' order by l.createDate desc limit 0,1 ) cxContent
+		from b2b_enquiry e
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.Enquiry">
+		select
+		<include refid="columnList2" />
+		, (
+		SELECT
+		count(1)
+		FROM
+		b2b_quotation q
+		WHERE
+		q.isDelete = '1'
+		AND q.quotationState = '1'
+		AND q.enquiryId = e.id
+		) quotationCount,
+		(select l.content from b2b_enquiry_log l where l.enquiryId = e.id and l.content like '撤销询价单%' order by l.createDate desc limit 0,1 ) cxContent
+		from b2b_enquiry e
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from b2b_enquiry where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from b2b_enquiry 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.Enquiry"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into b2b_enquiry
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="title != null">,`title`</if>
+			<if test="isSpot != null">,`isSpot`</if>
+			<if test="offerEndDateTime != null">,`offerEndDateTime`</if>
+			<if test="expectReceivDate != null">,`expectReceivDate`</if>
+			<if test="isContainTax != null">,`isContainTax`</if>
+			<if test="recAreaId != null">,`recAreaId`</if>
+			<if test="recAreaPath != null">,`recAreaPath`</if>
+			<if test="recAddress != null">,`recAddress`</if>
+			<if test="tradeExchange != null">,`tradeExchange`</if>
+			<if test="otherTrade != null">,`otherTrade`</if>
+			<if test="invoiceRequire != null">,`invoiceRequire`</if>
+			<if test="manageArea != null">,`manageArea`</if>
+			<if test="registeredCapital != null">,`registeredCapital`</if>
+			<if test="certification != null">,`certification`</if>
+			<if test="isSecrecyAgreement != null">,`isSecrecyAgreement`</if>
+			<if test="replenishExplain != null">,`replenishExplain`</if>
+			<if test="accessory != null">,`accessory`</if>
+			<if test="enquiryMode != null">,`enquiryMode`</if>
+			<if test="purchasePortal != null">,`purchasePortal`</if>
+			<if test="contactMode != null">,`contactMode`</if>
+			<if test="linkman != null">,`linkman`</if>
+			<if test="phone != null">,`phone`</if>
+			<if test="enquiryState != null">,`enquiryState`</if>
+			<if test="buyerId != null">,`buyerId`</if>
+			<if test="releaseDateTime != null">,`releaseDateTime`</if>
+			<if test="viewCount != null">,`viewCount`</if>
+			<if test="isDelete != null">,`isDelete`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="title != null">,#{title}</if>
+			<if test="isSpot != null">,#{isSpot}</if>
+			<if test="offerEndDateTime != null">,#{offerEndDateTime}</if>
+			<if test="expectReceivDate != null">,#{expectReceivDate}</if>
+			<if test="isContainTax != null">,#{isContainTax}</if>
+			<if test="recAreaId != null">,#{recAreaId}</if>
+			<if test="recAreaPath != null">,#{recAreaPath}</if>
+			<if test="recAddress != null">,#{recAddress}</if>
+			<if test="tradeExchange != null">,#{tradeExchange}</if>
+			<if test="otherTrade != null">,#{otherTrade}</if>
+			<if test="invoiceRequire != null">,#{invoiceRequire}</if>
+			<if test="manageArea != null">,#{manageArea}</if>
+			<if test="registeredCapital != null">,#{registeredCapital}</if>
+			<if test="certification != null">,#{certification}</if>
+			<if test="isSecrecyAgreement != null">,#{isSecrecyAgreement}</if>
+			<if test="replenishExplain != null">,#{replenishExplain}</if>
+			<if test="accessory != null">,#{accessory}</if>
+			<if test="enquiryMode != null">,#{enquiryMode}</if>
+			<if test="purchasePortal != null">,#{purchasePortal}</if>
+			<if test="contactMode != null">,#{contactMode}</if>
+			<if test="linkman != null">,#{linkman}</if>
+			<if test="phone != null">,#{phone}</if>
+			<if test="enquiryState != null">,#{enquiryState}</if>
+			<if test="buyerId != null">,#{buyerId}</if>
+			<if test="releaseDateTime != null">,#{releaseDateTime}</if>
+			<if test="viewCount != null">,#{viewCount}</if>
+			<if test="isDelete != null">,#{isDelete}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.Enquiry">
+		update b2b_enquiry
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="title != null">,`title` = #{title}</if>
+			<if test="isSpot != null">,`isSpot` = #{isSpot}</if>
+			<if test="offerEndDateTime != null">,`offerEndDateTime` = #{offerEndDateTime}</if>
+			<if test="expectReceivDate != null">,`expectReceivDate` = #{expectReceivDate}</if>
+			<if test="isContainTax != null">,`isContainTax` = #{isContainTax}</if>
+			<if test="recAreaId != null">,`recAreaId` = #{recAreaId}</if>
+			<if test="recAreaPath != null">,`recAreaPath` = #{recAreaPath}</if>
+			<if test="recAddress != null">,`recAddress` = #{recAddress}</if>
+			<if test="tradeExchange != null">,`tradeExchange` = #{tradeExchange}</if>
+			<if test="otherTrade != null">,`otherTrade` = #{otherTrade}</if>
+			<if test="invoiceRequire != null">,`invoiceRequire` = #{invoiceRequire}</if>
+			<if test="manageArea != null">,`manageArea` = #{manageArea}</if>
+			<if test="registeredCapital != null">,`registeredCapital` = #{registeredCapital}</if>
+			<if test="certification != null">,`certification` = #{certification}</if>
+			<if test="isSecrecyAgreement != null">,`isSecrecyAgreement` = #{isSecrecyAgreement}</if>
+			<if test="replenishExplain != null">,`replenishExplain` = #{replenishExplain}</if>
+			<if test="accessory != null">,`accessory` = #{accessory}</if>
+			<if test="enquiryMode != null">,`enquiryMode` = #{enquiryMode}</if>
+			<if test="purchasePortal != null">,`purchasePortal` = #{purchasePortal}</if>
+			<if test="contactMode != null">,`contactMode` = #{contactMode}</if>
+			<if test="linkman != null">,`linkman` = #{linkman}</if>
+			<if test="phone != null">,`phone` = #{phone}</if>
+			<if test="enquiryState != null">,`enquiryState` = #{enquiryState}</if>
+			<if test="buyerId != null">,`buyerId` = #{buyerId}</if>
+			<if test="releaseDateTime != null">,`releaseDateTime` = #{releaseDateTime}</if>
+			<if test="viewCount != null">,`viewCount` = #{viewCount}</if>
+			<if test="isDelete != null">,`isDelete` = #{isDelete}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from b2b_enquiry
+		where id =	#{id}
+	</delete>
+
+
+	<update id="updateState" parameterType="net.deepdragon.entity.weipu.Enquiry">
+		update b2b_enquiry
+		<set>
+		  	`enquiryState` = #{enquiryState}
+		</set>
+		where tenantId = #{tenantId}
+		<if test="offerEndDateTime != null"> and offerEndDateTime &lt; #{offerEndDateTime}</if>
+		and buyerId=#{buyerId}
+		and isDelete = #{isDelete}
+	</update>
+
+	<select id="getCount" parameterType="java.util.Map" resultType="map">
+		SELECT
+		enquiryState,
+		count(1) totalCount
+		FROM
+		b2b_enquiry e
+		WHERE
+		1 = 1
+		AND e.tenantId = #{tenantId}
+		AND e.buyerId = #{buyerId}
+		AND e.isDelete = 1
+		GROUP BY
+		e.enquiryState
+	</select>
+</mapper>

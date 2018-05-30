@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.GoodsBrandMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`name`,`sign`,concat((select setvalue from
+		shared_system_set where
+		setKey='imageUrl'),concat(concat(groupName,'/'),logo)) as
+		`pic`,`logo`,`groupName`,`orderNo`,`enabled`,`description`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.GoodsBrand">
+		select
+		<include refid="columnList" />
+		from wp_goods_brand
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.GoodsBrand">
+		select
+		<include refid="columnList" />
+		from wp_goods_brand
+		where tenantId = #{tenantId} and
+		${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.GoodsBrand">
+		select
+		<include refid="columnList" />
+		from wp_goods_brand
+		where tenantId = #{tenantId} and
+		${property}=#{value}
+	</select>
+
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.GoodsBrand">
+		select
+		<include refid="columnList" />
+		from wp_goods_brand
+		where id in
+		<foreach collection="list" item="id" index="index" open="("
+			close=")" separator=",">#{id}</foreach>
+	</select>
+
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.GoodsBrand">
+		select
+		<include refid="columnList" />
+		from wp_goods_brand
+		where tenantId = #{tenantId}
+	</select>
+
+	<select id="getGoodsBrandByCategoryId" resultType="net.deepdragon.entity.weipu.GoodsBrand">
+		select 
+		<include refid="columnList" />
+		from wp_goods_brand a left join wp_goods_category_brand b on a.id = b.brandId
+		where b.categoryId like #{categoryId} group by a.id order by orderNo limit #{size}
+	</select>
+
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.GoodsBrand">
+		select
+		<include refid="columnList" />
+		from wp_goods_brand
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getList" resultType="net.deepdragon.entity.weipu.GoodsBrand">
+		select
+		<include refid="columnList" />
+		from wp_goods_brand
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_goods_brand where tenantId = #{tenantId}
+	</select>
+
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from
+		wp_goods_brand
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.GoodsBrand"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_goods_brand
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="name != null">,`name`</if>
+			<if test="sign != null">,`sign`</if>
+			<if test="logo != null">,`logo`</if>
+			<if test="groupName != null">,`groupName`</if>
+			<if test="orderNo != null">,`orderNo`</if>
+			<if test="enabled != null">,`enabled`</if>
+			<if test="description != null">,`description`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="name != null">,#{name}</if>
+			<if test="sign != null">,#{sign}</if>
+			<if test="logo != null">,#{logo}</if>
+			<if test="groupName != null">,#{groupName}</if>
+			<if test="orderNo != null">,#{orderNo}</if>
+			<if test="enabled != null">,#{enabled}</if>
+			<if test="description != null">,#{description}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.GoodsBrand">
+		update wp_goods_brand
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="name != null">,`name` = #{name}</if>
+			<if test="sign != null">,`sign` = #{sign}</if>
+			<if test="logo != null">,`logo` = #{logo}</if>
+			<if test="groupName != null">,`groupName` = #{groupName}</if>
+			<if test="orderNo != null">,`orderNo` = #{orderNo}</if>
+			<if test="enabled != null">,`enabled` = #{enabled}</if>
+			<if test="description != null">,`description` = #{description}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_goods_brand
+		where id = #{id}
+	</delete>
+	
+	<!-- 显示该类别下的所有品牌 -->
+	<select id="getListByGoodsCategoryId" resultType="net.deepdragon.entity.weipu.GoodsBrand">
+		SELECT 
+		a.* 
+		FROM wp_goods_brand a LEFT JOIN wp_goods_category_brand b ON a.id = b.brandId
+		WHERE b.categoryId = #{grandId} AND a.`enabled`=1 ORDER BY a.`orderNo` ASC;
+	</select>
+	
+	<!-- 显示该类别下的所有品牌,没有商品的不显示 -->
+	<select id="getListByGoodsCategoryIdWithoutNoGoods" resultType="net.deepdragon.entity.weipu.GoodsBrand">
+		SELECT 
+		a.* 
+		FROM wp_goods_brand a 
+		RIGHT JOIN (SELECT DISTINCT brandId FROM `wp_goods` WHERE categoryPath LIKE #{goodsCategoryId} AND brandId IS NOT NULL) b ON a.id = b.brandId
+		WHERE a.`enabled`=1 ORDER BY a.`orderNo` ASC;
+	</select>
+	
+</mapper>

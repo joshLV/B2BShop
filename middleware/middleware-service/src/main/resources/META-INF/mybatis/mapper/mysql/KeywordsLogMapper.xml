@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.KeywordsLogMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`platform`,`keywords`,`searchCount`,`remark`,`r1`,`r2`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.KeywordsLog">
+		select
+		<include refid="columnList" />
+		from wp_keywords_search_log
+		where id = #{id}
+		and tenantId = #{tenantId}
+		and platform = #{platform}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.KeywordsLog">
+		select
+		<include refid="columnList" />
+		from wp_keywords_search_log
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.KeywordsLog">
+		select
+		<include refid="columnList" />
+		from wp_keywords_search_log
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.KeywordsLog">
+		select
+		<include refid="columnList" />
+		from wp_keywords_search_log
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+		and tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.KeywordsLog">
+		select
+		<include refid="columnList" />
+		from wp_keywords_search_log 
+		where tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.KeywordsLog">
+		select
+		<include refid="columnList" />
+		from wp_keywords_search_log 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.KeywordsLog">
+		select
+		<include refid="columnList" />
+		from wp_keywords_search_log 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_keywords_search_log where tenantId = #{tenantId}
+		and platform = #{platform}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_keywords_search_log 
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.KeywordsLog"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_keywords_search_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`,`platform`
+			<if test="keywords != null">,`keywords`</if>
+			<if test="searchCount != null">,`searchCount`</if>
+			<if test="remark != null">,`remark`</if>
+			<if test="r1 != null">,`r1`</if>
+			<if test="r2 != null">,`r2`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId},#{platform}
+			<if test="keywords != null">,#{keywords}</if>
+			<if test="searchCount != null">,#{searchCount}</if>
+			<if test="remark != null">,#{remark}</if>
+			<if test="r1 != null">,#{r1}</if>
+			<if test="r2 != null">,#{r2}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.KeywordsLog">
+		update wp_keywords_search_log
+		<set>
+			`tenantId` = #{tenantId},`platform` = #{platform}
+			<if test="keywords != null">,`keywords` = #{keywords}</if>
+			<if test="searchCount != null">,`searchCount` = #{searchCount}</if>
+			<if test="remark != null">,`remark` = #{remark}</if>
+			<if test="r1 != null">,`r1` = #{r1}</if>
+			<if test="r2 != null">,`r2` = #{r2}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_keywords_search_log
+		where id =	#{id}
+		and tenantId = #{tenantId}
+		and platform = #{platform}
+	</delete>
+	
+</mapper>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.BuyerMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`rankId`,`userName`,`passwd`,`email`,`realName`,`mobile`,`companyName`,`areaId`,`areaPath`,`address`,`linkMan`,`likeManMobile`,`linkManEmail`,`status`,`scoreTotal`,`vipScoreTotal`,`buyerType`,`isDelete`,`createUser`,`createDate`,`modifyUser`,`modifyDate`,sign,invitationCode
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.Buyer">
+		select
+		<include refid="columnList" />
+		from b2b_buyer
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.Buyer">
+		select
+		<include refid="columnList" />
+		from b2b_buyer
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.Buyer">
+		select
+		<include refid="columnList" />
+		from b2b_buyer
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.Buyer">
+		select
+		<include refid="columnList" />
+		from b2b_buyer
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.Buyer">
+		select
+		<include refid="columnList" />
+		from b2b_buyer 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.Buyer">
+		select
+		<include refid="columnList" />
+		from b2b_buyer 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.Buyer">
+		select
+		<include refid="columnList" />
+		from b2b_buyer 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from b2b_buyer where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from b2b_buyer 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.Buyer"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into b2b_buyer
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="rankId != null">,`rankId`</if>
+			<if test="userName != null">,`userName`</if>
+			<if test="passwd != null">,`passwd`</if>
+			<if test="email != null">,`email`</if>
+			<if test="realName != null">,`realName`</if>
+			<if test="mobile != null">,`mobile`</if>
+			<if test="companyName != null">,`companyName`</if>
+			<if test="areaId != null">,`areaId`</if>
+			<if test="areaPath != null">,`areaPath`</if>
+			<if test="address != null">,`address`</if>
+			<if test="linkMan != null">,`linkMan`</if>
+			<if test="likeManMobile != null">,`likeManMobile`</if>
+			<if test="linkManEmail != null">,`linkManEmail`</if>
+			<if test="status != null">,`status`</if>
+			<if test="scoreTotal != null">,`scoreTotal`</if>
+			<if test="vipScoreTotal != null">,`vipScoreTotal`</if>
+			<if test="buyerType != null">,`buyerType`</if>
+			<if test="isDelete != null">,`isDelete`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+			<if test="sign != null">,`sign`</if>
+			<if test="invitationCode != null">,`invitationCode`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="rankId != null">,#{rankId}</if>
+			<if test="userName != null">,#{userName}</if>
+			<if test="passwd != null">,#{passwd}</if>
+			<if test="email != null">,#{email}</if>
+			<if test="realName != null">,#{realName}</if>
+			<if test="mobile != null">,#{mobile}</if>
+			<if test="companyName != null">,#{companyName}</if>
+			<if test="areaId != null">,#{areaId}</if>
+			<if test="areaPath != null">,#{areaPath}</if>
+			<if test="address != null">,#{address}</if>
+			<if test="linkMan != null">,#{linkMan}</if>
+			<if test="likeManMobile != null">,#{likeManMobile}</if>
+			<if test="linkManEmail != null">,#{linkManEmail}</if>
+			<if test="status != null">,#{status}</if>
+			<if test="scoreTotal != null">,#{scoreTotal}</if>
+			<if test="vipScoreTotal != null">,#{vipScoreTotal}</if>
+			<if test="buyerType != null">,#{buyerType}</if>
+			<if test="isDelete != null">,#{isDelete}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+			<if test="sign != null">,#{sign}</if>
+			<if test="invitationCode != null">,#{invitationCode}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.Buyer">
+		update b2b_buyer
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="rankId != null">,`rankId` = #{rankId}</if>
+			<if test="userName != null">,`userName` = #{userName}</if>
+			<if test="passwd != null">,`passwd` = #{passwd}</if>
+			<if test="email != null">,`email` = #{email}</if>
+			<if test="realName != null">,`realName` = #{realName}</if>
+			<if test="mobile != null">,`mobile` = #{mobile}</if>
+			<if test="companyName != null">,`companyName` = #{companyName}</if>
+			<if test="areaId != null">,`areaId` = #{areaId}</if>
+			<if test="areaPath != null">,`areaPath` = #{areaPath}</if>
+			<if test="address != null">,`address` = #{address}</if>
+			<if test="linkMan != null">,`linkMan` = #{linkMan}</if>
+			<if test="likeManMobile != null">,`likeManMobile` = #{likeManMobile}</if>
+			<if test="linkManEmail != null">,`linkManEmail` = #{linkManEmail}</if>
+			<if test="status != null">,`status` = #{status}</if>
+			<if test="scoreTotal != null">,`scoreTotal` = #{scoreTotal}</if>
+			<if test="vipScoreTotal != null">,`vipScoreTotal` = #{vipScoreTotal}</if>
+			<if test="buyerType != null">,`buyerType` = #{buyerType}</if>
+			<if test="isDelete != null">,`isDelete` = #{isDelete}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="sign != null">,`sign` = #{sign}</if>
+			<if test="invitationCode != null">,`invitationCode` = #{invitationCode}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from b2b_buyer
+		where id =	#{id}
+	</delete>
+
+	<select id="getMyMerchants" resultType="net.deepdragon.entity.weipu.Merchant">
+		SELECT b.* FROM wp_merchant b,b2b_buyer_merchant m
+         WHERE b.tenantId = m.tenantId
+		   AND m.tenantId=#{tenantId}
+		   AND m.isDelete=1
+		   AND b.id = m.merchantId
+		   AND m.buyerId =#{id}
+	</select>
+	
+</mapper>

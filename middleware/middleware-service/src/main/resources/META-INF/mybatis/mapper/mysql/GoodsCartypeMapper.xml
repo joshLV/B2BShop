@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.GoodsCartypeMapper">
+
+	<sql id="columnList">
+		`goodsId`,`cartypeId`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.GoodsCartype">
+		select
+		<include refid="columnList" />
+		from wp_goods_cartype
+		where goodsId = #{goodsId}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.GoodsCartype">
+		select
+		<include refid="columnList" />
+		from wp_goods_cartype
+		where ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.GoodsCartype">
+		select
+		<include refid="columnList" />
+		from wp_goods_cartype
+		where ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.GoodsCartype">
+		select
+		<include refid="columnList" />
+		from wp_goods_cartype
+		where goodsId in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{goodsId}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.GoodsCartype">
+		select
+		<include refid="columnList" />
+		from wp_goods_cartype 
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.GoodsCartype">
+		select
+		<include refid="columnList" />
+		from wp_goods_cartype 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.GoodsCartype">
+		select
+		<include refid="columnList" />
+		from wp_goods_cartype 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(1) as result
+		from wp_goods_cartype
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(1) as result from wp_goods_cartype
+		where ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.GoodsCartype"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_goods_cartype
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="goodsId != null">`goodsId`</if>
+			<if test="cartypeId != null">,`cartypeId`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="goodsId != null">#{goodsId}</if>
+			<if test="cartypeId != null">,#{cartypeId}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.GoodsCartype">
+		update wp_goods_cartype
+		<set>
+			<if test="goodsId != null">`goodsId` = #{goodsId}</if>
+			<if test="cartypeId != null">,`cartypeId` = #{cartypeId}</if>
+		</set>
+	</update>
+
+	<delete id="delete">
+		delete from wp_goods_cartype
+		where goodsId =	#{goodsId}
+	</delete>
+
+    <select id="getGoodsPager" resultType="net.deepdragon.entity.weipu.Goods">
+        select g.*, CONCAT((SELECT
+        setvalue FROM shared_system_set WHERE
+        setKey='imageUrl'),CONCAT(CONCAT(groupName,'/'),d.url)) AS pic from
+        wp_goods_cartype t
+        LEFT JOIN wp_goods g ON t.goodsId = g.id
+        LEFT JOIN wp_goods_images d ON d.goodsId = g.id
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+</mapper>

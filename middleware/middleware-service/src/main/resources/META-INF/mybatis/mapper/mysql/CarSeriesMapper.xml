@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.CarSeriesMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`name`,`brandId`,`introduction`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.CarSeries">
+		select
+		<include refid="columnList" />
+		from wp_car_series
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.CarSeries">
+		select
+		<include refid="columnList" />
+		from wp_car_series
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.CarSeries">
+		select
+		<include refid="columnList" />
+		from wp_car_series
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.CarSeries">
+		select
+		<include refid="columnList" />
+		from wp_car_series
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.CarSeries">
+		select
+		<include refid="columnList" />
+		from wp_car_series 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.CarSeries">
+		select
+		<include refid="columnList" />
+		from wp_car_series 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.CarSeries">
+		select
+		<include refid="columnList" />
+		from wp_car_series 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_car_series where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_car_series 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.CarSeries"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_car_series
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="name != null">,`name`</if>
+			<if test="brandId != null">,`brandId`</if>
+			<if test="introduction != null">,`introduction`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="name != null">,#{name}</if>
+			<if test="brandId != null">,#{brandId}</if>
+			<if test="introduction != null">,#{introduction}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.CarSeries">
+		update wp_car_series
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="name != null">,`name` = #{name}</if>
+			<if test="brandId != null">,`brandId` = #{brandId}</if>
+			<if test="introduction != null">,`introduction` = #{introduction}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_car_series
+		where id =	#{id}
+	</delete>
+    <select id="getSeriesPager" resultType="net.deepdragon.entity.weipu.CarSeries">
+        select a.*,d.name AS brandName from
+        wp_car_series a
+        LEFT JOIN wp_car_brand d ON d.id = a.brandId
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+</mapper>

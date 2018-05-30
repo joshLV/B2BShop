@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.MemberMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`rankId`,`userName`,`email`,`nickName`,`sex`,`mobile`,`birthday`,`status`,`createUser`,`createDate`,`modifyUser`,`modifyDate`,`scoreTotal`,`vipScoreTotal`,`iDCode`,`ERPVipCode`,`isSynch`,`openId`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.Member">
+		select
+		<include refid="columnList" />
+		from wp_member
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.Member">
+		select
+		<include refid="columnList" />
+		from wp_member
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.Member">
+		select
+		<include refid="columnList" />
+		from wp_member
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds"
+		resultType="net.deepdragon.entity.weipu.Member">
+		select
+		<include refid="columnList" />
+		from wp_member
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.Member">
+		select
+		<include refid="columnList" />
+		from wp_member 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.Member">
+		select
+		<include refid="columnList" />
+		from wp_member 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.Member">
+		select
+		<include refid="columnList" />
+		from wp_member 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_member where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_member 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.Member"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_member
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`,`scoreTotal`,`vipScoreTotal`
+			<if test="rankId != null">,`rankId`</if>
+			<if test="userName != null">,`userName`</if>
+			<if test="passwd != null">,`passwd`</if>
+			<if test="email != null">,`email`</if>
+			<if test="nickName != null">,`nickName`</if>
+			<if test="sex != null">,`sex`</if>
+			<if test="mobile != null">,`mobile`</if>
+			<if test="birthday != null">,`birthday`</if>
+			<if test="status != null">,`status`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+			<if test="iDCode != null">,`iDCode`</if>
+			<if test="ERPVipCode != null">,`ERPVipCode`</if>
+			<if test="isSynch != null">,`isSynch`</if>
+			<if test="openId != null">,`openId`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId},0,0
+			<if test="rankId != null">,#{rankId}</if>
+			<if test="userName != null">,#{userName}</if>
+			<if test="passwd != null">,#{passwd}</if>
+			<if test="email != null">,#{email}</if>
+			<if test="nickName != null">,#{nickName}</if>
+			<if test="sex != null">,#{sex}</if>
+			<if test="mobile != null">,#{mobile}</if>
+			<if test="birthday != null">,#{birthday}</if>
+			<if test="status != null">,#{status}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+			<if test="iDCode != null">,#{iDCode}</if>
+			<if test="ERPVipCode != null">,#{ERPVipCode}</if>
+			<if test="isSynch != null">,#{isSynch}</if>
+			<if test="openId != null">,#{openId}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.Member">
+		update wp_member
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="rankId != null">,`rankId` = #{rankId}</if>
+			<if test="userName != null">,`userName` = #{userName}</if>
+			<if test="passwd != null">,`passwd` = #{passwd}</if>
+			<if test="email != null">,`email` = #{email}</if>
+			<if test="nickName != null">,`nickName` = #{nickName}</if>
+			<if test="sex != null">,`sex` = #{sex}</if>
+			<if test="mobile != null">,`mobile` = #{mobile}</if>
+			<if test="birthday != null">,`birthday` = #{birthday}</if>
+			<if test="status != null">,`status` = #{status}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+			<if test="iDCode != null">,`iDCode` = #{iDCode}</if>
+			<if test="ERPVipCode != null">,`ERPVipCode` = #{ERPVipCode}</if>
+			<if test="isSynch != null">,`isSynch` = #{isSynch}</if>
+			<if test="openId != null">,`openId` = #{openId}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_member
+		where id =	#{id}
+	</delete>
+
+</mapper>

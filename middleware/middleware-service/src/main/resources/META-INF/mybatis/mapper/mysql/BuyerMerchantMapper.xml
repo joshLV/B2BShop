@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.BuyerMerchantMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`buyerId`,`merchantId`,`type`,`score`,`isDelete`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.BuyerMerchant">
+		select
+		<include refid="columnList" />
+		from b2b_buyer_merchant
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.BuyerMerchant">
+		select
+		<include refid="columnList" />
+		from b2b_buyer_merchant
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.BuyerMerchant">
+		select
+		<include refid="columnList" />
+		from b2b_buyer_merchant
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.BuyerMerchant">
+		select
+		<include refid="columnList" />
+		from b2b_buyer_merchant
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.BuyerMerchant">
+		select
+		<include refid="columnList" />
+		from b2b_buyer_merchant 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.Merchant">
+		SELECT b.* FROM wp_merchant b,b2b_buyer_merchant m
+
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+		And b.tenantId = m.tenantId
+		AND m.isDelete=1
+		AND b.status=3
+		AND b.id = m.merchantId
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.Merchant">
+		SELECT b.* FROM wp_merchant b,b2b_buyer_merchant m
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+		And b.tenantId = m.tenantId
+		AND m.isDelete=1
+		AND b.id = m.merchantId
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from b2b_buyer_merchant where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from b2b_buyer_merchant 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.BuyerMerchant"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into b2b_buyer_merchant
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="buyerId != null">,`buyerId`</if>
+			<if test="merchantId != null">,`merchantId`</if>
+			<if test="type != null">,`type`</if>
+			<if test="score != null">,`score`</if>
+			<if test="isDelete != null">,`isDelete`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="buyerId != null">,#{buyerId}</if>
+			<if test="merchantId != null">,#{merchantId}</if>
+			<if test="type != null">,#{type}</if>
+			<if test="score != null">,#{score}</if>
+			<if test="isDelete != null">,#{isDelete}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.BuyerMerchant">
+		update b2b_buyer_merchant
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="buyerId != null">,`buyerId` = #{buyerId}</if>
+			<if test="merchantId != null">,`merchantId` = #{merchantId}</if>
+			<if test="type != null">,`type` = #{type}</if>
+			<if test="score != null">,`score` = #{score}</if>
+			<if test="isDelete != null">,`isDelete` = #{isDelete}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from b2b_buyer_merchant
+		where id =	#{id}
+	</delete>
+
+	<select id="getByMerchantNameBuyerMerchants" resultType="net.deepdragon.entity.weipu.Merchant">
+		SELECT b.* FROM wp_merchant b,b2b_buyer_merchant m
+		WHERE b.tenantId = m.tenantId
+		AND m.tenantId=#{tenantId}
+		AND m.isDelete=1
+		AND b.id = m.merchantId
+		AND m.buyerId =#{id}
+		AND b.name LIKE CONCAT(CONCAT('%', #{searMerchantName}), '%');
+	</select>
+
+	<!-- 逻辑删除我的供应商 -->
+	<update id="updateBuyerMerchantState" parameterType="java.util.Map">
+		update b2b_buyer_merchant
+			set isDelete=0
+		where `tenantId` = #{tenantId}
+		and `buyerId` = #{buyerId}
+		and `merchantId` = #{merchantId}
+	</update>
+	
+</mapper>

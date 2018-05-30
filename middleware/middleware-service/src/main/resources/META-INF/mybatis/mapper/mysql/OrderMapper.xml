@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.OrderMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`orderSn`,`storeId`,`parentSn`,`orderStatus`,`paymentStatus`,`shippingStatus`,`isLock`,`memberId`,`shopId`,`goodsTotalQuantity`,`goodsTotalPrice`,`deliveryFee`,`defaultDeliveryFee`,`discount`,`totalAmount`,`depositMoney`,`paymentMethodId`,`paymentMethodName`,`payType`,`deliveryMethodId`,`deliveryMethodName`,`selfgetTime`,`selfgetAreaId`,`selfgetAreaName`,`shipName`,`shipAreaId`,`shipAreaPath`,`shipAddress`,`shipZipCode`,`shipPhone`,`shipMobile`,`type`,`description`,`createUser`,`createDate`,`modifyUser`,`modifyDate`,`invoiceType`,`invoiceTitle`,`invoiceContent`,`platform`,`enquiryId`,`quotationId`,`erpPkLsNo`,`erpPkSDateTime`,`isSync`,`deliveryTime`,`orderType`,`isPull`,`goodsWeight`,`goodsVolume`,`transportDistance`,`isOriginal`,`isMemberPrice`,`hasInsuranceFee`,`insuranceFee`,`mergeOrderSn`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.Order">
+		select
+		wp_order.*,shared_area.fullName as shipAreaName
+		from wp_order
+		left join
+		shared_area on wp_order.shipAreaId=shared_area.id
+		where wp_order.id =
+		#{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.Order">
+		select
+		wp_order.*,shared_area.fullName as shipAreaName
+		from wp_order
+		left join
+		shared_area on wp_order.shipAreaId=shared_area.id
+		where
+		wp_order.tenantId = #{tenantId} and wp_order.${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.Order">
+		select
+		wp_order.*,shared_area.fullName as shipAreaName
+		from wp_order
+		left join
+		shared_area on wp_order.shipAreaId=shared_area.id
+		where
+		wp_order.tenantId = #{tenantId} and wp_order.${property}=#{value}
+	</select>
+
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.Order">
+		select
+		wp_order.*,shared_area.fullName as shipAreaName
+		from wp_order
+		left join shared_area on wp_order.shipAreaId=shared_area.id
+		where
+		wp_order.id in
+		<foreach collection="list" item="id" index="index" open="("
+			close=")" separator=",">#{id}</foreach>
+	</select>
+
+	<select id="findListByOrderSns" parameterType="java.lang.String"
+			resultType="net.deepdragon.entity.weipu.Order">
+		select
+		wp_order.*,shared_area.fullName as shipAreaName
+		from wp_order
+		left join shared_area on wp_order.shipAreaId=shared_area.id
+		where
+		wp_order.orderSn in
+		<foreach collection="list" item="orderSn" index="index" open="("
+				 close=")" separator=",">#{orderSn}</foreach>
+	</select>
+
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.Order">
+		select
+		wp_order.*,shared_area.fullName as shipAreaName
+		from wp_order
+		left join
+		shared_area on wp_order.shipAreaId=shared_area.id
+		where
+		wp_order.tenantId = #{tenantId}
+	</select>
+
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.Order">
+		select a.*
+			, IFNULL(orefund.refundCount, 0) refundCount
+			, case IFNULL(orefund.refundCount, 0) when 0 then 'N' else 'Y' end isRefund
+			, orderRefund.id currRefundId
+			, orderRefund.status currRefundStatus
+			, IFNULL(cp.handleResultStatu,'0') handleResultStatu
+			,IFNULL(zc.zhongChouStatus,'-1') zhongChouStatus, zc.startTime, zc.endTime, IFNULL(zc.endFlag, '-1') endFlag
+			, IFNULL((select SUM(ct.itemDiff) from (select woi.orderSn, (select COUNT(1) from ghj_orderiterm_changerecord goc where goc.itemId=woi.id) as itemDiff from wp_order_item woi group by woi.orderSn) ct where ct.orderSn=a.orderSn), '-1') as itemDiffTotal
+			, (select (select wm.name from wp_merchant wm where wm.id=wom.shopId) from wp_order wom where wom.id=a.id) as merchantName
+			, (select (select wm.urlAddress from wp_merchant wm where wm.id=wom.shopId) from wp_order wom where wom.id=a.id) as urlAddress
+		from wp_order a
+			left join (	select r.orderSn, COUNT(1) refundCount from wp_order_refund r group by r.orderSn order by r.modifyDate desc) orefund on orefund.orderSn = a.orderSn
+			left join (select r.id, r.status,r.orderSn from wp_order_refund r where r.status != 'returned' group by r.orderSn ) orderRefund  on orderRefund.orderSn = a.orderSn
+			left join ghj_complaint_form cp on cp.orderSn=a.orderSn
+			left join (select
+							i.orderSn, z.zhongChouStatus, z.startTime, z.endTime,
+							CASE WHEN z.endTime is not null THEN
+								CASE WHEN z.endTime &lt; NOW() THEN '1' ELSE '0' END
+							ELSE '-1'
+							END as endFlag
+						from wp_order_item i
+							LEFT JOIN wp_goods_zhongchou z
+							on i.goodsId = z.id
+					  ) zc on (zc.orderSn = a.orderSn and a.orderType = '1')
+			left join (
+				SELECT DISTINCT
+					i.orderSn,g.`name`, g.fullName, g.barcode, g.packageBarCode
+				FROM
+					wp_order_item i
+				LEFT JOIN wp_goods g ON i.goodsId = g.id) g on g.orderSn = a.orderSn
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getList" resultType="net.deepdragon.entity.weipu.Order">
+		select
+		<include refid="columnList" />
+		from wp_order
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_order where tenantId = #{tenantId}
+	</select>
+
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from
+		wp_order
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="getExportList" resultType="net.deepdragon.entity.weipu.Order">
+		SELECT w.`orderSn` as
+		orderSn,
+		w.`description` as
+		description,
+		w.`goodsTotalQuantity` as
+		goodsTotalQuantity,
+		w.`totalAmount` as
+		totalAmount,
+		w.`paymentMethodName` as paymentMethodName,
+		w.`deliveryMethodName` as
+		deliveryMethodName,
+		w.`shipName` as shipName,
+		w.`shipMobile` as
+		shipMobile,
+		CONCAT(s.`fullName`,w.`shipAddress`) as
+		shipAddress,
+		i.`goodsName` as goodsName,
+		i.`quantity` as quantity,
+		i.`goodsPrice` as
+		goodsPrice
+		FROM wp_order w
+		LEFT JOIN shared_area s ON
+		w.`shipAreaId` =
+		s.`id`
+		LEFT JOIN wp_order_item i ON w.`orderSn` =
+		i.`orderSn`
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getXYMExportList" resultType="net.deepdragon.entity.weipu.Order">
+		SELECT w.*, s.fullName as shipAreaName
+		FROM
+		wp_order w
+		LEFT JOIN shared_area s ON w.`shipAreaId` = s.`id`
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getPayAmount" resultType="net.deepdragon.weipu.bean.PayType">
+		SELECT a.lyt ,b.chinapay,c.refund,d.pospay FROM 
+		(SELECT SUM(p.amount) AS lyt FROM wp_order_paylog p LEFT JOIN wp_order_distribution w ON p.orderSn = w.orderSn
+			WHERE p.sign ='lyt' AND p.status ='true' AND w.createDate BETWEEN #{start} and #{end})a ,
+		(SELECT SUM(p.amount) AS chinapay FROM wp_order_paylog p LEFT JOIN wp_order_distribution w ON p.orderSn = w.orderSn
+			WHERE p.sign ='chinapay' AND p.status ='1001' AND w.createDate BETWEEN #{start} and #{end})b,
+		(SELECT SUM(p.amount) AS refund FROM wp_order_paylog p LEFT JOIN wp_order_distribution w ON p.orderSn = w.orderSn
+			WHERE p.sign ='refund' AND p.status ='true' AND w.createDate BETWEEN #{start} and #{end})c,
+		(SELECT SUM(p.amount) AS pospay FROM wp_order_paylog p LEFT JOIN wp_order_distribution w ON p.orderSn = w.orderSn
+			WHERE p.sign ='pospay' AND p.status ='true' AND w.createDate BETWEEN #{start} and #{end})d
+	</select>
+
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.Order"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="orderSn != null">,`orderSn`</if>
+			<if test="storeId != null">,`storeId`</if>
+			<if test="parentSn != null">,`parentSn`</if>
+			<if test="orderStatus != null">,`orderStatus`</if>
+			<if test="paymentStatus != null">,`paymentStatus`</if>
+			<if test="shippingStatus != null">,`shippingStatus`</if>
+			<if test="isLock != null">,`isLock`</if>
+			<if test="memberId != null">,`memberId`</if>
+			<if test="shopId != null">,`shopId`</if>
+			<if test="goodsTotalQuantity != null">,`goodsTotalQuantity`</if>
+			<if test="goodsTotalPrice != null">,`goodsTotalPrice`</if>
+			<if test="deliveryFee != null">,`deliveryFee`</if>
+			<if test="defaultDeliveryFee != null">,`defaultDeliveryFee`</if>
+			<if test="discount != null">,`discount`</if>
+			<if test="totalAmount != null">,`totalAmount`</if>
+			<if test="depositMoney != null">,`depositMoney`</if>
+			<if test="paymentMethodId != null">,`paymentMethodId`</if>
+			<if test="paymentMethodName != null">,`paymentMethodName`</if>
+			<if test="payType != null">,`payType`</if>
+			<if test="deliveryMethodId != null">,`deliveryMethodId`</if>
+			<if test="deliveryMethodName != null">,`deliveryMethodName`</if>
+			<if test="selfgetTime != null">,`selfgetTime`</if>
+			<if test="selfgetAreaId != null">,`selfgetAreaId`</if>
+			<if test="selfgetAreaName != null">,`selfgetAreaName`</if>
+			<if test="shipName != null">,`shipName`</if>
+			<if test="shipAreaId != null">,`shipAreaId`</if>
+			<if test="shipAreaPath != null">,`shipAreaPath`</if>
+			<if test="shipAddress != null">,`shipAddress`</if>
+			<if test="shipZipCode != null">,`shipZipCode`</if>
+			<if test="shipPhone != null">,`shipPhone`</if>
+			<if test="shipMobile != null">,`shipMobile`</if>
+			<if test="type != null">,`type`</if>
+			<if test="invoiceType != null">,`invoiceType`</if>
+			<if test="invoiceTitle != null">,`invoiceTitle`</if>
+			<if test="invoiceContent != null">,`invoiceContent`</if>
+			<if test="platform != null">,`platform`</if>
+			<if test="enquiryId != null">,`enquiryId`</if>
+			<if test="quotationId != null">,`quotationId`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+			<if test="deliveryTime != null">,`deliveryTime`</if>
+			<if test="orderType != null">,`orderType`</if>
+			<if test="isMemberPrice != null">,`isMemberPrice`</if>
+			<if test="hasInsuranceFee != null">,`hasInsuranceFee`</if>
+			<if test="insuranceFee != null">,`insuranceFee`</if>
+			<if test="mergeOrderSn != null">,`mergeOrderSn`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="orderSn != null">,#{orderSn}</if>
+			<if test="storeId != null">,#{storeId}</if>
+			<if test="parentSn != null">,#{parentSn}</if>
+			<if test="orderStatus != null">,#{orderStatus}</if>
+			<if test="paymentStatus != null">,#{paymentStatus}</if>
+			<if test="shippingStatus != null">,#{shippingStatus}</if>
+			<if test="isLock != null">,#{isLock}</if>
+			<if test="memberId != null">,#{memberId}</if>
+			<if test="shopId != null">,#{shopId}</if>
+			<if test="goodsTotalQuantity != null">,#{goodsTotalQuantity}</if>
+			<if test="goodsTotalPrice != null">,#{goodsTotalPrice}</if>
+			<if test="deliveryFee != null">,#{deliveryFee}</if>
+			<if test="defaultDeliveryFee != null">,#{defaultDeliveryFee}</if>
+			<if test="discount != null">,#{discount}</if>
+			<if test="totalAmount != null">,#{totalAmount}</if>
+			<if test="depositMoney != null">,#{depositMoney}</if>
+			<if test="paymentMethodId != null">,#{paymentMethodId}</if>
+			<if test="paymentMethodName != null">,#{paymentMethodName}</if>
+			<if test="payType != null">,#{payType}</if>
+			<if test="deliveryMethodId != null">,#{deliveryMethodId}</if>
+			<if test="deliveryMethodName != null">,#{deliveryMethodName}</if>
+			<if test="selfgetTime != null">,#{selfgetTime}</if>
+			<if test="selfgetAreaId != null">,#{selfgetAreaId}</if>
+			<if test="selfgetAreaName != null">,#{selfgetAreaName}</if>
+			<if test="shipName != null">,#{shipName}</if>
+			<if test="shipAreaId != null">,#{shipAreaId}</if>
+			<if test="shipAreaPath != null">,#{shipAreaPath}</if>
+			<if test="shipAddress != null">,#{shipAddress}</if>
+			<if test="shipZipCode != null">,#{shipZipCode}</if>
+			<if test="shipPhone != null">,#{shipPhone}</if>
+			<if test="shipMobile != null">,#{shipMobile}</if>
+			<if test="type != null">,#{type}</if>
+			<if test="invoiceType != null">,#{invoiceType}</if>
+			<if test="invoiceTitle != null">,#{invoiceTitle}</if>
+			<if test="invoiceContent != null">,#{invoiceContent}</if>
+			<if test="platform != null">,#{platform}</if>
+			<if test="enquiryId != null">,#{enquiryId}</if>
+			<if test="quotationId != null">,#{quotationId}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+			<if test="deliveryTime != null">,#{deliveryTime}</if>
+			<if test="orderType != null">,#{orderType}</if>
+			<if test="isMemberPrice != null">,#{isMemberPrice}</if>
+			<if test="hasInsuranceFee != null">,#{hasInsuranceFee}</if>
+			<if test="insuranceFee != null">,#{insuranceFee}</if>
+			<if test="mergeOrderSn != null">,#{mergeOrderSn}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.Order">
+		update wp_order
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="orderSn != null">,`orderSn` = #{orderSn}</if>
+			<if test="storeId != null">,`storeId` = #{storeId}</if>
+			<if test="parentSn != null">,`parentSn` = #{parentSn}</if>
+			<if test="orderStatus != null">,`orderStatus` = #{orderStatus}</if>
+			<if test="paymentStatus != null">,`paymentStatus` = #{paymentStatus}</if>
+			<if test="shippingStatus != null">,`shippingStatus` = #{shippingStatus}</if>
+			<if test="isLock != null">,`isLock` = #{isLock}</if>
+			<if test="memberId != null">,`memberId` = #{memberId}</if>
+			<if test="shopId != null">,`shopId` = #{shopId}</if>
+			<if test="goodsTotalQuantity != null">,`goodsTotalQuantity` = #{goodsTotalQuantity}</if>
+			<if test="goodsTotalPrice != null">,`goodsTotalPrice` = #{goodsTotalPrice}</if>
+			<if test="deliveryFee != null">,`deliveryFee` = #{deliveryFee}</if>
+			<if test="defaultDeliveryFee != null">,`defaultDeliveryFee` = #{defaultDeliveryFee}</if>
+			<if test="discount != null">,`discount` = #{discount}</if>
+			<if test="totalAmount != null">,`totalAmount` = #{totalAmount}</if>
+			<if test="depositMoney != null">,`depositMoney` = #{depositMoney}</if>
+			<if test="paymentMethodId != null">,`paymentMethodId` = #{paymentMethodId}</if>
+			<if test="paymentMethodName != null">,`paymentMethodName` = #{paymentMethodName}</if>
+			<if test="payType != null">,`payType` = #{payType}</if>
+			<if test="deliveryMethodId != null">,`deliveryMethodId` = #{deliveryMethodId}</if>
+			<if test="deliveryMethodName != null">,`deliveryMethodName` = #{deliveryMethodName}</if>
+			<if test="selfgetTime != null">,`selfgetTime` = #{selfgetTime}</if>
+			<if test="selfgetAreaId != null">,`selfgetAreaId` = #{selfgetAreaId}</if>
+			<if test="selfgetAreaName != null">,`selfgetAreaName` = #{selfgetAreaName}</if>
+			<if test="shipName != null">,`shipName` = #{shipName}</if>
+			<if test="shipAreaId != null">,`shipAreaId` = #{shipAreaId}</if>
+			<if test="shipAreaPath != null">,`shipAreaPath` = #{shipAreaPath}</if>
+			<if test="shipAddress != null">,`shipAddress` = #{shipAddress}</if>
+			<if test="shipZipCode != null">,`shipZipCode` = #{shipZipCode}</if>
+			<if test="shipPhone != null">,`shipPhone` = #{shipPhone}</if>
+			<if test="shipMobile != null">,`shipMobile` = #{shipMobile}</if>
+			<if test="type != null">,`type` = #{type}</if>
+			<if test="invoiceType != null">,`invoiceType` = #{invoiceType}</if>
+			<if test="invoiceTitle != null">,`invoiceTitle` = #{invoiceTitle}</if>
+			<if test="invoiceContent != null">,`invoiceContent` = #{invoiceContent}</if>
+			<if test="platform != null">,`platform`= #{platform}</if>
+			<if test="enquiryId != null">,`enquiryId`= #{enquiryId}</if>
+			<if test="quotationId != null">,`quotationId`= #{quotationId}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+			<if test="isMemberPrice != null">,`isMemberPrice`= #{isMemberPrice}</if>
+			<if test="hasInsuranceFee != null">,`hasInsuranceFee` = #{hasInsuranceFee}</if>
+			<if test="insuranceFee != null">,`insuranceFee` = #{insuranceFee}</if>
+			<if test="mergeOrderSn != null">,`mergeOrderSn` = #{mergeOrderSn}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_order
+		where id = #{id}
+	</delete>
+
+	<!-- 获取满足时间条件的订单列表 -->
+	<select id="getHourOrderList" resultType="net.deepdragon.entity.weipu.Order">
+		select * from wp_order where UNIX_TIMESTAMP(createDate) &lt;= (UNIX_TIMESTAMP(now())-#{hour}*60*60)
+		and paymentStatus ='unpaid' and type = #{type} and orderStatus='wait_buyer_pay'
+	</select>
+	
+	<!-- 获取满足时间条件的订单列表 -->
+	<select id="getConfirmOrderList" resultType="net.deepdragon.entity.weipu.Order">
+		select * from wp_order where UNIX_TIMESTAMP(createDate) &lt;= (UNIX_TIMESTAMP(now())-#{hour}*60*60)
+		and ShippingStatus='shipped' and orderStatus='wait_buyer_confirm_goods'
+	</select>
+	
+	<!-- 获取商品日报列表 -->
+	<select id="getGoodsDayReport" resultType="java.util.Map">
+		SELECT s.barcode,s.name,w.`goodsPrice`,SUM(w.quantity) AS quantity,w.`goodsPrice`*SUM(w.quantity) AS amountMoney,c.sign,p.name AS payName FROM wp_order_item w
+	 INNER JOIN wp_order r ON w.orderSn = r.orderSn
+	 INNER JOIN wp_order_distribution d ON w.orderSn = d.orderSn
+	 INNER JOIN wp_goods s ON w.goodsId = s.id
+	 INNER JOIN wp_catelog c ON s.categoryId = c.id
+	 INNER JOIN wp_order_paylog p ON w.orderSn = p.orderSn AND (p.sign = 'lyt' OR p.sign = 'chinapay')
+	 WHERE d.createDate >  CURDATE() AND r.orderStatus = 'trade_finished'
+	 GROUP BY s.barcode,w.goodsPrice,p.name
+	</select>
+	
+	<!-- 订单商品报表 -->
+	<select id="getOrderGoodsReport" resultType="java.util.Map">
+
+		SELECT w.`orderSn`,s.`barcode`,s.`sn` AS goodsSn,w.`goodsName`,w.`goodsPrice`,w.`quantity`,r.`paymentMethodName`,p.`name` AS payName,w.`goodsPrice`*w.`quantity` AS goodsTotalMoney,r.`totalAmount`,r.createDate AS orderCreateDate,r.`shipName`,r.`orderStatus` ,r.shippingStatus,d.createDate AS shippingDate
+		  FROM wp_order_item w
+		  LEFT JOIN wp_order r ON w.`orderSn` = r.`orderSn`
+		  LEFT JOIN wp_order_paylog p ON w.`orderSn` = p.`orderSn`
+		  LEFT JOIN wp_goods s ON w.`goodsId` = s.`id`
+		  LEFT JOIN wp_order_distribution d ON w.orderSn = d.orderSn
+	<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	 GROUP BY w.orderSn,s.`barcode` order by r.createDate
+	</select>
+	
+	<!-- 订单商品报表 -->
+	<select id="getGoodsReport" resultType="java.util.Map">
+		SELECT w.goodsId,g.sn,g.barcode,w.goodsName,w.goodsPrice,SUM(w.quantity) AS totalQuantity,SUM(w.quantity*w.goodsPrice) AS totalPrice
+		  FROM wp_order_item w
+		 LEFT JOIN wp_order r ON w.orderSn = r.orderSn
+		 LEFT JOIN wp_goods g ON w.goodsId = g.id
+		 LEFT JOIN wp_order_distribution d ON w.orderSn = d.orderSn
+	<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	 GROUP BY w.goodsId,w.goodsPrice order by w.createDate
+	</select>
+	<!-- 获取满足时间条件的客流客单 -->
+	<select id="getPassengerByTime" resultType="java.util.Map">
+	SELECT COUNT(1) AS totalNum, SUM(w.totalAmount) AS totalAmount  FROM wp_order w
+       WHERE (w.orderStatus = 'trade_finished' OR w.orderStatus='wait_seller_send_goods' OR w.orderStatus='wait_buyer_confirm_goods')
+       AND w.createDate BETWEEN #{start} AND #{end}
+	</select>
+	<!-- 获取满足时间条件的不同下单方式 -->
+	<select id="getOrderModeByTime" resultType="java.util.Map">
+	SELECT w.deliveryMethodName,COUNT(1) AS totalNum FROM wp_order w WHERE (w.orderStatus = 'trade_finished'OR w.orderStatus='wait_seller_send_goods'OR w.orderStatus='wait_buyer_confirm_goods') AND w.createDate BETWEEN #{start} AND #{end}
+      GROUP BY w.deliveryMethodName;
+	</select>
+
+
+
+	<!-- 20160526 dzz -->
+	<!-- 查询差异化订单详情列表集合 -->
+	<select id="queryOrderGoodsAbnormal" resultType="net.deepdragon.entity.weipu.Order">
+		select * from (
+			select
+				case when woigoc.getItemDiffTotal>0 then
+						woigoc.oldQuantity-woigoc.newQuantity
+					else
+						'-1'
+					end as quantityAbnormal
+				, case when woigoc.getItemDiffTotal>0 then
+						woigoc.newGoodsPrice-woigoc.newGoodsPrice
+					else
+						'-1'
+					end as goodsPriceAbnormal
+				, woigoc.*
+				from
+				(
+					select
+						(select COUNT(1) from ghj_orderiterm_changerecord goc where goc.itemId = woi.id order by goc.createDate desc limit 1) as getItemDiffTotal
+						, IFNULL((select goc.oldQuantity from ghj_orderiterm_changerecord goc where goc.itemId=woi.id order by goc.createDate desc limit 1), woi.quantity) as oldQuantity
+						, (select wg.barCode from wp_goods wg where wg.id=woi.goodsId) as barCode
+						, IFNULL((select goc.newQuantity from ghj_orderiterm_changerecord goc where goc.itemId=woi.id order by goc.createDate desc limit 1), woi.quantity) as newQuantity
+						, IFNULL((select goc.oldGoodsPrice from ghj_orderiterm_changerecord goc where goc.itemId=woi.id order by goc.createDate desc limit 1), woi.goodsPrice) as oldGoodsPrice
+						, IFNULL((select goc.newGoodsPrice from ghj_orderiterm_changerecord goc where goc.itemId=woi.id order by goc.createDate desc limit 1), woi.goodsPrice) as newGoodsPrice
+						, (select CONCAT((select setvalue from shared_system_set where setKey='imageUrl'),CONCAT(CONCAT(wgi.groupName,'/'),wgi.url)) from wp_goods_images wgi where wgi.goodsId=woi.goodsId limit 1) as pic
+						, woi.*
+						from wp_order_item woi
+				) woigoc
+			) wogo
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<!-- 20160718 dzz -->
+	<!-- 1.查询当前众筹商品已众筹商品数量总数 (条件: 订单类型orderType:1, 商品Id, 众筹开始结束时间范围) -->
+	<!-- 2.查询当前用户所众筹商品数量总数 (条件: 订单类型orderType:1, 商品Id, 众筹开始结束时间范围, 当前用户Id) -->
+	<select id="getZCQuantitySum" resultType="map">
+        select
+			IFNULL(wgz.id, '-1') as goodsId
+            , IFNULL(wo.orderSn, '-1') as orderSn
+			, IFNULL(wgz.threshold, '-1') as threshold
+			, IFNULL(SUM(woi.quantity), 0) as zhongChouSumQuantity
+        from
+            wp_order_item woi
+            left join wp_order wo on wo.orderSn = woi.orderSn
+            left join wp_goods_zhongchou wgz on wgz.id=woi.goodsId
+            left join wp_goods wg on wg.id=wgz.id
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+</mapper>

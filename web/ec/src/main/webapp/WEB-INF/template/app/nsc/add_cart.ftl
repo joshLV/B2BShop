@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+<head>
+    <#assign path="${base}/static/app/nsc"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <link href="${path}/theme/red/mui.min.css" rel="stylesheet" />
+    <link href="${path}/theme/red/style.css" rel="stylesheet" />
+    <link href="${path}/theme/red/my.css" rel="stylesheet" />
+    <link href="${path}/theme/red/function.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="${path}/theme/red/app.css"/>
+</head>
+
+<body>
+<header class="mui-bar mui-bar-nav">
+    <button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left" onclick="javascript:window.history.back(-1);">
+        <span class="mui-icon mui-icon-left-nav"></span>
+    </button>
+    <h1 class="mui-title">添加购物车</h1>
+</header>
+<div class="mui-content" style="margin-top:20px;">
+    <div class="mui-content">
+        <ul class="mui-table-view">
+            <#if message=="success">
+                <li class="mui-table-view-cell"><img src="${path}/images/cart.png" style="width:24px; margin-right:5px; float:left;">商品已成功加入购物车！ </li>
+            <#else >
+                <h3>${message}</h3>
+            </#if>
+                <li style="margin-left:10px" class="mui-table-view-cell">
+                <button class="mui-btn-primary" style="margin-right:20px; background:#F90; border:#F90">
+                    <a href="${backurl}">继续购物</a>
+                </button>
+                <button class="mui-btn-primary" style="margin-right:20px;">
+                    <a href="${base}/cart/list?whichclient=whichapp">去购物车结算</a>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+</div>
+<#include "app/nsc/tools.ftl"/>
+<script src="${path}/js/mui.min.js"></script>
+<script>
+    (function($, doc) {
+        $.init({
+            statusBarBackground: '#f7f7f7',
+            swipeBack:true
+        });
+
+        document.getElementById('setting1').addEventListener('tap', function() {
+            mui.openWindow({
+                url: 'setting.html',
+                id:'setting1'
+            });
+        });
+        document.getElementById('home').addEventListener('tap', function() {
+            mui.openWindow({
+                url: 'index.html',
+                id:'home'
+            });
+        });
+        document.getElementById('zhaoshang').addEventListener('tap', function() {
+            mui.openWindow({
+                url: 'zhaoshang.html',
+                id:'zhaoshang'
+            });
+        });
+        document.getElementById('scjs').addEventListener('tap', function() {
+            mui.openWindow({
+                url: 'scjs.html',
+                id:'scjs'
+            });
+        });
+    }(mui, document));
+</script>
+</body>
+</html>

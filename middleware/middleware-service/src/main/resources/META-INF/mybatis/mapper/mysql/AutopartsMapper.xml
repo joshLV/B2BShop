@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.AutopartsMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`name`,`linkman`,`phone`,`fax`,`website`,`zipcode`,`email`,`areaId`,`areaPath`,`address`,`introduction`,
+		concat((select setvalue from shared_system_set where setKey='imageUrl'),concat(concat(groupName,'/'),logo)) as `pic`,
+		`groupName`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.Autoparts">
+		select
+		<include refid="columnList" />
+		from wp_autoparts
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.Autoparts">
+		select
+		<include refid="columnList" />
+		from wp_autoparts
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.Autoparts">
+		select
+		<include refid="columnList" />
+		from wp_autoparts
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.Autoparts">
+		select
+		<include refid="columnList" />
+		from wp_autoparts
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.Autoparts">
+		select
+		<include refid="columnList" />
+		from wp_autoparts 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.Autoparts">
+		select
+		<include refid="columnList" />
+		from wp_autoparts 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.Autoparts">
+		select
+		<include refid="columnList" />
+		from wp_autoparts 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_autoparts where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_autoparts 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.Autoparts"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_autoparts
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="name != null">,`name`</if>
+			<if test="linkman != null">,`linkman`</if>
+			<if test="phone != null">,`phone`</if>
+			<if test="fax != null">,`fax`</if>
+			<if test="website != null">,`website`</if>
+			<if test="zipcode != null">,`zipcode`</if>
+			<if test="email != null">,`email`</if>
+			<if test="areaId != null">,`areaId`</if>
+			<if test="areaPath != null">,`areaPath`</if>
+			<if test="address != null">,`address`</if>
+			<if test="introduction != null">,`introduction`</if>
+			<if test="logo != null">,`logo`</if>
+			<if test="groupName != null">,`groupName`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="name != null">,#{name}</if>
+			<if test="linkman != null">,#{linkman}</if>
+			<if test="phone != null">,#{phone}</if>
+			<if test="fax != null">,#{fax}</if>
+			<if test="website != null">,#{website}</if>
+			<if test="zipcode != null">,#{zipcode}</if>
+			<if test="email != null">,#{email}</if>
+			<if test="areaId != null">,#{areaId}</if>
+			<if test="areaPath != null">,#{areaPath}</if>
+			<if test="address != null">,#{address}</if>
+			<if test="introduction != null">,#{introduction}</if>
+			<if test="logo != null">,#{logo}</if>
+			<if test="groupName != null">,#{groupName}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.Autoparts">
+		update wp_autoparts
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="name != null">,`name` = #{name}</if>
+			<if test="linkman != null">,`linkman` = #{linkman}</if>
+			<if test="phone != null">,`phone` = #{phone}</if>
+			<if test="fax != null">,`fax` = #{fax}</if>
+			<if test="website != null">,`website` = #{website}</if>
+			<if test="zipcode != null">,`zipcode` = #{zipcode}</if>
+			<if test="email != null">,`email` = #{email}</if>
+			<if test="areaId != null">,`areaId` = #{areaId}</if>
+			<if test="areaPath != null">,`areaPath` = #{areaPath}</if>
+			<if test="address != null">,`address` = #{address}</if>
+			<if test="introduction != null">,`introduction` = #{introduction}</if>
+			<if test="logo != null">,`logo` = #{logo}</if>
+			<if test="groupName != null">,`groupName` = #{groupName}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_autoparts
+		where id =	#{id}
+	</delete>
+	
+</mapper>

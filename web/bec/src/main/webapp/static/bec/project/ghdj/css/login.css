@@ -1,0 +1,29 @@
+/* ==============================登录页面 2015-11-12 xsm ==================== */
+#login {width: 890px; -moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;padding: 5px;margin: 5px auto 25px;position: relative;}
+#login .mc {background: #ffffff;height: 355px; border-top: 2px solid #df2940; -webkit-box-shadow: 5px 5px 5px #cccccc;  -moz-box-shadow: 5px 5px 5px #cccccc; box-shadow: 5px 5px 5px #cccccc;}
+.form {position: absolute;top: 7px;right: 5px;width: 341px;overflow: hidden;height: 334px;border-right: 1px solid #E1E1E1;border-bottom: 1px solid #E1E1E1; padding-left: 36px; padding-top: 20px;}
+.form .title {height: 24px;font-size: 18px; margin-bottom: 10px;}
+.form .title strong{font-weight: normal;}
+.form .items {height: 64px;line-height: 26px;overflow: visible;position: relative;width: 320px;z-index: 1; margin-top: 10px;}
+.form .items span {color: #999999;height: 20px;line-height: 20px;display: block;margin-top: 1px;}
+.form .items .item-ifo {position: relative;width: 307px;}
+.form .text {float: none;width: 282px;height: 24px;line-height: 24px;padding: 4px 20px 4px 3px;border: 1px solid #cccccc;font-size: 14px;font-family: arial,"宋体";}
+#login .item-ifo .i-name {background: url(../images/login-all-bg.png) no-repeat -373px -111px #fff;width: 16px;height: 16px;top: 8px;}
+#login .item-ifo .ico {position: absolute;right: 12px;z-index: 5;}
+#login .blank {display: none;float: none;width: 16px;height: 16px;position: absolute;top: 9px;right: 8px;z-index: 10;padding: 2px;}
+#login .succeed {background: url(../images/sucess.png) no-repeat #ffffff;}
+#login .item-ifo .i-pass {background: url(../images/login-all-bg.png) no-repeat -346px -108px #fff;width: 14px;height: 19px;top: 8px;}
+#login .text-1 {width: 100px;float: left;}
+.form .hline {line-height: 16px;}
+.ftx23, .flk23 a:link, .flk23 a:visited, a.flk23:link, a.flk23:visited {color: #999;}
+#login #autoentry {height: 37px;margin-top: 8px;}
+@media all and (-webkit-min-device-pixel-ratio:0) { #login .checkbox {vertical-align:middle;} }
+.mb {margin-bottom: 24px;overflow: hidden;}
+#login .mar {margin-right: 10px; float: left; margin-top: 7px;}
+#login .forget-password{float: left; margin-top: 7px;}
+#login .login-btn {height: 52px;}
+#login .btn-entry:hover {background:#d21d34;}
+#login .btn-entry {width: 307px;height: 42px;font-family: "微软雅黑";/*line-height: 100px;text-indent: -9999px;*/background: #df2940;overflow: hidden; border-radius: 0px !important; font-size: 16px !important;}
+#login .null, #login .error, #userName_error.error, #pwd_error.error, #authcode_error.error {position: absolute;width: 302px;padding: 2px 0 2px 3px;left: 0px;top: 34px;border:none; color: #e6393d; background:none;float: none;line-height: 22px;z-index: 100;}
+#login .highlight_success{border:1px solid #7abd54;}
+#login .highlight_error{border:1px solid #f00;color:#f00;}

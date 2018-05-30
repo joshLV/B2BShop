@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.CrossBorderOrderMapper">
+	<!-- 获取满足时间条件的不同下单方式 -->
+	<select id="getCrossBorderOrderInfo" resultType="java.util.Map">
+		SELECT `id`,`orderSn`,`status`,`detail`
+		from `wp_order_crossborder`
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<insert id="saveCrossBorderOrder" >
+		insert into `wp_order_crossborder`
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="orderSn != null">,`orderSn`</if>
+			<if test="status != null">,`status`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="orderSn != null">,#{orderSn}</if>
+			<if test="status != null">,#{status}</if>
+		</trim>
+	</insert>
+
+	<update id="updateCrossBorderOrderStatus" >
+		update `wp_order_crossborder`
+		<set>
+			status = #{status},
+			<if test="detail != null">`detail` = #{detail}</if>
+		</set>
+		where orderSn = #{orderNo}
+	</update>
+
+	<select id="getCrossBorderOrderMap" resultType="java.util.Map">
+		select
+		o.orderSn orderNo,
+		CONVERT(o.totalAmount,DECIMAL(20,2)) charge,
+		CONVERT(o.goodsTotalPrice,DECIMAL(20,2)) goodsValue,
+		CONVERT(o.deliveryFee,DECIMAL(20,2)) freight,
+		CONVERT(o.discount,DECIMAL(20,2)) other,
+		'142' currency ,
+		'0' tax,
+		'' customer,
+		'' shipper,
+		'' shipperAddress,
+		'' shipperTelephone,
+		'' shipperCountry,
+		o.shipName consignee,
+		concat(path.`fullName`,o.shipAddress) consigneeAddress,
+		o.shipZipCode consigneeZipCode,
+		o.shipMobile consigneeTelephone,
+		'142' consigneeCountry,
+		'1' idType,
+		m.iDCode customerId,
+		'2' accessType,
+		'I' ieType,
+		'1' modifyMark,
+		o.description Note,
+		DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') appTime,
+		'2' appStatus,
+		ar.fullName areaName,
+		path.fullName address
+		FROM wp_order o LEFT JOIN wp_member m ON o.`memberId` = m.`id`
+		LEFT JOIN shared_area_bak ar ON o.`shipAreaId` =ar.id LEFT JOIN shared_area_bak path ON o.`shipAreaPath` = path.path
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getAllCrossBorderGoods" resultType="java.util.Map">
+		select a.*, CONCAT((SELECT
+		setvalue FROM shared_system_set WHERE
+		setKey='imageUrl'),CONCAT(CONCAT(groupName,'/'),d.url)) AS pic from
+		wp_goods a
+		LEFT JOIN wp_goods_images d ON d.goodsId = a.id
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+
+</mapper>

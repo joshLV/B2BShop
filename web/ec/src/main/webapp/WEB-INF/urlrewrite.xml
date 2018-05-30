@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.2//EN"
+        "http://www.tuckey.org/res/dtds/urlrewrite3.2.dtd">
+<urlrewrite>
+	<rule>
+		<note>主搜索功能</note>
+		<from>^/search/(\w+).html</from>
+		<to type="forward">/shop/search!showRecommendTerm.action?searchKeywords=$1</to>
+	</rule>
+	<rule>
+		<note>一级类目列表页</note>
+		<from>^/list/(\w+).html$</from>
+		<to>/list?cat=,$1</to>
+	</rule>
+	<rule>
+		<note>一级类目列表页</note>
+		<from>^/list/(\w+)/(\w+).html$</from>
+		<to>/list?cat=$1,$2</to>
+	</rule>
+	<rule>
+		<note>二级类目列表页</note>
+		<from>^/list/(\w+)-(\w+).html$</from>
+		<to>/list?cat=,$1,$2</to>
+	</rule>
+	<rule>
+		<note>二级类目列表页</note>
+		<from>^/list/(\w+)/(\w+)-(\w+).html$</from>
+		<to>/list?cat=$1,$2,$3</to>
+	</rule>
+	<rule>
+		<note>三级类目列表页</note>
+		<from>^/list/(\w+)-(\w+)-(\w+).html$</from>
+		<to>/list?cat=,$1,$2,$3</to>
+	</rule>
+	<rule>
+		<note>三级类目列表页</note>
+		<from>^/list/(\w+)/(\w+)-(\w+)-(\w+).html$</from>
+		<to>/list?cat=$1,$2,$3,$4</to>
+	</rule>
+	<rule>
+		<note>商品详情页面</note>
+		<from>^/item/(\w+).html$</from>
+		<to>/goods/getGoodsDetail/$1,</to>
+	</rule>
+	<rule>
+		<note>商品详情页面</note>
+		<from>^/item/(\w+)/(\w+).html$</from>
+		<to>/goods/getGoodsDetail/$2,$1</to>
+	</rule>
+</urlrewrite>

@@ -1,0 +1,223 @@
+/* CSS Document */
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+
+#IndexTop {
+	background: #cf201b url(../seckillimage/1.jpg) no-repeat 50% 80px;
+	height: 400px;
+	width: 100%;
+}
+
+.indextop_1 {
+	width: 100%;
+	height: 338px;
+	text-align: center;
+	padding-top: 30px;
+}
+
+.indextop_2 {
+	height: 32px;
+	text-align: center;
+}
+
+.cp01 {
+	height: 52px;
+	width: 100%;
+	background: url(../seckillimage/31.jpg) repeat-x left top;
+	text-align: center;
+}
+
+.cp01_0 {
+	height: 190px;
+	width: 70%;
+	background: url(../seckillimage/CP.jpg) no-repeat 50%;
+	padding-top: 50px;
+	padding-left: 25%;
+	color: #98824c;
+	line-height: 20px;
+}
+
+.cp01_1 span {
+	color: #FF0000;
+}
+
+.cp01 {
+	height: 52px;
+	width: 100%;
+	background: url(../seckillimage/CP01.jpg) repeat-x left top;
+	text-align: center;
+	padding-top: 2PX
+}
+
+.cp01_1 {
+	height: 300px;
+	text-align: center;
+}
+
+.cp02 {
+	height: 52px;
+	width: 100%;
+	background: url(../seckillimage/CP02.jpg) repeat-x left top;
+	text-align: center;
+	padding-top: 2PX
+}
+
+.cp02_1 {
+	height: 300px;
+	text-align: center;
+}
+
+.cp03 {
+	height: 52px;
+	width: 100%;
+	background: url(../seckillimage/CP03.jpg) repeat-x left top;
+	text-align: center;
+	padding-top: 2PX
+}
+
+.cp03_1 {
+	height: 300px;
+	text-align: center;
+}
+
+.cp04 {
+	height: 52px;
+	width: 100%;
+	background: url(../seckillimage/CP04.jpg) repeat-x left top;
+	text-align: center;
+	padding-top: 2PX
+}
+
+.cp04_1 {
+	height: 300px;
+	text-align: center;
+}
+
+.cp05 {
+	height: 52px;
+	width: 100%;
+	background: url(../seckillimage/CP05.jpg) repeat-x left top;
+	text-align: center;
+	padding-top: 2PX
+}
+
+.cp05_1 {
+	height: 300px;
+	text-align: center;
+}
+
+.cp06 {
+	height: 52px;
+	width: 100%;
+	background: url(../seckillimage/CP06.jpg) repeat-x left top;
+	text-align: center;
+	padding-top: 2PX
+}
+
+#footer {
+	background-color: #cf201b;
+	height: 100px;
+	border-top: 2px solid #000000;
+	width: 100%;
+	text-align: center;
+	color: #fff;
+	padding-top: 30px;
+}
+
+.cpjieshao {
+	margin: 0 auto;
+	width: 600px;
+	height: 248px;
+	margin-top: 45px;
+}
+
+.cpleft {
+	border: 1px solid #c23a3a;
+	padding: 2px;
+	height: 236px;
+	width: 236px;
+	float: left;
+}
+
+.cpright {
+	margin-left: 300px;
+	text-align: left;
+	line-height: 30px;
+}
+
+.cpright span {
+	color: #7a0808;
+	font-family: "微软雅黑", "黑体";
+	font-size: 18px;
+	line-height: 30x;
+}
+
+.cpanniu {
+	text-align: right;
+}
+
+.cp001 {
+	height: 48px;
+	width: 631px;
+	background: url(../seckillimage/3.1.jpg) no-repeat left top;
+	margin: 0 auto;
+}
+
+.cp001 ul {
+	list-style: none;
+}
+
+.cp001 li {
+	height: 48px;
+	list-style: 48px;
+	color: #900;
+	float: left;
+	line-height: 48px;
+	font-size: 34px;
+}
+
+h1 {
+	font-family: "微软雅黑";
+	font-size: 40px;
+	margin: 20px 0;
+	border-bottom: solid 1px #ccc;
+	padding-bottom: 20px;
+	letter-spacing: 2px;
+}
+
+.time-item strong {
+	background: #C71C60;
+	color: #fff;
+	line-height: 49px;
+	font-size: 36px;
+	font-family: Arial;
+	padding: 0 10px;
+	margin-right: 10px;
+	border-radius: 5px;
+	box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+#day_show {
+	float: left;
+	line-height: 49px;
+	color: #c71c60;
+	font-size: 32px;
+	margin: 0 10px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.item-title .unit {
+	background: none;
+	line-height: 49px;
+	font-size: 24px;
+	padding: 0 10px;
+	float: left;
+}

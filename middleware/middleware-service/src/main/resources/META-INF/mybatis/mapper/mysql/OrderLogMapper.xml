@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.OrderLogMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`orderSn`,`type`,`operator`,`info`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.OrderLog">
+		select
+		<include refid="columnList" />
+		from wp_order_log
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.OrderLog">
+		select
+		<include refid="columnList" />
+		from wp_order_log
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.OrderLog">
+		select
+		<include refid="columnList" />
+		from wp_order_log
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.OrderLog">
+		select
+		<include refid="columnList" />
+		from wp_order_log
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.OrderLog">
+		select
+		<include refid="columnList" />
+		from wp_order_log 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.OrderLog">
+		select
+		<include refid="columnList" />
+		from wp_order_log 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.OrderLog">
+		select
+		<include refid="columnList" />
+		from wp_order_log 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_order_log where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_order_log 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.OrderLog"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_order_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="orderSn != null">,`orderSn`</if>
+			<if test="type != null">,`type`</if>
+			<if test="operator != null">,`operator`</if>
+			<if test="info != null">,`info`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+			<if test="oldType != null">,`oldType`</if>
+			<if test="statusType != null">,`statusType`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="orderSn != null">,#{orderSn}</if>
+			<if test="type != null">,#{type}</if>
+			<if test="operator != null">,#{operator}</if>
+			<if test="info != null">,#{info}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+			<if test="oldType != null">,#{oldType}</if>
+			<if test="statusType != null">,#{statusType}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.OrderLog">
+		update wp_order_log
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="orderSn != null">,`orderSn` = #{orderSn}</if>
+			<if test="type != null">,`type` = #{type}</if>
+			<if test="operator != null">,`operator` = #{operator}</if>
+			<if test="info != null">,`info` = #{info}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+			<if test="oldType != null">,`oldType` = #{oldType}</if>
+			<if test="statusType != null">,`statusType` = #{statusType}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_order_log
+		where id =	#{id}
+	</delete>
+</mapper>

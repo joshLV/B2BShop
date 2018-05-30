@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.OrderRefundLogMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`refundId`,`type`,`operator`,`info`,`createUser`,`createDate`,`modifyUser`,`modifyDate`,platform
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.OrderRefundLog">
+		select
+		<include refid="columnList" />
+		from wp_order_refund_log
+		where id = #{id}
+		and tenantId = #{tenantId}
+		and platform = #{platform}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.OrderRefundLog">
+		select
+		<include refid="columnList" />
+		from wp_order_refund_log
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.OrderRefundLog">
+		select
+		<include refid="columnList" />
+		from wp_order_refund_log
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.OrderRefundLog">
+		select
+		<include refid="columnList" />
+		from wp_order_refund_log
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+		and tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.OrderRefundLog">
+		select
+		<include refid="columnList" />
+		from wp_order_refund_log 
+		where tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.OrderRefundLog">
+		select
+		<include refid="columnList" />
+		from wp_order_refund_log 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getRefundLogPager" resultType="net.deepdragon.entity.weipu.OrderRefundLog">
+		select b.orderSn,a.* from wp_order_refund_log a left
+		join
+		wp_order_refund b on a.refundId =b.id
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.OrderRefundLog">
+		select
+		<include refid="columnList" />
+		from wp_order_refund_log 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_order_refund_log where tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_order_refund_log 
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.OrderRefundLog"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_order_refund_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`,`platform`
+			<if test="refundId != null">,`refundId`</if>
+			<if test="type != null">,`type`</if>
+			<if test="operator != null">,`operator`</if>
+			<if test="info != null">,`info`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId},#{platform}
+			<if test="refundId != null">,#{refundId}</if>
+			<if test="type != null">,#{type}</if>
+			<if test="operator != null">,#{operator}</if>
+			<if test="info != null">,#{info}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.OrderRefundLog">
+		update wp_order_refund_log
+		<set>
+			`tenantId` = #{tenantId},`platform` = #{platform}
+			<if test="refundId != null">,`refundId` = #{refundId}</if>
+			<if test="type != null">,`type` = #{type}</if>
+			<if test="operator != null">,`operator` = #{operator}</if>
+			<if test="info != null">,`info` = #{info}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_order_refund_log
+		where id =	#{id}
+		and tenantId = #{tenantId}
+		and platform = #{platform}
+	</delete>
+	
+</mapper>

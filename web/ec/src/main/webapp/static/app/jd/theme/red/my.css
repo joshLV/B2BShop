@@ -1,0 +1,648 @@
+/* CSS Document */
+/* 返回 */
+.mui-bar .mui-btn-link {
+    font-size: 16px;
+    line-height: 44px;
+    top: 0px;
+    padding: 0px;
+    color: #fe0000;
+    border: 0px none;
+}
+.mui-bar .mui-title {
+	font-size:18px;
+	color:#fe0000;
+	font-family:"微软雅黑";
+	left:40px;
+}
+.mui-content{
+	padding-bottom:50px;
+	}
+/* ==================设置========== */
+/* 提交btn */
+.mui-btn-blue, .mui-btn-primary, input[type="submit"] {
+    color: #FFF;
+    border: 1px solid #fe0000;
+    background-color: #fe0000;
+}
+.mui-btn-blue.mui-active:enabled, .mui-btn-blue:enabled:active, .mui-btn-primary.mui-active:enabled, .mui-btn-primary:enabled:active, input[type=submit].mui-active:enabled, input[type=submit]:enabled:active {
+	color: #fff;
+	border: 1px solid #fe0000;
+	background-color: #fe0000
+}
+.mui-table-view2 {
+	padding-top:10px;
+    position: relative;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-left: 0px;
+    list-style: outside none none;
+    background-color: #fe0000;
+    overflow: hidden;
+	padding-bottom:10px;
+}
+.mui-content-padded3 a {
+	color: #fe0000;
+}
+/* ==================订单列表========== */
+.mui-table-view .mui-media-object {
+  line-height: 80px;
+  max-width: 55px;
+  height: 60px;
+  border:1px solid #CCC;
+  margin-top:10px;
+}
+.mui-table-view-chevron .mui-table-view-cell {
+	padding-right: 25px
+}
+.mui-table-view-chevron .mui-table-view-cell>a:not(.mui-btn) {
+	margin-right: -25px
+}
+.mui-table-view-radio .mui-table-view-cell {
+	padding-right: 25px
+}
+.mui-table-view-radio .mui-table-view-cell>a:not(.mui-btn) {
+	margin-right: -25px
+}
+/* ===================== 购物车 ==================== */
+a {
+	text-decoration: none;
+	color: #fff;
+}
+.mui-table-view {
+	padding-top:0px;
+	position: relative;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding-left: 0px;
+	list-style: outside none none;
+	background-color: #fff;
+	overflow: hidden;
+	padding-bottom:10px;
+}
+.mui-table-view2 {
+	padding-top:10px;
+	position: relative;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding-left: 0px;
+	list-style: outside none none;
+	background-color: #fff;
+	overflow: hidden;
+	padding-bottom:10px;
+	border-top: 1px solid #dddddd;
+}
+.mui-center {
+	margin-top:-3px;
+	font-size:18px;
+	left:40px;
+}
+.mui-bar-nav ~ .mui-content {
+	padding-top: 30px;
+}
+/* 购物车列表 */
+
+.mui-checkbox.mui-left label, .mui-radio.mui-left label {
+	padding-right: 15px;
+	padding-left: 58px;
+
+}
+
+.mui-input{
+	width:50px;
+}
+.mui-content-padded a {
+	margin: 3px;
+	width: 30px;
+	height: 30px;
+	display: inline-block;
+	text-align: center;
+	background-color: #FFF;
+	border: 1px solid #DDD;
+	border-radius: 25px;
+	background-clip: padding-box;
+	padding-top:3px;
+
+}
+.mui-content-padded {
+	margin:0;
+}
+.mui-ellipsis-3{
+	display: -webkit-box;
+	overflow: hidden;
+	white-space: normal!important;
+	text-overflow: ellipsis;
+	word-wrap: break-word;
+	-webkit-line-clamp:3;
+	-webkit-box-orient: vertical
+}
+.mui-off-canvas-wrap .mui-bar2 {
+	position: absolute!important
+}
+.mui-bar2 {
+	position: fixed;
+	z-index: 10;
+	right: 0px;
+	left: 0px;
+}
+.mui-input-group .mui-input-row {
+	height: auto;
+}
+.mui-input-group2 .mui-input-row {
+	height: auto;
+}
+.mui-content>.mui-table-view:first-child {
+	margin-top: 0px;
+}
+.mui-gwc-box{
+	margin-left:50px;
+	margin-top: 10px;
+}
+.mui-media-body p{
+	margin-top:10px;
+}
+/* 订单详情 */
+.wrap{
+
+	margin:0 auto;
+}
+.order-con{
+	background-color:#f1f1f5;
+}
+.order-con ul, li{ list-style-type: none; padding:0px;}
+.order-list{
+	position:relative;
+	top:0px;
+	padding:0px;
+}
+.order-list li{
+	display: list-item;
+	text-align: center;
+	list-style-type: none;
+}
+.order-box{
+	margin-top:10px;
+	background: #FFF;
+	border-top:1px solid #c8c7cc;
+	border-bottom:1px solid #c8c7cc;
+	display: inline-block;
+	width: 100%;
+	padding-top:10px;
+}
+.order-box .order-msg{
+	margin-top:10px;
+}
+.order-box p{
+	text-align: left;
+	vertical-align: bottom;
+	padding:0px;
+}
+.order-box .order-msg .price{
+	color:#c00000;
+	height:24px;
+	font-size:14px;
+}
+.order-box .order-msg .order-data{
+	color:#7b7b7b;
+}
+.order-box .order-msg .price span{
+	float:right;
+	width:10px;
+	height:10px;
+	border-top:2px solid #ebeaec;
+	border-right:2px solid #ebeaec;
+	-webkit-transform:rotate(45deg);
+	-moz-transform:rotate(45deg);
+	-o-transform:rotate(45deg);
+	-ms-transform:rotate(45deg);
+	transform:rotate(45deg);
+	margin-right:10px;
+}
+.order-box .order-msg .title{
+	height:24px;
+	overflow: hidden;
+	font-size:16px;
+}
+
+.order-box .order-msg .img_ware{
+	width:86px;
+	height:86px;
+}
+.order-box img{
+	float:left;
+	border:1px solid #e4e4e4;
+	margin-right:20px;
+}
+.pay-order{
+	clear: left;
+	margin:0 auto;
+	width:140px;
+	height:30px;
+	background-color: #c00000;
+	font-size:16px;
+	text-align: center;
+	line-height: 30px;
+	vertical-align: middle;
+	border-radius: 3px;
+	margin-top:10px;
+	margin-bottom: 15px;
+	display: inline-block;
+	color:#FFF;
+}
+.pay-order a{
+	color:#FFF;
+}
+.border-bottom{
+	border-bottom:1px solid #e4e4e4;
+}
+.book-list{
+	margin-top:-10px;
+}
+.book-list li{
+	padding:5px 0;
+	margin-left:10px;
+}
+.order-width{
+	color:#707070;
+	font-size:14px;
+	margin:0 10px;
+}
+.order-width p{
+	min-height:30px;
+}
+.pay-button{
+	text-align: center;
+	margin-bottom: 10px;
+	color:#FFF;
+	height:36px;
+	font-size: 14px;
+}
+.pay-button a{
+	margin-top:2px;
+}
+
+.pay-button a:nth-child(2){
+	margin-left:20px;
+	background-color: #bf9d5a;
+}
+
+.fr{
+	float:right;
+}
+.usr-name{
+	margin-top:5px;
+}
+.usr-addr{
+	margin-top:10px;
+	margin-bottom:10px;
+}
+.red{
+	color:#c00000;
+}
+.color-000{color: #000000;}
+/* ============== 支付页面 ============ */
+.mui-btn-block {
+    font-size: 18px;
+    display: block;
+    width: 98%;
+    margin-bottom: 10px;
+    padding: 10px 0px;
+	margin-top:10px;
+	margin-left:4px;
+}
+.color-096{color:#fe0000}
+/*=============== 分类 ================*/
+.mui-segmented-control.mui-segmented-control-inverted .mui-control-item {
+
+  border: 0;
+  background-color: #fff;
+	font-size:18px;
+	height:50px;
+	line-height: 50px;
+	color: #888888;
+}
+.mui-slider .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
+  border-bottom: 0;
+  background: #fff;
+  color:#fe0000;
+}
+.mui-segmented-control.mui-segmented-control-inverted~.mui-slider-progress-bar {
+  background-color: #fe0000;
+}
+.mui-col-xs-4 {
+    width: 50%;
+}
+.mui-black a{
+	color:#4d4d4d;
+	font-size:16px;
+	line-height:24px;
+}
+.mui-slider .mui-slider-group .mui-slider-item img {
+	width: 100%;
+}
+.mui-table-view-cell>a:not(.mui-btn).mui-active {
+	background:none;
+}
+.mui-control-content2 li, .floors li {
+	/* width: 47%; */
+	list-style: none;
+	font-size: 16px;
+	line-height: 22px;
+	margin: 0 auto;
+	/* border: 1px solid #dddddd; */
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+/* 商品详情 */
+.mui-gwc{
+	margin-right:5px;
+	background:#fe0000;
+	border-color:#fe0000;
+}
+.mui-gwc a{
+	color: #ffffff;
+}
+.mui-btn-primary a{
+	color: #ffffff;
+}
+/*=============== 农资淘 ================*/
+.mui-content {
+   padding-bottom:0px;
+	background: #ffffff;
+}
+.mui-content {
+   height: auto;
+}
+.mui-segmented-control {
+	font-size: 15px;
+	font-weight: 400;
+	position: relative;
+	display: table;
+	overflow: hidden;
+	width: 100%;
+	table-layout: fixed;
+	border: 1px solid #cccccc;
+	border-radius: 0px;
+	background-color: transparent;
+	-webkit-touch-callout: none
+}
+.mui-segmented-control h5{
+	padding-top: 8px;
+	padding-bottom: 8px;
+	text-indent: 12px;
+	border-top:0px !important;
+	border-bottom:0px !important;
+	background:#FFF;
+	color:#fe0000;
+}
+/* 商城介绍 */
+.mui-img-banner img{
+	width:100%;
+}
+.mui-content h5{
+	padding-top: 8px;
+	padding-bottom: 8px;
+	text-indent: 12px;
+	border-top:1px solid #dddddd;
+	border-bottom:1px solid #dddddd;
+	background:#FFF;
+	color:#000;
+	font-size: 16px;
+}
+.mui-content p{
+	font-size: 16px;
+	margin-top: 0;
+
+	color: #8f8f94;
+
+}
+
+/* 招商入驻 */
+.mui-rzfs{
+	width:100%;
+}
+.mui-rzfs h4{
+	color:#696969; margin-top:20px; margin-left:10px;
+	}
+.mui-rzfs p span{
+	margin:10px;
+	width:90% !important;
+}
+.mui-tel{font-size:20px; color:#fe0000; margin-top:10px; }
+.mui-btn-bc{width:99%; background:#fe0000; color:#FFF; border:none; height:40px;  font-size: 16px;}
+.mui-btn-tel{background:#fe0000; height:30px; text-align:left; color:#FFF;border:none;}
+/*   设置 */
+.mui-bar .mui-title {
+	font-size:18px;
+	color:#fe0000;
+	font-family:"微软雅黑";
+	left:40px;
+}
+.mui-bar .mui-btn-link {
+	font-size: 16px;
+	line-height: 44px;
+	top: 0px;
+	padding: 0px;
+	color: #fe0000;
+	border: 0px none;
+}
+.area {
+	margin: 20px auto 0px auto;
+}
+.mui-input-group {
+	margin-top: 0px;
+}
+.mui-input-group:first-child {
+	margin-top: 20px;
+}
+.mui-input-group2 {
+	margin-top:0px;
+}
+.mui-input-group label {
+	width: 22%;
+}
+.mui-input-group2 label {
+	width: 22%;
+}
+.mui-input-row label~input,
+.mui-input-row label~select,
+.mui-input-row label~textarea {
+	width: 78%;
+}
+.mui-checkbox input[type=checkbox],
+.mui-radio input[type=radio] {
+	top: 6px;
+}
+.mui-content-padded2 {
+	margin-top: 25px;
+}
+.mui-btn {
+	padding: 10px;
+}
+.link-area {
+	display: block;
+	margin-top: 25px;
+	text-align: center;
+}
+.spliter {
+	color: #bbb;
+	padding: 0px 8px;
+}
+.oauth-area {
+	position: absolute;
+	bottom: 20px;
+	left: 0px;
+	text-align: center;
+	width: 100%;
+	padding: 0px;
+	margin: 0px;
+}
+.oauth-area .oauth-btn {
+	display: inline-block;
+	width: 50px;
+	height: 50px;
+	background-size: 30px 30px;
+	background-position: center center;
+	background-repeat: no-repeat;
+	margin: 0px 20px;
+	/*-webkit-filter: grayscale(100%); */
+
+	border: solid 1px #ddd;
+	border-radius: 25px;
+}
+.oauth-area .oauth-btn:active {
+	border: solid 1px #aaa;
+}
+.mui-btn-blue, .mui-btn-primary, input[type="submit"] {
+	color: #FFF;
+}
+.mui-navigate-right:after, .mui-push-right:after {
+	right: 15px;
+	content: '\e583';
+	margin-top:0px;
+}
+/* 确认收货 */
+.mui-sh-box{
+	width:95%;
+	height:auto;
+	border:1px solid #ddd;
+	background:#FFF;
+	padding:10px;
+	margin:10px;
+	line-height:30px;
+}
+.mui-sh-box a{
+	color:#fe0000;
+}
+.mui-sp-box{
+	width:95%;
+	height:auto;
+}
+.mui-sp-box table{
+	width:100%;
+	border-top:1px solid #ddd;
+	border-right:1px solid #ddd;
+	background:#FFF;
+	margin:10px;
+	line-height:30px;
+	font-size:14px;
+}
+.mui-sp-box td{
+	border-bottom:1px solid #ddd;
+	border-left:1px solid #ddd;
+	padding-left:5px;
+}
+.mui-sp-box table a{
+	width:100%;
+	margin:10px;
+	line-height:30px;
+	font-size:14px;
+	color:#fff;
+}
+.mui-sp-box p{
+	line-height:20px;
+}
+/* 我的订单 */
+.myorder{
+	width:95%;
+	margin-top:30px;
+	}
+.myorder table{
+	font-size:12px !important;
+	width:100%;
+	border-top:1px solid #ddd;
+	border-right:1px solid #ddd;
+	background:#FFF;
+	margin:10px;
+	line-height:20px;
+	font-size:14px;
+}
+.myorder td{
+	border-bottom:1px solid #ddd;
+	border-left:1px solid #ddd;
+	padding-left:5px;
+	padding:5px;
+}
+.myorder table p{
+	font-size:12px;
+	line-height:20px;
+	}
+.myorder a{
+	color:#fe0000;
+	}	
+	
+/* 订单中心 */
+.pay-zt{
+	margin:10px;
+	font-size:12px;
+	
+	}
+.list_sp{
+	width:100%;
+	float:left;
+	margin-top:10px;
+	margin-bottom:20px;
+}
+.list_sp p{
+	width:100%;
+	float:left;
+}
+.list_sp a{
+	color:#fe0000;
+	}
+.list_sp span{
+	margin-right:10px;
+}
+.list_border{
+	border-bottom:1px solid #CCC;
+	}
+/* 主题 */
+.themes{
+	float: left;
+}
+.green-box{
+	float: left;
+	display: block;
+	width: 15px;
+	height: 15px;
+	background: #60b11a;
+	margin-top:5px;
+}
+.blue-box{
+	float: left;
+	display: block;
+	width: 15px;
+	height: 15px;
+	background: #096DC9;
+	margin-left: 10px;
+	margin-top: 5px;
+}
+.red-box{
+	float: left;
+	display: block;
+	width: 15px;
+	height: 15px;
+	background: #fe0000;
+	margin-left: 10px;
+	margin-top: 5px;
+}

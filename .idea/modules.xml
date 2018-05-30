@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/web/bec/bec.iml" filepath="$PROJECT_DIR$/web/bec/bec.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common-mybatis/common-mybatis.iml" filepath="$PROJECT_DIR$/common/common-mybatis/common-mybatis.iml" />
+      <module fileurl="file://E:/SVN/10.TS/web/common/common-mybatis/common-mybatis.iml" filepath="E:/SVN/10.TS/web/common/common-mybatis/common-mybatis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common-util/common-util.iml" filepath="$PROJECT_DIR$/common/common-util/common-util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/web/ec/ec.iml" filepath="$PROJECT_DIR$/web/ec/ec.iml" />
+      <module fileurl="file://$PROJECT_DIR$/middleware/middleware.iml" filepath="$PROJECT_DIR$/middleware/middleware.iml" />
+      <module fileurl="file://$PROJECT_DIR$/middleware/middleware-router/middleware-router.iml" filepath="$PROJECT_DIR$/middleware/middleware-router/middleware-router.iml" />
+      <module fileurl="file://$PROJECT_DIR$/middleware/middleware-service/middleware-service.iml" filepath="$PROJECT_DIR$/middleware/middleware-service/middleware-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/middleware/middleware-test/middleware-test.iml" filepath="$PROJECT_DIR$/middleware/middleware-test/middleware-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shared/shared.iml" filepath="$PROJECT_DIR$/shared/shared.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shared/shared-api/shared-api.iml" filepath="$PROJECT_DIR$/shared/shared-api/shared-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/web/web.iml" filepath="$PROJECT_DIR$/web/web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/weipu.iml" filepath="$PROJECT_DIR$/weipu.iml" />
+    </modules>
+  </component>
+</project>

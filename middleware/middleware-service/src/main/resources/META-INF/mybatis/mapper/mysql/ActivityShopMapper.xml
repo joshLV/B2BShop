@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.ActivityShopMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`name`,`sign`,`goodsId`,`total`,`ypice`,`frozen`,`sold`,`startTime`,`endTime`,`methodId`,`description`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.ActivityShop">
+		select
+		<include refid="columnList" />
+		from wp_activity_shop
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.ActivityShop">
+		select
+		<include refid="columnList" />
+		from wp_activity_shop
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.ActivityShop">
+		select
+		<include refid="columnList" />
+		from wp_activity_shop
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.ActivityShop">
+		select
+		<include refid="columnList" />
+		from wp_activity_shop
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.ActivityShop">
+		select
+		<include refid="columnList" />
+		from wp_activity_shop 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.ActivityShop">
+		select
+		<include refid="columnList" />
+		from wp_activity_shop 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.ActivityShop">
+		select
+		<include refid="columnList" />
+		from wp_activity_shop 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_activity_shop where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_activity_shop 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.ActivityShop"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_activity_shop
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="name != null">,`name`</if>
+			<if test="sign != null">,`sign`</if>
+			<if test="goodsId != null">,`goodsId`</if>
+			<if test="total != null">,`total`</if>
+			<if test="ypice != null">,`ypice`</if>
+			<if test="frozen != null">,`frozen`</if>
+			<if test="sold != null">,`sold`</if>
+			<if test="startTime != null">,`startTime`</if>
+			<if test="endTime != null">,`endTime`</if>
+			<if test="methodId != null">,`methodId`</if>
+			<if test="description != null">,`description`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="name != null">,#{name}</if>
+			<if test="sign != null">,#{sign}</if>
+			<if test="goodsId != null">,#{goodsId}</if>
+			<if test="total != null">,#{total}</if>
+			<if test="ypice != null">,#{ypice}</if>
+			<if test="frozen != null">,#{frozen}</if>
+			<if test="sold != null">,#{sold}</if>
+			<if test="startTime != null">,#{startTime}</if>
+			<if test="endTime != null">,#{endTime}</if>
+			<if test="methodId != null">,#{methodId}</if>
+			<if test="description != null">,#{description}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.ActivityShop">
+		update wp_activity_shop
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="name != null">,`name` = #{name}</if>
+			<if test="sign != null">,`sign` = #{sign}</if>
+			<if test="goodsId != null">,`goodsId` = #{goodsId}</if>
+			<if test="total != null">,`total` = #{total}</if>
+			<if test="ypice != null">,`ypice` = #{ypice}</if>
+			<if test="frozen != null">,`frozen` = #{frozen}</if>
+			<if test="sold != null">,`sold` = #{sold}</if>
+			<if test="startTime != null">,`startTime` = #{startTime}</if>
+			<if test="endTime != null">,`endTime` = #{endTime}</if>
+			<if test="methodId != null">,`methodId` = #{methodId}</if>
+			<if test="description != null">,`description` = #{description}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_activity_shop
+		where id =	#{id}
+	</delete>
+	
+</mapper>

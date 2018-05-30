@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.open.WalletMapper">
+
+	<sql id="columnList">
+		`id`, `tenantId`, `memberName`, `totalAmount`, `freeze`, `availableBalance`, `createUser`, `createDate`, `modifyUser`, `modifyDate`
+	</sql>
+
+	<select id="getAll" resultType="net.deepdragon.entity.open.Wallet">
+		select
+		<include refid="columnList" />
+		from wop_ty_study_open_wallet
+		order by id;
+	</select>
+
+	<select id="get" resultType="net.deepdragon.entity.open.Wallet">
+		select
+		<include refid="columnList" />
+		from wop_ty_study_open_wallet
+		where id = ${id};
+	</select>
+
+	<insert id="save" parameterType="net.deepdragon.entity.open.Wallet"
+			useGeneratedKeys="true" keyProperty="id">
+		insert into wop_ty_study_open_wallet
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="memberName != null">,`memberName`</if>
+			<if test="totalAmount != null">,`totalAmount`</if>
+			<if test="freeze != null">,`freeze`</if>
+			<if test="availableBalance != null">,`availableBalance`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="memberName != null">,#{memberName}</if>
+			<if test="totalAmount != null">,#{totalAmount}</if>
+			<if test="freeze != null">,#{freeze}</if>
+			<if test="availableBalance != null">,#{availableBalance}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.open.Wallet">
+		update wop_ty_study_open_wallet
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="memberName != null">,`memberName` = #{memberName}</if>
+			<if test="totalAmount != null">,`totalAmount` = #{totalAmount}</if>
+			<if test="freeze != null">,`freeze` = #{freeze}</if>
+			<if test="availableBalance != null">,`availableBalance` = #{availableBalance}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wop_ty_study_open_wallet
+		where id =	#{id}
+	</delete>
+		
+</mapper>

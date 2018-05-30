@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.deepdragon.weipu</groupId>
+		<artifactId>weipu</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>middleware</artifactId>
+	<packaging>pom</packaging>
+
+	<name>${project.artifactId}</name>
+	<description>The document project of weipu</description>
+	<url>http://maven.apache.org</url>
+
+	<modules>
+		<module>middleware-service</module>
+		<!--<module>middleware-weipu</module>-->
+		<module>middleware-test</module>
+		<module>middleware-router</module>
+	</modules>
+	<repositories>
+		<repository>
+			<id>nexus-oschina</id>
+			<name>oschina maven source</name>
+			<url>http://maven.oschina.net/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<properties>
+		<common-util.version>1.0.0-SNAPSHOT</common-util.version>
+		<common-mybatis.version>1.0.0-SNAPSHOT</common-mybatis.version>
+		<shared-api.version>1.0.0-SNAPSHOT</shared-api.version>
+		<weipu-api.version>1.0.0-SNAPSHOT</weipu-api.version>
+		<shared-wp-api.version>1.0.0-SNAPSHOT</shared-wp-api.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>net.deepdragon.weipu</groupId>
+				<artifactId>common-util</artifactId>
+				<version>${common-util.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.deepdragon.weipu</groupId>
+				<artifactId>common-mybatis</artifactId>
+				<version>${common-mybatis.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.deepdragon.weipu</groupId>
+				<artifactId>shared-api</artifactId>
+				<version>${shared-api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.deepdragon.weipu</groupId>
+				<artifactId>weipu-api</artifactId>
+				<version>${weipu-api.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>

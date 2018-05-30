@@ -1,0 +1,1274 @@
+/**
+ * TableDnD plug-in for JQuery, allows you to drag and drop table rows
+ * You can set up various options to control how the system will work
+ * Copyright (c) Denis Howlett <denish@isocra.com>
+ * Licensed like jQuery, see http://docs.jquery.com/License.
+ *
+ * Configuration options:
+ * 
+ * onDragStyle
+ *     This is the style that is assigned to the row during drag. There are limitations to the styles that can be
+ *     associated with a row (such as you can't assign a border--well you can, but it won't be
+ *     displayed). (So instead consider using onDragClass.) The CSS style to apply is specified as
+ *     a map (as used in the jQuery css(...) function).
+ * onDropStyle
+ *     This is the style that is assigned to the row when it is dropped. As for onDragStyle, there are limitations
+ *     to what you can do. Also this replaces the original style, so again consider using onDragClass which
+ *     is simply added and then removed on drop.
+ * onDragClass
+ *     This class is added for the duration of the drag and then removed when the row is dropped. It is more
+ *     flexible than using onDragStyle since it can be inherited by the row cells and other content. The default
+ *     is class is tDnD_whileDrag. So to use the default, simply customise this CSS class in your
+ *     stylesheet.
+ * onDrop
+ *     Pass a function that will be called when the row is dropped. The function takes 2 parameters: the table
+ *     and the row that was dropped. You can work out the new order of the rows by using
+ *     table.rows.
+ * onDragStart
+ *     Pass a function that will be called when the user starts dragging. The function takes 2 parameters: the
+ *     table and the row which the user has started to drag.
+ * onAllowDrop
+ *     Pass a function that will be called as a row is over another row. If the function returns true, allow 
+ *     dropping on that row, otherwise not. The function takes 2 parameters: the dragged row and the row under
+ *     the cursor. It returns a boolean: true allows the drop, false doesn't allow it.
+ * scrollAmount
+ *     This is the number of pixels to scroll if the user moves the mouse cursor to the top or bottom of the
+ *     window. The page should automatically scroll up or down as appropriate (tested in IE6, IE7, Safari, FF2,
+ *     FF3 beta
+ * dragHandle
+ *     This is the name of a class that you assign to one or more cells in each row that is draggable. If you
+ *     specify this class, then you are responsible for setting cursor: move in the CSS and only these cells
+ *     will have the drag behaviour. If you do not specify a dragHandle, then you get the old behaviour where
+ *     the whole row is draggable.
+ * 
+ * Other ways to control behaviour:
+ *
+ * Add class="nodrop" to any rows for which you don't want to allow dropping, and class="nodrag" to any rows
+ * that you don't want to be draggable.
+ *
+ * Inside the onDrop method you can also call $.tableDnD.serialize() this returns a string of the form
+ * <tableID>[]=<rowID1>&<tableID>[]=<rowID2> so that you can send this back to the server. The table must have
+ * an ID as must all the rows.
+ *
+ * Other methods:
+ *
+ * $("...").tableDnDUpdate() 
+ * Will update all the matching tables, that is it will reapply the mousedown method to the rows (or handle cells).
+ * This is useful if you have updated the table rows using Ajax and you want to make the table draggable again.
+ * The table maintains the original configuration (so you don't have to specify it again).
+ *
+ * $("...").tableDnDSerialize()
+ * Will serialize and return the serialized string as above, but for each of the matching tables--so it can be
+ * called from anywhere and isn't dependent on the currentTable being set up correctly before calling
+ *
+ * Known problems:
+ * - Auto-scoll has some problems with IE7  (it scrolls even when it shouldn't), work-around: set scrollAmount to 0
+ * 
+ * Version 0.2: 2008-02-20 First public version
+ * Version 0.3: 2008-02-07 Added onDragStart option
+ *                         Made the scroll amount configurable (default is 5 as before)
+ * Version 0.4: 2008-03-15 Changed the noDrag/noDrop attributes to nodrag/nodrop classes
+ *                         Added onAllowDrop to control dropping
+ *                         Fixed a bug which meant that you couldn't set the scroll amount in both directions
+ *                         Added serialize method
+ * Version 0.5: 2008-05-16 Changed so that if you specify a dragHandle class it doesn't make the whole row
+ *                         draggable
+ *                         Improved the serialize method to use a default (and settable) regular expression.
+ *                         Added tableDnDupate() and tableDnDSerialize() to be called when you are outside the table
+ */
+jQuery.tableDnD = {
+    /** Keep hold of the current table being dragged */
+    currentTable : null,
+    /** Keep hold of the current drag object if any */
+    dragObject: null,
+    /** The current mouse offset */
+    mouseOffset: null,
+    /** Remember the old value of Y so that we don't do too much processing */
+    oldY: 0,
+
+    /** Actually build the structure */
+    build: function(options) {
+        // Set up the defaults if any
+
+        this.each(function() {
+            // This is bound to each matching table, set up the defaults and override with user options
+            this.tableDnDConfig = jQuery.extend({
+                onDragStyle: null,
+                onDropStyle: null,
+				// Add in the default class for whileDragging
+				onDragClass: "tDnD_whileDrag",
+                onDrop: null,
+                onDragStart: null,
+                scrollAmount: 5,
+				serializeRegexp: /[^\-]*$/, // The regular expression to use to trim row IDs
+				serializeParamName: null, // If you want to specify another parameter name instead of the table ID
+                dragHandle: null // If you give the name of a class here, then only Cells with this class will be draggable
+            }, options || {});
+            // Now make the rows draggable
+            jQuery.tableDnD.makeDraggable(this);
+        });
+
+        // Now we need to capture the mouse up and mouse move event
+        // We can use bind so that we don't interfere with other event handlers
+        jQuery(document)
+            .bind('mousemove', jQuery.tableDnD.mousemove)
+            .bind('mouseup', jQuery.tableDnD.mouseup);
+
+        // Don't break the chain
+        return this;
+    },
+
+    /** This function makes all the rows on the table draggable apart from those marked as "NoDrag" */
+    makeDraggable: function(table) {
+        var config = table.tableDnDConfig;
+		if (table.tableDnDConfig.dragHandle) {
+			// We only need to add the event to the specified cells
+			var cells = jQuery("td."+table.tableDnDConfig.dragHandle, table);
+			cells.each(function() {
+				// The cell is bound to "this"
+                jQuery(this).mousedown(function(ev) {
+                    jQuery.tableDnD.dragObject = this.parentNode;
+                    jQuery.tableDnD.currentTable = table;
+                    jQuery.tableDnD.mouseOffset = jQuery.tableDnD.getMouseOffset(this, ev);
+                    if (config.onDragStart) {
+                        // Call the onDrop method if there is one
+                        config.onDragStart(table, this);
+                    }
+                    return false;
+                });
+			})
+		} else {
+			// For backwards compatibility, we add the event to the whole row
+	        var rows = jQuery("tr", table); // get all the rows as a wrapped set
+	        rows.each(function() {
+				// Iterate through each row, the row is bound to "this"
+				var row = jQuery(this);
+				if (! row.hasClass("nodrag")) {
+	                row.mousedown(function(ev) {
+	                    if (ev.target.tagName == "TD") {
+	                        jQuery.tableDnD.dragObject = this;
+	                        jQuery.tableDnD.currentTable = table;
+	                        jQuery.tableDnD.mouseOffset = jQuery.tableDnD.getMouseOffset(this, ev);
+	                        if (config.onDragStart) {
+	                            // Call the onDrop method if there is one
+	                            config.onDragStart(table, this);
+	                        }
+	                        return false;
+	                    }
+	                }).css("cursor", "move"); // Store the tableDnD object
+				}
+			});
+		}
+	},
+
+	updateTables: function() {
+		this.each(function() {
+			// this is now bound to each matching table
+			if (this.tableDnDConfig) {
+				jQuery.tableDnD.makeDraggable(this);
+			}
+		})
+	},
+
+    /** Get the mouse coordinates from the event (allowing for browser differences) */
+    mouseCoords: function(ev){
+        if(ev.pageX || ev.pageY){
+            return {x:ev.pageX, y:ev.pageY};
+        }
+        return {
+            x:ev.clientX + document.body.scrollLeft - document.body.clientLeft,
+            y:ev.clientY + document.body.scrollTop  - document.body.clientTop
+        };
+    },
+
+    /** Given a target element and a mouse event, get the mouse offset from that element.
+        To do this we need the element's position and the mouse position */
+    getMouseOffset: function(target, ev) {
+        ev = ev || window.event;
+
+        var docPos    = this.getPosition(target);
+        var mousePos  = this.mouseCoords(ev);
+        return {x:mousePos.x - docPos.x, y:mousePos.y - docPos.y};
+    },
+
+    /** Get the position of an element by going up the DOM tree and adding up all the offsets */
+    getPosition: function(e){
+        var left = 0;
+        var top  = 0;
+        /** Safari fix -- thanks to Luis Chato for this! */
+        if (e.offsetHeight == 0) {
+            /** Safari 2 doesn't correctly grab the offsetTop of a table row
+            this is detailed here:
+            http://jacob.peargrove.com/blog/2006/technical/table-row-offsettop-bug-in-safari/
+            the solution is likewise noted there, grab the offset of a table cell in the row - the firstChild.
+            note that firefox will return a text node as a first child, so designing a more thorough
+            solution may need to take that into account, for now this seems to work in firefox, safari, ie */
+            e = e.firstChild; // a table cell
+        }
+		if (e && e.offsetParent) {
+        	while (e.offsetParent){
+            	left += e.offsetLeft;
+            	top  += e.offsetTop;
+            	e     = e.offsetParent;
+        	}
+
+        	left += e.offsetLeft;
+        	top  += e.offsetTop;
+        }
+
+        return {x:left, y:top};
+    },
+
+    mousemove: function(ev) {
+        if (jQuery.tableDnD.dragObject == null) {
+            return;
+        }
+
+        var dragObj = jQuery(jQuery.tableDnD.dragObject);
+        var config = jQuery.tableDnD.currentTable.tableDnDConfig;
+        var mousePos = jQuery.tableDnD.mouseCoords(ev);
+        var y = mousePos.y - jQuery.tableDnD.mouseOffset.y;
+        //auto scroll the window
+	    var yOffset = window.pageYOffset;
+	 	if (document.all) {
+	        // Windows version
+	        //yOffset=document.body.scrollTop;
+	        if (typeof document.compatMode != 'undefined' &&
+	             document.compatMode != 'BackCompat') {
+	           yOffset = document.documentElement.scrollTop;
+	        }
+	        else if (typeof document.body != 'undefined') {
+	           yOffset=document.body.scrollTop;
+	        }
+
+	    }
+		    
+		if (mousePos.y-yOffset < config.scrollAmount) {
+	    	window.scrollBy(0, -config.scrollAmount);
+	    } else {
+            var windowHeight = window.innerHeight ? window.innerHeight
+                    : document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight;
+            if (windowHeight-(mousePos.y-yOffset) < config.scrollAmount) {
+                window.scrollBy(0, config.scrollAmount);
+            }
+        }
+
+
+        if (y != jQuery.tableDnD.oldY) {
+            // work out if we're going up or down...
+            var movingDown = y > jQuery.tableDnD.oldY;
+            // update the old value
+            jQuery.tableDnD.oldY = y;
+            // update the style to show we're dragging
+			if (config.onDragClass) {
+				dragObj.addClass(config.onDragClass);
+			} else {
+	            dragObj.css(config.onDragStyle);
+			}
+            // If we're over a row then move the dragged row to there so that the user sees the
+            // effect dynamically
+            var currentRow = jQuery.tableDnD.findDropTargetRow(dragObj, y);
+            if (currentRow) {
+                // TODO worry about what happens when there are multiple TBODIES
+                if (movingDown && jQuery.tableDnD.dragObject != currentRow) {
+                    jQuery.tableDnD.dragObject.parentNode.insertBefore(jQuery.tableDnD.dragObject, currentRow.nextSibling);
+                } else if (! movingDown && jQuery.tableDnD.dragObject != currentRow) {
+                    jQuery.tableDnD.dragObject.parentNode.insertBefore(jQuery.tableDnD.dragObject, currentRow);
+                }
+            }
+        }
+
+        return false;
+    },
+
+    /** We're only worried about the y position really, because we can only move rows up and down */
+    findDropTargetRow: function(draggedRow, y) {
+        var rows = jQuery.tableDnD.currentTable.rows;
+        for (var i=0; i<rows.length; i++) {
+            var row = rows[i];
+            var rowY    = this.getPosition(row).y;
+            var rowHeight = parseInt(row.offsetHeight)/2;
+            if (row.offsetHeight == 0) {
+                rowY = this.getPosition(row.firstChild).y;
+                rowHeight = parseInt(row.firstChild.offsetHeight)/2;
+            }
+            // Because we always have to insert before, we need to offset the height a bit
+            if ((y > rowY - rowHeight) && (y < (rowY + rowHeight))) {
+                // that's the row we're over
+				// If it's the same as the current row, ignore it
+				if (row == draggedRow) {return null;}
+                var config = jQuery.tableDnD.currentTable.tableDnDConfig;
+                if (config.onAllowDrop) {
+                    if (config.onAllowDrop(draggedRow, row)) {
+                        return row;
+                    } else {
+                        return null;
+                    }
+                } else {
+					// If a row has nodrop class, then don't allow dropping (inspired by John Tarr and Famic)
+                    var nodrop = jQuery(row).hasClass("nodrop");
+                    if (! nodrop) {
+                        return row;
+                    } else {
+                        return null;
+                    }
+                }
+                return row;
+            }
+        }
+        return null;
+    },
+
+    mouseup: function(e) {
+        if (jQuery.tableDnD.currentTable && jQuery.tableDnD.dragObject) {
+            var droppedRow = jQuery.tableDnD.dragObject;
+            var config = jQuery.tableDnD.currentTable.tableDnDConfig;
+            // If we have a dragObject, then we need to release it,
+            // The row will already have been moved to the right place so we just reset stuff
+			if (config.onDragClass) {
+	            jQuery(droppedRow).removeClass(config.onDragClass);
+			} else {
+	            jQuery(droppedRow).css(config.onDropStyle);
+			}
+            jQuery.tableDnD.dragObject   = null;
+            if (config.onDrop) {
+                // Call the onDrop method if there is one
+                config.onDrop(jQuery.tableDnD.currentTable, droppedRow);
+            }
+            jQuery.tableDnD.currentTable = null; // let go of the table too
+        }
+    },
+
+    serialize: function() {
+        if (jQuery.tableDnD.currentTable) {
+            return jQuery.tableDnD.serializeTable(jQuery.tableDnD.currentTable);
+        } else {
+            return "Error: No Table id set, you need to set an id on your table and every row";
+        }
+    },
+
+	serializeTable: function(table) {
+        var result = "";
+        var tableId = table.id;
+        var rows = table.rows;
+        for (var i=0; i<rows.length; i++) {
+            if (result.length > 0) result += "&";
+            var rowId = rows[i].id;
+            if (rowId && rowId && table.tableDnDConfig && table.tableDnDConfig.serializeRegexp) {
+                rowId = rowId.match(table.tableDnDConfig.serializeRegexp)[0];
+            }
+
+            result += tableId + '[]=' + rowId;
+        }
+        return result;
+	},
+
+	serializeTables: function() {
+        var result = "";
+       T€®¥m≤ßÄÊ∏ﬁiMînà–çêE˝á«–∫÷nG¿«≥2ºõÏÀø™÷7‚=÷Ü—[ŸìÙŸèMv˙Ï ÙÚ>—e’˙+cÎ’œ¨˘]SÉúﬁøuVV˙Z⁄j•œµµÂŸc>œWÈS+˝c¸ı≤Ô©]K§ﬁ¸Ô©}KÏÏ∞ÓO»w©é˘øú˝'Ê}QæØ˝ŸFg◊N≥”Fœ¨Ω'7Èe·ëAüŒ!Æw§ﬂ˙ı©Ä∏¶«ﬂriƒö˜ïÒ[úzPˇ ûùÿ÷øßÙ|:´~`aÙMµ2€7∂œ£Ôø–˛⁄Ï≤˙fVMÊ⁄˙û^#K@ÙhÙ6i˘ˇ ¨bﬂfÁ∆*_^æ®f¿Ø™P«wm‰–gˇ BEK^é°ÅëÆ>M7≈ñ5ﬂı.O ª±À1ó	±Èü„§ı°”Ò1ÒmÍ=c‘∏ÿ˙˝*Ïk=6ê◊;Ï8¥ÿ◊9÷˚7øbËz7’‹Ï~ëÖAÍŸÿÓÆä√©`∆c∂ÉcÍ·Ÿgµˇ È,{◊B\9ë˜†[ùÉé&¸ä™/{[ˇ T‰∏Eìkè1#é0“¢L∂ÍZtæ¥ÃoK´ø÷6∫¸ jæ[Ë◊^3p›œ⁄˝Óﬁ´~Ã˙Âˇ ó∏ﬂ˚ˇ øhπ]˛©b”ulbvß˙Œˇ 3’rßˇ =ÜQ€—zGPÍD˝}/≥–Ù'3“€ˇ m£cªπÂˆ"ÎU~≥uú`gu⁄~ÕcöÎ^¬Ìá{]ˆ£Ìﬁ7†—ı;Í◊’ˇ ´πÿùG/myÌ ŒπÕ®˚}‘∑ß⁄œIˇ •Æø“˙ñ9Í+føØ›OÈ€â–(wj¡Ã……sﬂÈ·ˇ ò™eÙ™]7™˝`∫Ó´ìΩµ2ÏÁ;%ﬁ£öÁ≤™±kÖ{ˆª”ﬂ_Ëˇ “!Vnæ‘˚Ÿ8xc§oã˜}O=ı;•g◊óê~¨g‰;¯mùF˛û∆„π¨.-Ù_ìñÃã>ó¯¯≈ÿéìı”ˇ û~`o˛Ù,ø¨?\Ú©Ë∏=K¢
+k≈ÃzóO≠Yk_Í’ˆHÙk˚;ö∆YëÍ‰≤´øGˆ[k]GEÍuu^õFmM±≠∞[hhxsj≥wß˙'{ŸÙÍ˝ˇ ¡§#BírŒFÊD§zò≈Ê:_¯µ´¨û≥’sù‘≤}Sê*∞‹]Íz∂¥>›˚l˜≤¶zUˇ av°$“ ë<íôFËPÚAπøm€ÍªvœÊø7˙ﬂ÷IeŒŒèˇ 8c}®z—≥Ë˛è◊ˇ ∏üiùøjˇ Çˇ ≠=˙4í±‹#Ü]é‹[~èÔ?ˇ‘ıõSA`¨Å´¿¯*˝[3+¶ﬂèÖci»µªX˜Ã OÈ5gπéu{ÿÀ?¡9ÔX]¸`}TÃ≠î˝§‡ÿ4fOˇ %¯Óˇ ∑ñ¶oTÀ´/∏xﬂj√»‹ÎÚöeåkFÔkÎ‹ﬂ£Ωﬂ§˝ˇ õ@v(çº£∫g÷~ã—˙âÈï]^eØ£∂[]’∞Ÿh©ˆ◊Í
+û˙1˛≈ÅNNn¸∫Î∆˛oÙàç˙„’:C»ÍyV—í¡{È¡.-ˆc6∆f‰U~+øIMôu=òªÒiŸOß˝+’]6÷>ôê‹}≈‘Yñ˜WMv	.sßg∫ØQõ=Of˝ ”€”:æÈ>én†±Ìimïê?3Ÿ-E/-õ◊˙;˙_Øtjo9.umk{ÉC∑NWŸÏ≠è˝'¸Vœ“ßÀ˙π˛/õ“?nfÙñ‚‚m>˙‹÷8Ìeéßˇ E”Ωmu?™]©≤ñ]Q©∏·˛ãhw§ms/µ·µ˚7>⁄ò˜%ìı['†„Ù,∑Ïx˛î∏ãËëcw87cwÿﬂ¶œÍ!C≤(vyõ:?¯≠´¸ÉÖπòØ¶´öCúê¸vz~ßÁzûÔ‹±_¬Ëˇ P—◊qzEV·÷Àl!‘óÿ}ˆZ—U˚ùø}OVi˙á”ÎË◊ÙwﬁÛèuå¥¿Øie5‚∂[Ôk∑[W€∑”˝c˜èN˙πáÅ——ZÁ€çk]Ü¬O®ﬂN“÷Ω•çﬂ¸Ôß˛ëÈPÏÆÿ8’}e˙∑Å”záQÈù7e=8“£Mt˙ühÙ˝7ËYSMπ˛µ{˝/“*-ˇ Yπ%˘’SKex˝@1Ó∞6´[emæß:Ω¨›óÈ˝ûÀ?Ag˝sÙ}‘ÓìâÍ◊^ÀÒ∆6K-≥ŸkZÌıŸu4∂öΩj€˙Ïc˙b—≈È7çãUP⁄ÿ6∞m;çˆ◊´fƒR‡bY÷:∑‘ú¡ê˜_‘€ˆ j}6l}ñQe‘Qπÿ_a≠õü_ß∂ß˙6U˙K?ú±àáÍ'Og’Ïéâèkˆﬂ`π∑ZÔN¿D€UXÕ≈≠æﬂ—ÌgÊ~ã˘übÈÙ·$î„tO™ÿ'úœÕØœ^£ìµ€-!Õuî5åcj›ÍYˇ nX∂4î,¨Ã\:]ëós1Ëo“∂◊4i‰.7´ˇ åÏ
+˜U–Èv}ºã&ºvüÌ^˝ø∫∆3˛56RåE»“ËBSêÑ"g9m)bˆ9yÿò8œ Ãπò¯ı	}∂÷èÌÁY>øÂuÏNä_âÑd?4À/¥q˙≥~û%_œ˝g˝†πæ•‘∫óWºdı\Éíˆ™∏€MÒ„⁄◊¬øÙ™∫ßõõøN=?¨Ùˇ ã≤±óú1Â«˛¶ó˛£ãJøO”ÿﬂOËÌÌ	)iÛûRU¨˜;[øÌc˝»¸ﬁﬁ√‰˝œÓUˇ’Êl«•‰Ày'Q§•äs∫{À˙n]∏é<˙Ous˝oLÏˆÎD?H¸JeëÓJ'B˜yæ»s&âê=xˇ U?Ò±ÒÑÍ—ı€Î=kÚ[è‘Kkl∫†,k\6ÿ⁄Ô≈8ˆ7{êÆb}vËÏ™∫r∫^N*ÿó˙üMÌΩˇ ¢ ˝++oøw™œÙü£≠s ŒN}˛Ö =Ô0∆¥rÁª˛˚Ù‘£õ…≠;π|«¸YÂ·8s3≈˛tG,ı‘≥ÎèFªÃ«Îô88Ç=z,t}-ﬂÕ˝¢øsﬂø˝jÙˆÒ˛∑tªzìm˝πÜ06˙ûˇ M˚Ãüo´]~÷{?¬.2Ø´5?7"ÀΩO±8≤√U{Ätod˙¶´=Õˇ 1C+Í≠?h™åC/∫°~€¿Æ~ÉÕå.oΩﬁœMI˜Í‘«N˝<ÌÀó¬å9¨RÆ≥Ü\]8øÆ˙{~≤}]w–Íòn¯dTÔÍGÎAı,Aˇ _Øˇ &ºVÓü]6∫õ©≤≥i‰ÛCxøËöù˜—˚¨Òˇ ã\Ò åò;,ü˜è¥[ıØÍÕ@óıl=;Îqˇ 5ésñ~G¯∆˙°H”8‹Ô›™´?⁄Ù˝?˙k Ü=‚∂èíòkG ÄÑ;⁄,–ˇ ä¸…˘Û„è˜c<üÙΩ∑Ω ˇ ›8Oÿ:vVIÒ¥∂ñÌMœˇ ¿÷w¯√˙”òq˝ö√¡≠æ≠±ˇ t’ˇ ÄÆ{∫J)sy‘∏‚«-se…ó¿VÕıˇ „ä…7Ê›ÎıÌÕª≥Ôy|QÆˆ±.…$†î•-I∑gñ‰˘n^<81G~Íó˜ßÛ…I$íÖHÒÔ¬Iıàù'ÑìøÉ˛¨ˇ÷ÁO“?4…œ'ÊôcÀÈò˛H˘uV˚≠e,çˆ81≥†ó∫Æﬂ•t ›AËπåªıñø5ÅÕ™À#È˚Ωæ∑©Ùwˇ :≈…ÙF1˝RÜæ≥p;à¨w!ÆswË∆ıË›
+∫®¬cÒ©ÕÆê74^Êûﬂ∏˜øcË'·ÄîË’◊˙Œ«˘âCÜ†ﬂ˝ÕfÏL*™À∑1ˇ §Õ≠É-¥¿ÿ…´{t.ﬁÌ€>Ç{1+o©ìã"ÁIŸè 
+ü—ª˘À+›ˇ n8¥∞7§^œR„ÍZ[πˇ û˜Öôe’‹~ ∆çÌ˝-ÔÌ∫2¶∞9ü§sä∫qFÑ®ÕÊ=ÈÒUüŸ‰ùw¶>ÏS^5ç∆È≠öÚ≤ãÓ˙˚=ûﬂÙü§wø¸ÂW°˝bœÈˆèëóñ€«PZÊTDˇ P÷÷/<Bqë Ç7—Î˛	ó$0@Ò_È|ﬁ©|‹JI$ì]wWÍˆ-97fõhfQ«√∂˙™µ≈¨ﬁ«UÓ{õe>›é≥¸"”»´ßY‘∫+;F÷V‹áÈc¨uØØ&ﬂNÜ’Í{Ìmv˙ü§Ù}
+ˇ ICÍÕ5^˛©UœeUªß_∫À@5∑k©x≤÷º9Æ≠éoøsVüFŒÈ‘dj’WP•√™Öè}GÂ[spÏÙ±®ª˘ó[˛è}µW˙° ¬'& õ=;„‹Œ||¸£π!NQè¯±Bˇ Ÿ˛≥vÙ\Zqù}4zñ_c‰ÿ?H÷~ûØs¸ÕõvdË:√Ít◊GSÃ¢°∂™r.Æ∂ÛmècØÓ¥.Åœs˙’£•π◊P˚¨≤∆]˙72°ëS3+∆¨€âcqæœ˙?Ê_Ë’Íz“ÔX=g˛YÍ¯jˇ ¸¯ÙŒr1çDzœ¸[œõ&|√&I‰ÑÂ)˛óıöi$í§ı
+˘wÂ$ºıÁ‰íw`ˇ ’èˇ◊ÁO'æ•2sÙèƒ¶X“‹æôè‰èêIèën5ÃæíïôlÍ8ÇıöªLØAuM€‘Úr}Õ6ºπî4Ñ∑Û*⁄Ôu’Íˇ É\:µ”˙ñON∏€éZw «âkÄ!Ìˇ 5Õ@q‹4æ#»f>xç?≠‡d˙´üN1∂ﬂ—ÔsöÀÏÌ∑k)g}û˜*ùO©z8ˆd⁄«1ÏÙÛ*©ƒZ∆8i}~ü“˜=üÒï~ì˘≈√æÀ:vF=ﬁ®ø# d∏∞çªÅ‹›Ø∞π˛‘˘YIœ≥7Ñ:˙õ]Õ∑ËªhkZÔIé˛Oøz∞y©U”œ√‡Y¯˝@ö'˙±<<?•˝o[{Î/U…ÈÕ≈ÃgÍ∑Ìµµ∏{˝Oﬂˆ˛çr™O{¨y{Ãπƒí~'räÆu$ı/K…rëÂ±
+'yJ™‘íI“m:=/Ã∆eZÍ+ ≈~8µ¨ıvπÓ©“Í∑3sv÷Â}ˆÙº=˝F«;“°èwÿ»{üçsr™ºÿ‹Ü;˘∂˝ôü∏œ˙›k2åÏ:€é€∞Ÿg£ø‘t√¨‹!ªˇ 7Ÿ¸•úº[±1©ØUm-∂Ê¿68ñ√›w∂?9œVqÁñ8pƒ«Mu'9º\ﬂ1ÓÂ«îT£8p«ãÜ\.…»˙∫Ï÷‰ŸòÌå∂ª+≠∏fX⁄ûÎÍ£’}œıkıÔÁÙ?Ì≈á‘ofOQÀ…Æ};Ô∂∆NákﬁÁ∑wˆ\àÃÃF¥Ñ¬Ë ªq3 7á}'QG/+˙ÍmXÕ«ubÊ«ªÕﬁ÷¶Â rD	ß`Àˇ á„‰Ú»‚«ìıÉÇR…8HF#’¥Z©$íÅ÷_¥O~KXÌíw`ˇ ’èˇ–ÁO'∂•[√¿fMπ˘†6Í®Ã{§⁄-s˙ ÔÙU'‚Qës*ÙX˝µ˙ç∂ MÅÕ≠˚£w±∂=cÇµªËÛéIbà≈.	z}_’˝.íOè”üwU˝öÁÌ™˙MçixõÉü∑ÿÌûœÛ˙«J=.ˆPl79Ã'f÷Ç1è›c.€˘Ô´Ùj∞Ã»nÃ‹C‹ÁπÂ≠2Áœ®ÌÖæüªwÓ©fgeg[Îeø‘∞ÃªkZLô3Èµà‹8H£≈zÍ¨‡ÊΩÏr3è≤!Ya˙RÕ˚—Ù¸≠‹ÓÖˆ.õWP9Ì»èIÅ†Lˇ +’Ê~ëõ[Ù?—¢t´Vı\f‰7!îµ÷∫ê“ÔsÎr”Ê®_‘ÛÚ*4ﬂq}F=Ñ6ÿŸ˝∆∑oËˇ 1≠ı\Ö8y.¶¶ºÿ–ﬂ§·±Œó4ªËßqb‚æ√[YÜXπˇ `ƒeáø«b£Ì~ÔÛ˜,:oO≥®e}ôépú‚	 6∑}ÎÓK?ßŸÉî‹kÁ ‡@#BÁ1∫ÍÔB≈ÀøÒëé‡À[ <µØâˇ çk⁄ñF]˘Y&˜\H%·≠lë‹∂∂µâ∑èˇ Õf‡Ê}Úx„Ï|øßÓˇ ãÚ∫}kÍÂù&üUŸÔ“6∏-·c˛ôsõøÙ>Íˇ ‚–Ò:Ú∞ò€⁄”`ymQ$lÌı=Ã⁄€_éˆ3”m Æ_TœÕ¨WïqµÅ˛†≠Ú6o‹∆µﬂC⁄öûßùEM¶´CkdÏå%•€¡-{ÿÁ∑˘˚ø©Í'^.#È<5ß˜òF.ÿåNX‚W)˛å±◊ÀÚ‹•È!˝Q◊Ü‹ =^©/ì2EmfüÀrVtã™ÎÈ/±æ£¨ÆøPjﬂ“Ü=Øˇ 6≈[3'∏„Zj/ ?lj·cZÈ¸›Ï˙*vuÀ3áP}•ŸaÕx∂“`kkˆÌÙ˝çc1«¬4<WÍ˛Î)á7Ó‰"qˆå≈“Ü_Oèß˚Ìﬁπı}˝∫¸ÜﬂˆÇ‡Z[C>„Ô˛sj∫K”Yò¸ñ∂ÀZÁ≤í$¶_Æ«øm˛õôo•el˙~óÛﬁƒŒßüü≥ÌóΩ9ÿ\ê÷ª‹÷µﬁÌåN:ØP£]Ìc™Ü∞{wΩõ∂o⁄˚?IÙøú˝'”Dú\R†xk”Ê≤8˘·ãñHú¢wö[	c◊”G˝ ~ë—øi2Áõ≈í÷ânÌ≈·Ógæø“~è˘µO3‚Âﬂãª‘Ù,u{¿ÄÌßnÌøõπK?/F=æüΩ∂p◊Cÿ⁄Ïo®◊l±õﬂÔj◊Y}ØæÁo∂◊Ω‹Kúw8ËöL8EWRÀé»œ9N`‡#ıp˝(À¸_˚¶.¸§ó˜¸íC¯.ˇ ’èˇŸ 8BIM!     U       A d o b e   P h o t o s h o p    A d o b e   P h o t o s h o p   C S 6    8BIM†    maniIRFR   8BIMAnDs   ‡            null       AFStlong        FrInVlLs   Objc         null       FrIDlongmG˙Ï    FrGAdoub@>          FStsVlLs   Objc         null       FsIDlong        AFrmlong        FsFrVlLs   longmG˙Ï    LCntlong      8BIMRoll           8BIM°     mfri                    8BIM          ˇ·íhttp://ns.adobe.com/xap/1.0/ <?xpacket begin="Ôªø" id="W5M0MpCehiHzreSzNTczkc9d"?> <x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 5.3-c011 66.145661, 2012/02/06-14:56:27        "> <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"> <rdf:Description rdf:about="" xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/" xmlns:stRef="http://ns.adobe.com/xap/1.0/sType/ResourceRef#" xmlns:stEvt="http://ns.adobe.com/xap/1.0/sType/ResourceEvent#" xmlns:xmp="http://ns.adobe.com/xap/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/" xmpMM:OriginalDocumentID="xmp.did:228f5b3b-bbaf-e74d-bea5-99fc56296f8c" xmpMM:DocumentID="xmp.did:2CA48ABD10A911E5B493F6B6E93EB1A0" xmpMM:InstanceID="xmp.iid:4559C9C26612E511881F92C72C9F1A4B" xmp:CreatorTool="Adobe Photoshop CC (Windows)" xmp:CreateDate="2015-06-13T09:34:04+08:00" xmp:ModifyDate="2015-06-14T16:26:11+08:00" xmp:MetadataDate="2015-06-14T16:26:11+08:00" dc:format="image/jpeg" photoshop:ColorMode="3"> <xmpMM:DerivedFrom stRef:instanceID="xmp.iid:dd90ef92-592e-0546-9957-3464574dfed4" stRef:documentID="xmp.did:228f5b3b-bbaf-e74d-bea5-99fc56296f8c"/> <xmpMM:History> <rdf:Seq> <rdf:li stEvt:action="saved" stEvt:instanceID="xmp.iid:4459C9C26612E511881F92C72C9F1A4B" stEvt:when="2015-06-14T16:26:11+08:00" stEvt:softwareAgent="Adobe Photoshop CS6 (Windows)" stEvt:changed="/"/> <rdf:li stEvt:action="saved" stEvt:instanceID="xmp.iid:4559C9C26612E511881F92C72C9F1A4B" stEvt:when="2015-06-14T16:26:11+08:00" stEvt:softwareAgent="Adobe Photoshop CS6 (Windows)" stEvt:changed="/"/> </rdf:Seq> </xmpMM:History> </rdf:Description> </rdf:RDF> </x:xmpmeta>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 Deferred: function( func ) {
+		var tuples = [
+				// action, add listener, listener list, final state
+				[ "resolve", "done", jQuery.Callbacks("once memory"), "resolved" ],
+				[ "reject", "fail", jQuery.Callbacks("once memory"), "rejected" ],
+				[ "notify", "progress", jQuery.Callbacks("memory") ]
+			],
+			state = "pending",
+			promise = {
+				state: function() {
+					return state;
+				},
+				always: function() {
+					deferred.done( arguments ).fail( arguments );
+					return this;
+				},
+				then: function( /* fnDone, fnFail, fnProgress */ ) {
+					var fns = arguments;
+					return jQuery.Deferred(function( newDefer ) {
+						jQuery.each( tuples, function( i, tuple ) {
+							var action = tuple[ 0 ],
+								fn = jQuery.isFunction( fns[ i ] ) && fns[ i ];
+							// deferred[ done | fail | progress ] for forwarding actions to newDefer
+							deferred[ tuple[1] ](function() {
+								var returned = fn && fn.apply( this, arguments );
+								if ( returned && jQuery.isFunction( returned.promise ) ) {
+									returned.promise()
+										.done( newDefer.resolve )
+										.fail( newDefer.reject )
+										.progress( newDefer.notify );
+								} else {
+									newDefer[ action + "With" ]( this === promise ? newDefer.promise() : this, fn ? [ returned ] : arguments );
+								}
+							});
+						});
+						fns = null;
+					}).promise();
+				},
+				// Get a promise for this deferred
+				// If obj is provided, the promise aspect is added to the object
+				promise: function( obj ) {
+					return obj != null ? jQuery.extend( obj, promise ) : promise;
+				}
+			},
+			deferred = {};
+
+		// Keep pipe for back-compat
+		promise.pipe = promise.then;
+
+		// Add list-specific methods
+		jQuery.each( tuples, function( i, tuple ) {
+			var list = tuple[ 2 ],
+				stateString = tuple[ 3 ];
+
+			// promise[ done | fail | progress ] = list.add
+			promise[ tuple[1] ] = list.add;
+
+			// Handle state
+			if ( stateString ) {
+				list.add(function() {
+					// state = [ resolved | rejected ]
+					state = stateString;
+
+				// [ reject_list | resolve_list ].disable; progress_list.lock
+				}, tuples[ i ^ 1 ][ 2 ].disable, tuples[ 2 ][ 2 ].lock );
+			}
+
+			// deferred[ resolve | reject | notify ]
+			deferred[ tuple[0] ] = function() {
+				deferred[ tuple[0] + "With" ]( this === deferred ? promise : this, arguments );
+				return this;
+			};
+			deferred[ tuple[0] + "With" ] = list.fireWith;
+		});
+
+		// Make the deferred a promise
+		promise.promise( deferred );
+
+		// Call given func if any
+		if ( func ) {
+			func.call( deferred, deferred );
+		}
+
+		// All done!
+		return deferred;
+	},
+
+	// Deferred helper
+	when: function( subordinate /* , ..., subordinateN */ ) {
+		var i = 0,
+			resolveValues = core_slice.call( arguments ),
+			length = resolveValues.length,
+
+			// the count of uncompleted subordinates
+			remaining = length !== 1 || ( subordinate && jQuery.isFunction( subordinate.promise ) ) ? length : 0,
+
+			// the master Deferred. If resolveValues consist of only a single Deferred, just use that.
+			deferred = remaining === 1 ? subordinate : jQuery.Deferred(),
+
+			// Update function for both resolve and progress values
+			updateFunc = function( i, contexts, values ) {
+				return function( value ) {
+					contexts[ i ] = this;
+					values[ i ] = arguments.length > 1 ? core_slice.call( arguments ) : value;
+					if( values === progressValues ) {
+						deferred.notifyWith( contexts, values );
+					} else if ( !( --remaining ) ) {
+						deferred.resolveWith( contexts, values );
+					}
+				};
+			},
+
+			progressValues, progressContexts, resolveContexts;
+
+		// add listeners to Deferred subordinates; treat others as resolved
+		if ( length > 1 ) {
+			progressValues = new Array( length );
+			progressContexts = new Array( length );
+			resolveContexts = new Array( length );
+			for ( ; i < length; i++ ) {
+				if ( resolveValues[ i ] && jQuery.isFunction( resolveValues[ i ].promise ) ) {
+					resolveValues[ i ].promise()
+						.done( updateFunc( i, resolveContexts, resolveValues ) )
+						.fail( deferred.reject )
+						.progress( updateFunc( i, progressContexts, progressValues ) );
+				} else {
+					--remaining;
+				}
+			}
+		}
+
+		// if we're not waiting on anything, resolve the master
+		if ( !remaining ) {
+			deferred.resolveWith( resolveContexts, resolveValues );
+		}
+
+		return deferred.promise();
+	}
+});
+jQuery.support = (function() {
+
+	var support, all, a, select, opt, input, fragment, eventName, isSupported, i,
+		div = document.createElement("div");
+
+	// Setup
+	div.setAttribute( "className", "t" );
+	div.innerHTML = "  <link/><table></table><a href='/a'>a</a><input type='checkbox'/>";
+
+	// Support tests won't run in some limited or non-browser environments
+	all = div.getElementsByTagName("*");
+	a = div.getElementsByTagName("a")[ 0 ];
+	if ( !all || !a || !all.length ) {
+		return {};
+	}
+
+	// First batch of tests
+	select = document.createElement("select");
+	opt = select.appendChild( document.createElement("option") );
+	input = div.getElementsByTagName("input")[ 0 ];
+
+	a.style.cssText = "top:1px;float:left;opacity:.5";
+	support = {
+		// Test setAttribute on camelCase class. If it works, we need attrFixes when doing get/setAttribute (ie6/7)
+		getSetAttribute: div.className !== "t",
+
+		// IE strips leading whitespace when .innerHTML is used
+		leadingWhitespace: div.firstChild.nodeType === 3,
+
+		// Make sure that tbody elements aren't automatically inserted
+		// IE will insert them into empty tables
+		tbody: !div.getElementsByTagName("tbody").length,
+
+		// Make sure that link elements get serialized correctly by innerHTML
+		// This requires a wrapper element in IE
+		htmlSerialize: !!div.getElementsByTagName("link").length,
+
+		// Get the style information from getAttribute
+		// (IE uses .cssText instead)
+		style: /top/.test( a.getAttribute("style") ),
+
+		// Make sure that URLs aren't manipulated
+		// (IE normalizes it by default)
+		hrefNormalized: a.getAttribute("href") === "/a",
+
+		// Make sure that element opacity exists
+		// (IE uses filter instead)
+		// Use a regex to work around a WebKit issue. See #5145
+		opacity: /^0.5/.test( a.style.opacity ),
+
+		// Verify style float existence
+		// (IE uses styleFloat instead of cssFloat)
+		cssFloat: !!a.style.cssFloat,
+
+		// Check the default checkbox/radio value ("" on WebKit; "on" elsewhere)
+		checkOn: !!input.value,
+
+		// Make sure that a selected-by-default option has a working selected property.
+		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
+		optSelected: opt.selected,
+
+		// Tests for enctype support on a form (#6743)
+		enctype: !!document.createElement("form").enctype,
+
+		// Makes sure cloning an html5 element does not cause problems
+		// Where outerHTML is undefined, this still works
+		html5Clone: document.createElement("nav").cloneNode( true ).outerHTML !== "<:nav></:nav>",
+
+		// jQuery.support.boxModel DEPRECATED in 1.8 since we don't support Quirks Mode
+		boxModel: document.compatMode === "CSS1Compat",
+
+		// Will be defined later
+		deleteExpando: true,
+		noCloneEvent: true,
+		inlineBlockNeedsLayout: false,
+		shrinkWrapBlocks: false,
+		reliableMarginRight: true,
+		boxSizingReliable: true,
+		pixelPosition: false
+	};
+
+	// Make sure checked status is properly cloned
+	input.checked = true;
+	support.noCloneChecked = input.cloneNode( true ).checked;
+
+	// Make sure that the options inside disabled selects aren't marked as disabled
+	// (WebKit marks them as disabled)
+	select.disabled = true;
+	support.optDisabled = !opt.disabled;
+
+	// Support: IE<9
+	try {
+		delete div.test;
+	} catch( e ) {
+		support.deleteExpando = false;
+	}
+
+	// Check if we can trust getAttribute("value")
+	input = document.createElement("input");
+	input.setAttribute( "value", "" );
+	support.input = input.getAttribute( "value" ) === "";
+
+	// Check if an input maintains its value after becoming a radio
+	input.value = "t";
+	input.setAttribute( "type", "radio" );
+	support.radioValue = input.value === "t";
+
+	// #11217 - WebKit loses check when the name is after the checked attribute
+	input.setAttribute( "checked", "t" );
+	input.setAttribute( "name", "t" );
+
+	fragment = document.createDocumentFragment();
+	fragment.appendChild( input );
+
+	// Check if a disconnected checkbox will retain its checked
+	// value of true after appended to the DOM (IE6/7)
+	support.appendChecked = input.checked;
+
+	// WebKit doesn't clone checked state correctly in fragments
+	support.checkClone = fragment.cloneNode( true ).cloneNode( true ).lastChild.checked;
+
+	// Support: IE<9
+	// Opera does not clone events (and typeof div.attachEvent === undefined).
+	// IE9-10 clones events bound via attachEvent, but they don't trigger with .click()
+	if ( div.attachEvent ) {
+		div.attachEvent( "onclick", function() {
+			support.noCloneEvent = false;
+		});
+
+		div.cloneNode( true ).click();
+	}
+
+	// Support: IE<9 (lack submit/change bubble), Firefox 17+ (lack focusin event)
+	// Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP), test/csp.php
+	for ( i in { submit: true, change: true, focusin: true }) {
+		div.setAttribute( eventName = "on" + i, "t" );
+
+		support[ i + "Bubbles" ] = eventName in window || div.attributes[ eventName ].expando === false;
+	}
+
+	div.style.backgroundClip = "content-box";
+	div.cloneNode( true ).style.backgroundClip = "";
+	support.clearCloneStyle = div.style.backgroundClip === "content-box";
+
+	// Run tests that need a body at doc ready
+	jQuery(function() {
+		var container, marginDiv, tds,
+			divReset = "padding:0;margin:0;border:0;display:block;box-sizing:content-box;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;",
+			body = document.getElementsByTagName("body")[0];
+
+		if ( !body ) {
+			// Return for frameset docs that don't have a body
+			return;
+		}
+
+		container = document.createElement("div");
+		container.style.cssText = "border:0;width:0;height:0;position:absolute;top:0;left:-9999px;margin-top:1px";
+
+		body.appendChild( container ).appendChild( div );
+
+		// Support: IE8
+		// Check if table cells still have offsetWidth/Height when they are set
+		// to display:none and there are still other visible table cells in a
+		// table row; if so, offsetWidth/Height are not reliable for use when
+		// determining if an element has been hidden directly using
+		// display:none (it is still safe to use offsets if a parent element is
+		// hidden; don safety goggles and see bug #4512 for more information).
+		div.innerHTML = "<table><tr><td></td><td>t</td></tr></table>";
+		tds = div.getElementsByTagName("td");
+		tds[ 0 ].style.cssText = "padding:0;margin:0;border:0;display:none";
+		isSupported = ( tds[ 0 ].offsetHeight === 0 );
+
+		tds[ 0 ].style.display = "";
+		tds[ 1 ].style.display = "none";
+
+		// Support: IE8
+		// Check if empty table cells still have offsetWidth/Height
+		support.reliableHiddenOffsets = isSupported && ( tds[ 0 ].offsetHeight === 0 );
+
+		// Check box-sizing and margin behavior
+		div.innerHTML = "";
+		div.style.cssText = "box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;padding:1px;border:1px;display:block;width:4px;margin-top:1%;position:absolute;top:1%;";
+		support.boxSizing = ( div.offsetWidth === 4 );
+		support.doesNotIncludeMarginInBodyOffset = ( body.offsetTop !== 1 );
+
+		// Use window.getComputedStyle because jsdom on node.js will break without it.
+		if ( window.getComputedStyle ) {
+			support.pixelPosition = ( window.getComputedStyle( div, null ) || {} ).top !== "1%";
+			support.boxSizingReliable = ( window.getComputedStyle( div, null ) || { width: "4px" } ).width === "4px";
+
+			// Check if div with explicit width and no margin-right incorrectly
+			// gets computed margin-right based on width of container. (#3333)
+			// Fails in WebKit before Feb 2011 nightlies
+			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+			marginDiv = div.appendChild( document.createElement("div") );
+			marginDiv.style.cssText = div.style.cssText = divReset;
+			marginDiv.style.marginRight = marginDiv.style.width = "0";
+			div.style.width = "1px";
+
+			support.reliableMarginRight =
+				!parseFloat( ( window.getComputedStyle( marginDiv, null ) || {} ).marginRight );
+		}
+
+		if ( typeof div.style.zoom !== "undefined" ) {
+			// Support: IE<8
+			// Check if natively block-level elements act like inline-block
+			// elements when setting their display to 'inline' and giving
+			// them layout
+			div.innerHTML = "";
+			div.style.cssText = divReset + "width:1px;padding:1px;display:inline;zoom:1";
+			support.inlineBlockNeedsLayout = ( div.offsetWidth === 3 );
+
+			// Support: IE6
+			// Check if elements with layout shrink-wrap their children
+			div.style.display = "block";
+			div.innerHTML = "<div></div>";
+			div.firstChild.style.width = "5px";
+			support.shrinkWrapBlocks = ( div.offsetWidth !== 3 );
+
+			// Prevent IE 6 from affecting layout for positioned elements #11048
+			// Prevent IE from shrinking the body in IE 7 mode #12869
+			body.style.zoom = 1;
+		}
+
+		body.removeChild( container );
+
+		// Null elements to avoid leaks in IE
+		container = div = tds = marginDiv = null;
+	});
+
+	// Null elements to avoid leaks in IE
+	all = select = fragment = opt = a = input = null;
+
+	return support;
+})();
+
+var rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
+	rmultiDash = /([A-Z])/g;
+	
+function internalData( elem, name, data, pvt /* Internal Use Only */ ){
+	if ( !jQuery.acceptData( elem ) ) {
+		return;
+	}
+
+	var thisCache, ret,
+		internalKey = jQuery.expando,
+		getByName = typeof name === "string",
+
+		// We have to handle DOM nodes and JS objects differently because IE6-7
+		// can't GC object references properly across the DOM-JS boundary
+		isNode = elem.nodeType,
+
+		// Only DOM nodes need the global jQuery cache; JS object data is
+		// attached directly to the object so GC can occur automatically
+		cache = isNode ? jQuery.cache : elem,
+
+		// Only defining an ID for JS objects if its cache already exists allows
+		// the code to shortcut on the same path as a DOM node with no cache
+		id = isNode ? elem[ internalKey ] : elem[ internalKey ] && internalKey;
+
+	// Avoid doing any more work than we need to when trying to get data on an
+	// object that has no data at all
+	if ( (!id || !cache[id] || (!pvt && !cache[id].data)) && getByName && data === undefined ) {
+		return;
+	}
+
+	if ( !id ) {
+		// Only DOM nodes need a new unique ID for each element since their data
+		// ends up in the global cache
+		if ( isNode ) {
+			elem[ internalKey ] = id = core_deletedIds.pop() || jQuery.guid++;
+		} else {
+			id = internalKey;
+		}
+	}
+
+	if ( !cache[ id ] ) {
+		cache[ id ] = {};
+
+		// Avoids exposing jQuery metadata on plain JS objects when the object
+		// is serialized using JSON.stringify
+		if ( !isNode ) {
+			cache[ id ].toJSON = jQuery.noop;
+		}
+	}
+
+	// An object can be passed to jQuery.data instead of a key/value pair; this gets
+	// shallow copied over onto the existing cache
+	if ( typeof name === "object" || typeof name === "function" ) {
+		if ( pvt ) {
+			cache[ id ] = jQuery.extend( cache[ id ], name );
+		} else {
+			cache[ id ].data = jQuery.extend( cache[ id ].data, name );
+		}
+	}
+
+	thisCache = cache[ id ];
+
+	// jQuery data() is stored in a separate object inside the object's internal data
+	// cache in order to avoid key collisions between internal data and user-defined
+	// data.
+	if ( !pvt ) {
+		if ( !thisCache.data ) {
+			thisCache.data = {};
+		}
+
+		thisCache = thisCache.data;
+	}
+
+	if ( data !== undefined ) {
+		thisCache[ jQuery.camelCase( name ) ] = data;
+	}
+
+	// Check for both converted-to-camel and non-converted data property names
+	// If a data property was specified
+	if ( getByName ) {
+
+		// First Try to find as-is property data
+		ret = thisCache[ name ];
+
+		// Test for null|undefined property data
+		if ( ret == null ) {
+
+			// Try to find the camelCased property
+			ret = thisCache[ jQuery.camelCase( name ) ];
+		}
+	} else {
+		ret = thisCache;
+	}
+
+	return ret;
+}
+
+function internalRemoveData( elem, name, pvt /* For internal use only */ ){
+	if ( !jQuery.acceptData( elem ) ) {
+		return;
+	}
+
+	var thisCache, i, l,
+
+		isNode = elem.nodeType,
+
+		// See jQuery.data for more information
+		cache = isNode ? jQuery.cache : elem,
+		id = isNode ? elem[ jQuery.expando ] : jQuery.expando;
+
+	// If there is already no cache entry for this object, there is no
+	// purpose in continuing
+	if ( !cache[ id ] ) {
+		return;
+	}
+
+	if ( name ) {
+
+		thisCache = pvt ? cache[ id ] : cache[ id ].data;
+
+		if ( thisCache ) {
+
+			// Support array or space separated string names for data keys
+			if ( !jQuery.isArray( name ) ) {
+
+				// try the string as a key before any manipulation
+				if ( name in thisCache ) {
+					name = [ name ];
+				} else {
+
+					// split the camel cased version by spaces unless a key with the spaces exists
+					name = jQuery.camelCase( name );
+					if ( name in thisCache ) {
+						name = [ name ];
+					} else {
+						name = name.split(" ");
+					}
+				}
+			} else {
+				// If "name" is an array of keys...
+				// When data is initially created, via ("key", "val") signature,
+				// keys will be converted to camelCase.
+				// Since there is no way to tell _how_ a key was added, remove
+				// both plain key and camelCase key. #12786
+				// This will only penalize the array argument path.
+				name = name.concat( jQuery.map( name, jQuery.camelCase ) );
+			}
+
+			for ( i = 0, l = name.length; i < l; i++ ) {
+				delete thisCache[ name[i] ];
+			}
+
+			// If there is no data left in the cache, we want to continue
+			// and let the cache object itself get destroyed
+			if ( !( pvt ? isEmptyDataObject : jQuery.isEmptyObject )( thisCache ) ) {
+				return;
+			}
+		}
+	}
+
+	// See jQuery.data for more information
+	if ( !pvt ) {
+		delete cache[ id ].data;
+
+		// Don't destroy the parent cache unless the internal data object
+		// had been the only thing left in it
+		if ( !isEmptyDataObject( cache[ id ] ) ) {
+			return;
+		}
+	}
+
+	// Destroy the cache
+	if ( isNode ) {
+		jQuery.cleanData( [ elem ], true );
+
+	// Use delete when supported for expandos or `cache` is not a window per isWindow (#10080)
+	} else if ( jQuery.support.deleteExpando || cache != cache.window ) {
+		delete cache[ id ];
+
+	// When all else fails, null
+	} else {
+		cache[ id ] = null;
+	}
+}
+
+jQuery.extend({
+	cache: {},
+
+	// Unique for each copy of jQuery on the page
+	// Non-digits removed to match rinlinejQuery
+	expando: "jQuery" + ( core_version + Math.random() ).replace( /\D/g, "" ),
+
+	// The following elements throw uncatchable exceptions if you
+	// attempt to add expando properties to them.
+	noData: {
+		"embed": true,
+		// Ban all objects except for Flash (which handle expandos)
+		"object": "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000",
+		"applet": true
+	},
+
+	hasData: function( elem ) {
+		elem = elem.nodeType ? jQuery.cache[ elem[jQuery.expando] ] : elem[ jQuery.expando ];
+		return !!elem && !isEmptyDataObject( elem );
+	},
+
+	data: function( elem, name, data ) {
+		return internalData( elem, name, data, false );
+	},
+
+	removeData: function( elem, name ) {
+		return internalRemoveData( elem, name, false );
+	},
+
+	// For internal use only.
+	_data: function( elem, name, data ) {
+		return internalData( elem, name, data, true );
+	},
+	
+	_removeData: function( elem, name ) {
+		return internalRemoveData( elem, name, true );
+	},
+
+	// A method for determining if a DOM node can handle the data expando
+	acceptData: function( elem ) {
+		var noData = elem.nodeName && jQuery.noData[ elem.nodeName.toLowerCase() ];
+
+		// nodes accept data unless otherwise specified; rejection can be conditional
+		return !noData || noData !== true && elem.getAttribute("classid") === noData;
+	}
+});
+
+jQuery.fn.extend({
+	data: function( key, value ) {
+		var attrs, name,
+			elem = this[0],
+			i = 0,
+			data = null;
+
+		// Gets all values
+		if ( key === undefined ) {
+			if ( this.length ) {
+				data = jQuery.data( elem );
+
+				if ( elem.nodeType === 1 && !jQuery._data( elem, "parsedAttrs" ) ) {
+					attrs = elem.attributes;
+					for ( ; i < attrs.length; i++ ) {
+						name = attrs[i].name;
+
+						if ( !name.indexOf( "data-" ) ) {
+							name = jQuery.camelCase( name.substring(5) );
+
+							dataAttr( elem, name, data[ name ] );
+						}
+					}
+					jQuery._data( elem, "parsedAttrs", true );
+				}
+			}
+
+			return data;
+		}
+
+		// Sets multiple values
+		if ( typeof key === "object" ) {
+			return this.each(function() {
+				jQuery.data( this, key );
+			});
+		}
+
+		return jQuery.access( this, function( value ) {
+
+			if ( value === undefined ) {
+				// Try to fetch any internally stored data first
+				return elem ? dataAttr( elem, key, jQuery.data( elem, key ) ) : null;
+			}
+
+			this.each(function() {
+				jQuery.data( this, key, value );
+			});
+		}, null, value, arguments.length > 1, null, true );
+	},
+
+	removeData: function( key ) {
+		return this.each(function() {
+			jQuery.removeData( this, key );
+		});
+	}
+});
+
+function dataAttr( elem, key, data ) {
+	// If nothing was found internally, try to fetch any
+	// data from the HTML5 data-* attribute
+	if ( data === undefined && elem.nodeType === 1 ) {
+
+		var name = "data-" + key.replace( rmultiDash, "-$1" ).toLowerCase();
+
+		data = elem.getAttribute( name );
+
+		if ( typeof data === "string" ) {
+			try {
+				data = data === "true" ? true :
+				data === "false" ? false :
+				data === "null" ? null :
+				// Only convert to a number if it doesn't change the string
+				+data + "" === data ? +data :
+				rbrace.test( data ) ? jQuery.parseJSON( data ) :
+					data;
+			} catch( e ) {}
+
+			// Make sure we set the data so it isn't changed later
+			jQuery.data( elem, key, data );
+
+		} else {
+			data = undefined;
+		}
+	}
+
+	return data;
+}
+
+// checks a cache object for emptiness
+function isEmptyDataObject( obj ) {
+	var name;
+	for ( name in obj ) {
+
+		// if the public data object is empty, the private is still empty
+		if ( name === "data" && jQuery.isEmptyObject( obj[name] ) ) {
+			continue;
+		}
+		if ( name !== "toJSON" ) {
+			return false;
+		}
+	}
+
+	return true;
+}
+jQuery.extend({
+	queue: function( elem, type, data ) {
+		var queue;
+
+		if ( elem ) {
+			type = ( type || "fx" ) + "queue";
+			queue = jQuery._data( elem, type );
+
+			// Speed up dequeue by getting out quickly if this is just a lookup
+			if ( data ) {
+				if ( !queue || jQuery.isArray(data) ) {
+					queue = jQuery._data( elem, type, jQuery.makeArray(data) );
+				} else {
+					queue.push( data );
+				}
+			}
+			return queue || [];
+		}
+	},
+
+	dequeue: function( elem, type ) {
+		type = type || "fx";
+
+		var queue = jQuery.queue( elem, type ),
+			startLength = queue.length,
+			fn = queue.shift(),
+			hooks = jQuery._queueHooks( elem, type ),
+			next = function() {
+				jQuery.dequeue( elem, type );
+			};
+
+		// If the fx queue is dequeued, always remove the progress sentinel
+		if ( fn === "inprogress" ) {
+			fn = queue.shift();
+			startLength--;
+		}
+
+		hooks.cur = fn;
+		if ( fn ) {
+
+			// Add a progress sentinel to prevent the fx queue from being
+			// automatically dequeued
+			if ( type === "fx" ) {
+				queue.unshift( "inprogress" );
+			}
+
+			// clear up the last queue stop function
+			delete hooks.stop;
+			fn.call( elem, next, hooks );
+		}
+
+		if ( !startLength && hooks ) {
+			hooks.empty.fire();
+		}
+	},
+
+	// not intended for public consumption - generates a queueHooks object, or returns the current one
+	_queueHooks: function( elem, type ) {
+		var key = type + "queueHooks";
+		return jQuery._data( elem, key ) || jQuery._data( elem, key, {
+			empty: jQuery.Callbacks("once memory").add(function() {
+				jQuery._removeData( elem, type + "queue" );
+				jQuery._removeData( elem, key );
+			})
+		});
+	}
+});
+
+jQuery.fn.extend({
+	queue: function( type, data ) {
+		var setter = 2;
+
+		if ( typeof type !== "string" ) {
+			data = type;
+			type = "fx";
+			setter--;
+		}
+
+		if ( arguments.length < setter ) {
+			return jQuery.queue( this[0], type );
+		}
+
+		return data === undefined ?
+			this :
+			this.each(function() {
+				var queue = jQuery.queue( this, type, data );
+
+				// ensure a hooks for this queue
+				jQuery._queueHooks( this, type );
+
+				if ( type === "fx" && queue[0] !== "inprogress" ) {
+					jQuery.dequeue( this, type );
+				}
+			});
+	},
+	dequeue: function( type ) {
+		return this.each(function() {
+			jQuery.dequeue( this, type );
+		});
+	},
+	// Based off of the plugin by Clint Helfers, with permission.
+	// http://blindsignals.com/index.php/2009/07/jquery-delay/
+	delay: function( time, type ) {
+		time = jQuery.fx ? jQuery.fx.speeds[ time ] || time : time;
+		type = type || "fx";
+
+		return this.queue( type, function( next, hooks ) {
+			var timeout = setTimeout( next, time );
+			hooks.stop = function() {
+				clearTimeout( timeout );
+			};
+		});
+	},
+	clearQueue: function( type ) {
+		return this.queue( type || "fx", [] );
+	},
+	// Get a promise resolved when queues of a certain type
+	// are emptied (fx is the type by default)
+	promise: function( type, obj ) {
+		var tmp,
+			count = 1,
+			defer = jQuery.Deferred(),
+			elements = this,
+			i = this.length,
+			resolve = function() {
+				if ( !( --count ) ) {
+					defer.resolveWith( elements, [ elements ] );
+				}
+			};
+
+		if ( typeof type !== "string" ) {
+			obj = type;
+			type = undefined;
+		}
+		type = type || "fx";
+
+		while( i-- ) {
+			tmp = jQuery._data( elements[ i ], type + "queueHooks" );
+			if ( tmp && tmp.empty ) {
+				count++;
+				tmp.empty.add( resolve );
+			}
+		}
+		resolve();
+		return defer.promise( obj );
+	}
+});
+var nodeHook, boolHook,
+	rclass = /[\t\r\n]/g,
+	rreturn = /\r/g,
+	rfocusable = /^(?:input|select|textarea|button|object)$/i,
+	rclickable = /^(?:a|area)$/i,
+	rboolean = /^(?:checked|selected|autofocus|autoplay|async|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped)$/i,
+	ruseDefault = /^(?:checked|selected)$/i,
+	getSetAttribute = jQuery.support.getSetAttribute,
+	getSetInput = jQuery.support.input;
+
+jQuery.fn.extend({
+	attr: function( name, value ) {
+		return jQuery.access( this, jQuery.attr, name, value, arguments.length > 1 );
+	},
+
+	removeAttr: function( name ) {
+		return this.each(function() {
+			jQuery.removeAttr( this, name );
+		});
+	},
+
+	prop: function( name, value ) {
+		return jQuery.access( this, jQuery.prop, name, value, arguments.length > 1 );
+	},
+
+	removeProp: function( name ) {
+		name = jQuery.propFix[ name ] || name;
+		return this.each(function() {
+			// try/catch handles cases where IE balks (such as removing a property on window)
+			try {
+				this[ name ] = undefined;
+				delete this[ name ];
+			} catch( e ) {}
+		});
+	},
+
+	addClass: function( value ) {
+		var classes, elem, cur, clazz, j,
+			i = 0,
+			len = this.length,
+			pr

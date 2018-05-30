@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.MemberInvoiceMapper">
+    <sql id="columnList">
+      `id`,`tenantId`,`memberId`,`invoiceTitle`,`isDefault`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+    </sql>
+    <select id="get"  resultType="net.deepdragon.entity.weipu.MemberInvoice">
+        select
+        <include refid="columnList" />
+        from wp_member_invoice
+        where id = #{id}
+    </select>
+
+    <select id="getDefault"  resultType="net.deepdragon.entity.weipu.MemberInvoice">
+        select
+        <include refid="columnList" />
+        from wp_member_invoice
+        where isDefault=1 and memberId=#{memberId} order by createDate desc limit 0,1
+    </select>
+
+    <select id="find" resultType="net.deepdragon.entity.weipu.MemberInvoice">
+        select
+        <include refid="columnList" />
+        from wp_member_invoice
+        where tenantId = #{tenantId} and ${property}=#{value}
+    </select>
+
+    <select id="findList" resultType="net.deepdragon.entity.weipu.MemberInvoice">
+        select
+        <include refid="columnList" />
+        from wp_member_invoice
+        where tenantId = #{tenantId} and ${property}=#{value}
+    </select>
+
+    <select id="findListByIds" parameterType="java.lang.String"
+            resultType="net.deepdragon.entity.weipu.MemberInvoice">
+        select
+        <include refid="columnList" />
+        from wp_member_invoice
+        where id in
+        <foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+    </select>
+
+    <select id="getList" resultType="net.deepdragon.entity.weipu.MemberInvoice">
+        select
+        <include refid="columnList" />
+        from wp_member_invoice
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+    <insert id="save" parameterType="net.deepdragon.entity.weipu.MemberInvoice"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into wp_member_invoice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+          `id`,`tenantId`,`memberId`,`invoiceTitle`,`isDefault`,`createUser`,`createDate`
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            #{id},#{tenantId},#{memberId},#{invoiceTitle},#{isDefault},#{createUser},#{createDate}
+        </trim>
+    </insert>
+    <update id="update" parameterType="net.deepdragon.entity.weipu.MemberInvoice">
+        update wp_member_invoice
+        <set>
+            `modifyUser` = #{modifyUser},`modifyDate` = #{modifyDate}
+            <if test="invoiceTitle != null">,`invoiceTitle` = #{invoiceTitle}</if>
+            <if test="isDefault != null">,`isDefault` = #{isDefault}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateDefault">
+      update wp_member_invoice set isDefault=0 where tenantId = #{tenantId} and memberId=#{memberId}
+        <if test="id != null"> and id != #{id}</if>
+    </update>
+
+    <delete id="delete">
+        delete from wp_member_invoice
+        where id =	#{id} and invoiceTitle!='个人'
+    </delete>
+</mapper>

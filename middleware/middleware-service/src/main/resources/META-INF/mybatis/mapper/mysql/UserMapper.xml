@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.UserMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`userName`,`passwd`,`email`,`nickName`,`realName`,`sex`,`mobile`,`birthday`,`status`,`description`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.User">
+		select
+		<include refid="columnList" />
+		from shared_user
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.User">
+		select
+		<include refid="columnList" />
+		from shared_user
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.User">
+		select
+		<include refid="columnList" />
+		from shared_user
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.User">
+		select
+		<include refid="columnList" />
+		from shared_user
+		where id in
+		<foreach collection="list" item="id" index="index" open="("
+			close=")" separator=",">#{id}</foreach>
+	</select>
+
+	<select id="getAll" resultType="net.deepdragon.entity.User">
+		select
+		<include refid="columnList" />
+		from shared_user
+		where tenantId = #{tenantId}
+	</select>
+
+	<select id="getPager" resultType="net.deepdragon.entity.User">
+		select
+		<include refid="columnList" />
+		from shared_user
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getList" resultType="net.deepdragon.entity.User">
+		select
+		<include refid="columnList" />
+		from shared_user
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from shared_user where tenantId = #{tenantId}
+	</select>
+
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from
+		shared_user
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<insert id="save" parameterType="net.deepdragon.entity.User"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into shared_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="userName != null">,`userName`</if>
+			<if test="passwd != null">,`passwd`</if>
+			<if test="email != null">,`email`</if>
+			<if test="nickName != null">,`nickName`</if>
+			<if test="realName != null">,`realName`</if>
+			<if test="sex != null">,`sex`</if>
+			<if test="mobile != null">,`mobile`</if>
+			<if test="birthday != null">,`birthday`</if>
+			<if test="status != null">,`status`</if>
+			<if test="description != null">,`description`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="userName != null">,#{userName}</if>
+			<if test="passwd != null">,#{passwd}</if>
+			<if test="email != null">,#{email}</if>
+			<if test="nickName != null">,#{nickName}</if>
+			<if test="realName != null">,#{realName}</if>
+			<if test="sex != null">,#{sex}</if>
+			<if test="mobile != null">,#{mobile}</if>
+			<if test="birthday != null">,#{birthday}</if>
+			<if test="status != null">,#{status}</if>
+			<if test="description != null">,#{description}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.User">
+		update shared_user
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="userName != null">,`userName` = #{userName}</if>
+			<if test="passwd != null">,`passwd` = #{passwd}</if>
+			<if test="email != null">,`email` = #{email}</if>
+			<if test="nickName != null">,`nickName` = #{nickName}</if>
+			<if test="realName != null">,`realName` = #{realName}</if>
+			<if test="sex != null">,`sex` = #{sex}</if>
+			<if test="mobile != null">,`mobile` = #{mobile}</if>
+			<if test="birthday != null">,`birthday` = #{birthday}</if>
+			<if test="status != null">,`status` = #{status}</if>
+			<if test="description != null">,`description` = #{description}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from shared_user
+		where id = #{id}
+	</delete>
+	
+	<select id="getUserByUserName" resultType="net.deepdragon.entity.User">
+		select
+		<include refid="columnList" />
+		,passwd from shared_user
+		where userName = #{userName}
+	</select>
+
+	<!-- 获取用户拥有的角色信息ID集合 -->
+	<select id="getRoleIdByUserId" resultType="java.lang.String">
+        select
+        roleId from shared_user_role
+        where userId = #{userId}
+	</select>
+		
+	<!-- 保存用户的角色信息 -->
+	<insert id="saveRelationUserRole">
+		insert into shared_user_role (userId, roleId)
+		values (#{userId}, #{roleId})
+	</insert>
+	
+	<!-- 删除用户的角色信息 -->
+    <delete id="delRelationUserRole">
+        delete from shared_user_role
+        where userId = #{userId}
+    </delete>
+	   
+	<update id="updatePasswd">
+		update shared_user
+		set passwd=#{passwd} 
+		where id = #{userId}
+	</update>
+	
+</mapper>

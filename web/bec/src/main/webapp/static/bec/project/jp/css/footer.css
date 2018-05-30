@@ -1,0 +1,103 @@
+/* CSS Document */
+/*底部样式*/
+.foot_navi {
+    width: 100%;
+    margin-top:20px;
+    background: #0171bc;
+    padding:40px 0 30px 0;
+}
+.foot_navi2 {
+    width: 100%;
+    background: #0171bc;
+    padding:40px 0 30px 0;
+}
+.footnav {
+    width:1200px;
+    margin: 0 auto;
+}
+.footnav dl {
+    width:170px;
+    margin:0 30px 0 10px;
+    float: left;
+    display: inline-block;
+}
+.footnav dl dt {
+    padding-bottom: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #fff;
+}
+.footnav dl dd {
+    height: 24px;
+    line-height: 24px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.footnav dl dd a {
+    color:#fff;
+}
+.footnav dl dd.f_weixin,.footnav dl dd.f_app {
+    height: 85px;
+    width: 85px;
+    overflow: hidden;
+    background:url(../images/temp/p31.gif) no-repeat;
+    display: block;
+    margin-bottom: 5px;
+}
+.footnav dl dd.f_app {
+    background:url(../images/temp/p31.gif) no-repeat;
+}
+.footnav dl.f_ewm {
+    width:90px;
+    margin:0 15px 0 10px;
+}
+.foot_menu {
+    width: 100%;
+    background: #f8f8f8;
+    padding:12px 0 22px 0;
+    overflow:hidden;
+}
+.gray_box {
+    width:1200px;
+    margin:0 auto;
+}
+.gray_box p {
+    width:100%;
+    float:left;
+    line-height:22px;
+    color:#777;
+}
+.gray_box p a {
+    color:#777;
+}
+.foot_rz {
+    width:100%;
+    float:left;
+    padding-top:3px;
+}
+.foot_rz li {
+    width:100px;
+    height:40px;
+    margin-right:10px;
+    float:left;
+    padding-top:7px;
+}
+.foot_rz li img {
+    width:100px;
+    height:40px;
+    float:left;
+}
+.foot_info {
+    width:1200px;
+    margin:0 auto;
+    overflow:hidden;
+    padding:15px 0;
+}
+.foot_info p {
+    width:100%;
+    float:left;
+    line-height:22px;
+    color:#777;
+    text-align:center;
+}

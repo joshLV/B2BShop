@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.BuyerReceiverMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`buyerId`,`name`,`areaId`,`areaPath`,`address`,`zipCode`,`phone`,`mobile`,`isDefault`,`isDelete`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.BuyerReceiver">
+		select re.*,ar.fullName as areaName from b2b_buyer_receiver re
+		left join shared_area ar on re.areaPath=ar.path
+		where re.id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.BuyerReceiver">
+		select re.*,ar.fullName as areaName from b2b_buyer_receiver re
+		left join shared_area ar on re.areaPath=ar.path
+		where re.tenantId = #{tenantId} and re.${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.BuyerReceiver">
+		select re.*,ar.fullName as areaName from b2b_buyer_receiver re
+		left join shared_area ar on re.areaPath=ar.path
+		where re.tenantId = #{tenantId} and re.${property}=#{value}
+	</select>
+
+	<select id="findListByIds" parameterType="java.lang.String"
+			resultType="net.deepdragon.entity.weipu.BuyerReceiver">
+		select re.*,ar.fullName as areaName from b2b_buyer_receiver re
+		left join shared_area ar on re.areaPath=ar.path
+		where re.id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.BuyerReceiver">
+		select re.*,ar.fullName as areaName from b2b_buyer_receiver re
+		left join shared_area ar on re.areaPath=ar.path
+		where re.tenantId = #{tenantId}
+	</select>
+
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.BuyerReceiver">
+		select re.*,ar.fullName as areaName from b2b_buyer_receiver re
+		left join shared_area ar on re.areaPath=ar.path
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getList" resultType="net.deepdragon.entity.weipu.BuyerReceiver">
+		select re.*,ar.fullName as areaName from b2b_buyer_receiver re
+		left join shared_area ar on re.areaPath=ar.path
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from b2b_buyer_receiver where tenantId = #{tenantId}
+	</select>
+
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from b2b_buyer_receiver
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.BuyerReceiver"
+			useGeneratedKeys="true" keyProperty="id">
+		insert into b2b_buyer_receiver
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="buyerId != null">,`buyerId`</if>
+			<if test="name != null">,`name`</if>
+			<if test="areaId != null">,`areaId`</if>
+			<if test="areaPath != null">,`areaPath`</if>
+			<if test="address != null">,`address`</if>
+			<if test="zipCode != null">,`zipCode`</if>
+			<if test="phone != null">,`phone`</if>
+			<if test="mobile != null">,`mobile`</if>
+			<if test="isDefault != null">,`isDefault`</if>
+			<if test="isDelete != null">,`isDelete`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="buyerId != null">,#{buyerId}</if>
+			<if test="name != null">,#{name}</if>
+			<if test="areaId != null">,#{areaId}</if>
+			<if test="areaPath != null">,#{areaPath}</if>
+			<if test="address != null">,#{address}</if>
+			<if test="zipCode != null">,#{zipCode}</if>
+			<if test="phone != null">,#{phone}</if>
+			<if test="mobile != null">,#{mobile}</if>
+			<if test="isDefault != null">,#{isDefault}</if>
+			<if test="isDelete != null">,#{isDelete}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.BuyerReceiver">
+		update b2b_buyer_receiver
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="buyerId != null">,`buyerId` = #{buyerId}</if>
+			<if test="name != null">,`name` = #{name}</if>
+			<if test="areaId != null">,`areaId` = #{areaId}</if>
+			<if test="areaPath != null">,`areaPath` = #{areaPath}</if>
+			<if test="address != null">,`address` = #{address}</if>
+			<if test="zipCode != null">,`zipCode` = #{zipCode}</if>
+			<if test="phone != null">,`phone` = #{phone}</if>
+			<if test="mobile != null">,`mobile` = #{mobile}</if>
+			<if test="isDefault != null">,`isDefault` = #{isDefault}</if>
+			<if test="isDelete != null">,`isDelete` = #{isDelete}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from b2b_buyer_receiver
+		where id =	#{id}
+	</delete>
+	
+</mapper>

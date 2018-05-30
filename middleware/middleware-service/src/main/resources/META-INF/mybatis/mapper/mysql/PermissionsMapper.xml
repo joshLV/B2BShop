@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.PermissionsMapper">
+
+	<sql id="columnList">
+		`id`,`roleId`,`moduleId`,`permissions`,`functionIds`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.Permissions">
+		select
+		<include refid="columnList" />
+		from shared_permissions
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.Permissions">
+		select
+		<include refid="columnList" />
+		from shared_permissions
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.Permissions">
+		select
+		<include refid="columnList" />
+		from shared_permissions
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.Permissions">
+		select
+		<include refid="columnList" />
+		from shared_permissions
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.Permissions">
+		select
+		<include refid="columnList" />
+		from shared_permissions 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.Permissions">
+		select
+		<include refid="columnList" />
+		from shared_permissions 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.Permissions">
+		select
+		<include refid="columnList" />
+		from shared_permissions 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from shared_permissions where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from shared_permissions 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.Permissions"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into shared_permissions
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="roleId != null">,`roleId`</if>
+			<if test="moduleId != null">,`moduleId`</if>
+			<if test="permissions != null">,`permissions`</if>
+			<if test="functionIds != null">,`functionIds`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="roleId != null">,#{roleId}</if>
+			<if test="moduleId != null">,#{moduleId}</if>
+			<if test="permissions != null">,#{permissions}</if>
+			<if test="functionIds != null">,#{functionIds}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.Permissions">
+		update shared_permissions
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="roleId != null">,`roleId` = #{roleId}</if>
+			<if test="moduleId != null">,`moduleId` = #{moduleId}</if>
+			<if test="permissions != null">,`permissions` = #{permissions}</if>
+			<if test="functionIds != null">,`functionIds` = #{functionIds}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from shared_permissions
+		where id =	#{id}
+	</delete>
+	
+	<!-- 保存角色和权限之间的关系信息 -->
+	<insert id="saveRelationship" useGeneratedKeys="true" keyProperty="id">
+		insert into shared_permissions (id,roleId, moduleId,
+		permissions,
+		functionIds, createUser, createDate)
+		values
+		(#{id},#{roleId},
+		#{moduleId},
+		#{permissions},
+		#{functionIds},
+		#{createUser},
+		#{createDate})
+	</insert>
+
+	<delete id="deleteRelationship">
+		delete from
+		shared_permissions
+		where roleId =
+		#{roleId}
+	</delete>
+	
+	<!-- 获取单个用户的权限信息 -->
+	<select id="getList4User" resultType="net.deepdragon.entity.Permissions">
+	select * from shared_permissions sp 
+	where roleId in (
+		select distinct * from (
+			select rgr.roleId from shared_role_group_role as rgr
+			left join shared_user_role_group as urg on rgr.roleGroupId=urg.roleGroupId
+			where urg.userId=#{userId} 
+			union all 
+			select ur.roleId from shared_user_role ur
+			where ur.userId=#{userId} 	
+		) userRoles 
+	)
+	</select>
+	
+</mapper>

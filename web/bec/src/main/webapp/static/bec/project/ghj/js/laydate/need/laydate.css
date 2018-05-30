@@ -1,0 +1,153 @@
+ined" && param != undefined && param != "null") {
+            window.location.href = base + "search/detaillist/" + encodeURI(encodeURI($.trim(key).replace(/\//g, '址达司杠').replace(/\./g, '址达司点号').replace(/\+/g, '址达司加号'))) + "?" + param;
+        } else {
+            window.location.href = base + "search/detaillist/" + encodeURI(encodeURI($.trim(key).replace(/\//g, '址达司杠').replace(/\./g, '址达司点号').replace(/\+/g, '址达司加号')));
+        }
+    }
+}
+
+/**
+ * 保存搜索类型到Cookie
+ * TianYu
+ * 2016-2-19 16:35:18
+ */
+function saveSearchType2Cookie() {
+        $.cookies.set('search_type', $("#search_type").val(), {
+            expires : 7
+        });
+}
+/**
+ * 从cookie中读取默认的搜索类型，设置默认值
+ * TianYu
+ * 2016-2-19 16:35:18
+ */
+function initSearchType4Cookie() {
+    var search_type = $.cookies.get('search_type');
+    if (typeof(search_type) != "undefined" && search_type != null) {
+        $("#search_type").val(search_type);
+    }
+}
+
+//
+$(document).keyup(function(event) {
+    if (event.keyCode == 13) {
+        var keyword=$("#sear_text").val();
+        if($.trim(keyword)!='') {
+            //$("#sear_btn").trigger("click");
+            s(keyword,'');
+        }
+    }
+});
+
+/*登陆*/
+function login() {
+    return location.href = base+"member/login?ReturnUrl=" + escape(location.href).replace(/\//g, "%2F");
+}
+/*注册*/
+function regist() {
+    return location.href = base+"member/register?ReturnUrl=" + escape(location.href).replace(/\//g, "%2F");
+}
+/*注册试用*/
+function registShiYong() {
+    return location.href = base+"member/register?buyerType=3&ReturnUrl=" + escape(location.href).replace(/\//g, "%2F");
+}
+/*动态刷新购物车*/
+function rload(){
+    $.ajax({
+        type: "get",
+        url: base+"cart/ajaxCartList?r="+Math.random(),
+        success: function(data) {
+            if(data.status=='success'){
+                var json=eval(data.data);
+                var data='';
+                var totalshop=0;
+                var totalmoney=0.0;
+                var showBatch = 0;
+                $.each(json,function(i,n){
+                    var batchPrice = json[i].batchPrice;
+                    if(batchPrice != '' && batchPrice!=null && batchPrice!=undefined && batchPrice!='undefined' && batchPrice!='null'){
+                        showBatch = batchPrice;
+                    }else{
+                        showBatch = json[i].price;
+                    }
+                    data= data+'<ul>'+
+                        '<li class="f-cb goods">'+
+                        '<div class="f-fl p-img">'+
+                        '<a href="'+base+'item/'+json[i].goodsId+'.html" target="_blank">'+
+                        '<img src="'+(json[i].pic==undefined?'':json[i].pic)+'" width="50" height="50" alt="" />'+
+                        '</a>'+
+                        '</div>'+
+                        '<div class="f-fl p-name">'+
+                        '<a href="'+base+'item/'+json[i].goodsId+'.html" target="_blank">'+json[i].name+'</a>'+
+                        '</div>'+
+                        '<div class="f-fr p-detail">'+
+                        '单价：￥'+showBatch+'<br>数量：'+json[i].quantity+'<br><a href="javascript:delCart(\''+json[i].id+'\');">删除</a>'+
+                        '</div>'+
+                        '</li>'+
+                        '</ul>';
+                    totalshop =	totalshop+ json[i].quantity;
+                    totalmoney = totalmoney + showBatch*json[i].quantity;
+                });
+                var divshow = $("#cartlist");
+                divshow.text("");// 清空数据
+                //var divtotal =$("#carttotal");
+                //divtotal.text("");// 清空数据
+                $("#counts").text(totalshop);
+                $("#total").text(totalmoney.formatMoney(2,"￥"));
+                //var data1='共<span id="counts">'+totalshop+'</span>件商品　共计pan id="total">￥ '+totalmoney.toFixed(2)+'</span><br>'+'<a href="'+base+'cart/list" title="去购物车结算" id="btn-payforgoods">去购物车结算</a>';
+                //divtotal.append(data1);
+                if(data!=''){
+                    divshow.append(data);
+                }else{
+                    $("#settleup-content").hide();
+                }
+                $("#shoppingcount").html(totalshop);
+            }else{
+                $("#shoppingcount").html('0');
+            }
+            if($("#shoppingcount").text() == 0) {
+                $("#cartinfo .nogoods").show();
+                $("#cartinfo .goodslist").hide();
+            }
+        }
+    });
+}
+/*删除购物车中的商品*/
+function delCart(cartItemid) {
+    $.ajax({
+        type: "get",
+        url: base+"cart/ajaxDeleteCartId",
+        data: "id="+cartItemid,
+        success: function(data) {
+            if(data.status=='success'){
+                layer.msg('删除商品成功!', {icon: 6,time: 2000},function(){ rload();});
+            }
+            rload();
+        }
+    });
+}
+/*加入购物车*/
+function addCart(goodsId, cnt, type) {
+    if(cnt == 0) {
+        layer.alert("购买数量不能为0！");
+        return;
+    }
+    var sp = '';
+    var flag = true;
+    if($('input[name="goodsSp"]').length > 0){
+        $('input[name="goodsSp"]').each(function(){
+            if($(this).val() == ''){
+                flag =false;
+                layer.alert('请选择['+$(this).attr("spname")+']');
+                return false;
+            }else{
+                sp += $(this).attr("spname")+':'+$(this).val() + ',';
+            }
+        });
+    }
+    if(sp != ''){
+        sp = sp.substring(0,sp.length-1);
+    }
+    if(flag){
+        if(type == 'add'){
+            window.location.href = base+"cart/add?gid=" + goodsId + "&cnt=" +cnt + "&sp=" +enco

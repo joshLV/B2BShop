@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.SystemSetMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`setvalue`,`setkey`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.SystemSet">
+		select
+		<include refid="columnList" />
+		from shared_system_set
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.SystemSet">
+		select
+		<include refid="columnList" />
+		from shared_system_set
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.SystemSet">
+		select
+		<include refid="columnList" />
+		from shared_system_set
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.SystemSet">
+		select
+		<include refid="columnList" />
+		from shared_system_set
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.SystemSet">
+		select
+		<include refid="columnList" />
+		from shared_system_set 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.SystemSet">
+		select
+		<include refid="columnList" />
+		from shared_system_set 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.SystemSet">
+		select
+		<include refid="columnList" />
+		from shared_system_set 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from shared_system_set where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from shared_system_set 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.SystemSet"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into shared_system_set
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="setvalue != null">,`setvalue`</if>
+			<if test="setkey != null">,`setkey`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="setvalue != null">,#{setvalue}</if>
+			<if test="setkey != null">,#{setkey}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.SystemSet">
+		update shared_system_set
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="setvalue != null">,`setvalue` = #{setvalue}</if>
+			<if test="setkey != null">,`setkey` = #{setkey}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from shared_system_set
+		where id =	#{id}
+	</delete>
+	<delete id="deleteAll">
+		delete from shared_system_set
+	</delete>
+	
+</mapper>

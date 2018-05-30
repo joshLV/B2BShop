@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<description>微铺服务接口定义</description>
+
+	<!-- 汽配城信息服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.AutopartsService"
+		ref="weipuAutopartsServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 维修厂信息服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.RepairplantService"
+		ref="weipuRepairplantServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 车型表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.CartypeService"
+		ref="weipuCartypeServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+	
+	<!-- 首页品牌旗舰店服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.IndexShopService"
+		ref="weipuIndexShopServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+	
+	<!-- 汽车品牌表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.CarBrandService"
+		ref="weipuCarBrandServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+		
+	<!-- 汽车系列表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.CarSeriesService"
+		ref="weipuCarSeriesServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+		
+	<!-- 今日爆款服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.TodayCommendService"
+		ref="weipuTodayCommendServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+	
+	<!-- 商品(配件)车型关联关系服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GoodsCartypeService"
+		ref="weipuGoodsCartypeServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+	
+</beans>

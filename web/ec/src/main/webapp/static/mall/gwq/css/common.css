@@ -1,0 +1,75 @@
+/* CSS Document */
+/*多个颜色定义*/
+.color1{color:#fe9d3e;}
+.color2{color:#80a1ff;}
+.color3{color:#82d733;}
+.color4{color:#80daf5;}
+.color5{color:#f36978;}
+.color6{color:#E9DC8E;}
+.color7{color:#A9C9E2;}
+.color8{color:#A5CF3D;}
+.color9{color:#F9B3D5;}
+.color10{color:#66CDAA;}
+.color11{color:#F2FDDB;}
+.color12{color:#FFFFDD;}
+.color13{color:#FF1A00;}
+.color14{color:#73880A;}
+.color15{color:#DC143C;}
+.color16{color:#FF7F50;}
+.color17{color:#1E90FF;}
+.color18{color:#FFD700;}
+.color19{color:#90EE90;}
+.color20{color:#FF6347;}
+/*html5*/
+article,aside,dialog,footer,header,section,footer,nav,figure,menu{display:block}
+.container,.main{padding:0; margin:0; background:#f5f5f5; min-width:1220px; /*overflow:auto;*/ width:100%; font-size:12px;}
+.main{padding:0; margin:0; background:#f5f5f5; width:1220px; font-size:12px;margin: 0 auto;overflow: hidden;}
+/*头部样式---start*/
+header{width:100%; height:118px; border-bottom:#eaeaea solid 1px; background:#ffffff;}
+.top{width:100%; border-bottom:#eaeaea solid 1px; height:35px; line-height:35px; letter-spacing:2px; color:#a0a0a0;}
+.top div{width:1200px; margin:0 auto; text-align:right;}
+.top a{color:#a0a0a0;}
+.top a:hover{text-decoration:underline;}
+.logo{position:absolute; left:0; top:-25px;}
+.navbar{width: 940px; margin:0 auto; padding-left:300px; height:82px; position:relative;}
+/*搜索*/
+.search{width: 278px; height:36px; line-height:30px; margin-top:14px; position:relative;}
+.search input{border:#d4d4d4 solid 1px; width:235px; height:34px; line-height:34px; border-radius:17px; -moz-border-radius: 17px; -webkit-border-radius: 17px; padding:0 26px 0 15px; color:#d4d4d4; letter-spacing:1px;}
+.search i{position:absolute; left:252px; top:11px; font-size:14px;}
+/*导航*/
+.navbar .nav{font-size:16px; width:600px; height:54px; margin-top:10px;}
+.navinfo{display:inline-block; text-align:center;vertical-align: middle; padding:2px; height:62px; line-height:40px; padding-right:16px; padding-top: 8px;/* padding-bottom:18px;*/ margin-right:8px; background:url(../img/dot1.gif) right 27px no-repeat;}
+.navinfo a{display: inline-block;}
+.nav-main{position:relative; color: #000000;}
+.nav-main .jt{ position:absolute; left:45px; top:64px; z-index:101;}
+.nav a:hover,.navbar .nav a:hover .en{color:#85c227;}
+.nav .last{padding-right:0; background:none; margin-right:0;}
+.nav .en{font-size:14px; color:#666666;}
+/*菜单*/
+.navbar .nav .menu{width:1200px; min-height:152px; height:auto !important; height:152px; border:#eaeaea solid 1px; border-top:#fff solid 0; position:absolute; left:0px; top:83px; z-index:100; background:#ffffff;}
+.nav .menu ul{width:1195px; min-height:152px; height:auto !important; height:152px; margin:0 auto;}
+.nav .menu li{float:left; width:239px; height:152px; background:url(../img/line.png) right center no-repeat;}
+.nav .menu .last{background:none;}
+.nav .menu dl{width:193px; margin:20px auto 0 auto;}
+.nav .menu dt{width:183px;height:27px; line-height:27px; font-size:14px; font-weight:bold;}
+.nav .menu dt img{vertical-align: middle;}
+.nav .menu dd{width:193px; margin-top:10px; line-height:22px; font-size:12px; text-align:left;}
+.nav .menu dd a{display:inline-block; padding-right:10px;}
+/*头部样式---end*/
+/*底部样式---start*/
+/*服务*/
+.services{width:100%; height:144px; background:#ececec;/* margin-top:5px;*/}
+.services .content{width:1110px; height:144px; padding:0 45px; margin:0 auto;}
+.services .content ul{width:1110px; height:144px; overflow:hidden;}
+.services .content li{float:left; width:160px; padding-left:7px; height:104px; margin-top:20px;}
+.services .content li dt{font-size:14px; font-weight:bold; line-height:24px;}
+.services .content li dd{line-height:20px;}
+.services .content .phone dd{line-height:28px;}
+.services .content .last{width:106px; padding:0; text-align:center; height:104px; margin-top:20px;}
+.services .content .last span{display:block; height:20px; line-height:20px;}
+/*版权*/
+footer{width:100%; height:92px; padding:34px 0; background:#ffffff; text-align:center; font-size:14px;line-height:23px;}
+footer a,footer img{display:inline-block; padding:0 10px;}
+footer img{margin-top:6px;}
+footer a:hover{color:#999999;}
+/*底部样式---end*/

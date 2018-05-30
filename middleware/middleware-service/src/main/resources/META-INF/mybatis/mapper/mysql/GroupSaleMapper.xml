@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.GroupSaleMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`goodsId`,`total`,`ypice`,`purchase`,`slogan`,`description`,`frozen`,`sold`,`groupName`,`image`,
+		concat((select setvalue from
+		shared_system_set where
+		setKey='imageUrl'),concat(concat(groupName,'/'),image)) as
+		`pic`,
+		`methodId`,`status`,`orderNo`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.GroupSale">
+		select
+		<include refid="columnList" />
+		from wp_group_sale
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.GroupSale">
+		select
+		<include refid="columnList" />
+		from wp_group_sale
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.GroupSale">
+		select
+		<include refid="columnList" />
+		from wp_group_sale
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.GroupSale">
+		select
+		<include refid="columnList" />
+		from wp_group_sale
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.GroupSale">
+		select
+		<include refid="columnList" />
+		from wp_group_sale 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.GroupSale">
+		select
+		<include refid="columnList" />
+		from wp_group_sale 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getGroupSalePager" resultType="net.deepdragon.entity.weipu.GroupSale">
+		select b.barcode,b.sn,a.*,concat((select setvalue from
+		shared_system_set where
+		setKey='imageUrl'),concat(concat(groupName,'/'),a.image)) as
+		pic,b.price,b.name from wp_group_sale a left join wp_goods b  on a.goodsId = b.id
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.GroupSale">
+		select
+		<include refid="columnList" />
+		from wp_group_sale 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_group_sale where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_group_sale 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.GroupSale"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_group_sale
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="goodsId != null">,`goodsId`</if>
+			<if test="total != null">,`total`</if>
+			<if test="ypice != null">,`ypice`</if>
+			<if test="purchase != null">,`purchase`</if>
+			<if test="slogan != null">,`slogan`</if>
+			<if test="description != null">,`description`</if>
+			<if test="frozen != null">,`frozen`</if>
+			<if test="sold != null">,`sold`</if>
+			<if test="groupName != null">,`groupName`</if>
+			<if test="image != null">,`image`</if>
+			<if test="methodId != null">,`methodId`</if>
+			<if test="status != null">,`status`</if>
+			<if test="orderNo != null">,`orderNo`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="goodsId != null">,#{goodsId}</if>
+			<if test="total != null">,#{total}</if>
+			<if test="ypice != null">,#{ypice}</if>
+			<if test="purchase != null">,#{purchase}</if>
+			<if test="slogan != null">,#{slogan}</if>
+			<if test="description != null">,#{description}</if>
+			<if test="frozen != null">,#{frozen}</if>
+			<if test="sold != null">,#{sold}</if>
+			<if test="groupName != null">,#{groupName}</if>
+			<if test="image != null">,#{image}</if>
+			<if test="methodId != null">,#{methodId}</if>
+			<if test="status != null">,#{status}</if>
+			<if test="orderNo != null">,#{orderNo}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.GroupSale">
+		update wp_group_sale
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="goodsId != null">,`goodsId` = #{goodsId}</if>
+			<if test="total != null">,`total` = #{total}</if>
+			<if test="ypice != null">,`ypice` = #{ypice}</if>
+			<if test="purchase != null">,`purchase` = #{purchase}</if>
+			<if test="slogan != null">,`slogan` = #{slogan}</if>
+			<if test="description != null">,`description` = #{description}</if>
+			<if test="frozen != null">,`frozen` = #{frozen}</if>
+			<if test="sold != null">,`sold` = #{sold}</if>
+			<if test="groupName != null">,`groupName` = #{groupName}</if>
+			<if test="image != null">,`image` = #{image}</if>
+			<if test="methodId != null">,`methodId` = #{methodId}</if>
+			<if test="status != null">,`status` = #{status}</if>
+			<if test="orderNo != null">,`orderNo` = #{orderNo}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_group_sale
+		where id =	#{id}
+	</delete>
+    <select id="getGroupSaleById" resultType="net.deepdragon.entity.weipu.GroupSale">
+        SELECT a.*,CONCAT((SELECT setvalue FROM
+		shared_system_set WHERE
+		setKey='imageUrl'),CONCAT(CONCAT(groupName,'/'),a.image)) AS
+		pic,b.price,b.name FROM wp_group_sale a LEFT JOIN wp_goods b  ON a.goodsId = b.id
+		WHERE a.tenantId = #{tenantId} and a.`id`=#{id}
+    </select>
+</mapper>

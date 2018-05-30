@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.OrderOfflinepayVoucherMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`orderSn`,`voucherType`,`voucherPic1`,`voucherPic2`,`voucherPic3`,`paySerial`,`bank`,`payAccount`,`payAmount`,`payTime`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.OrderOfflinepayVoucher">
+		select
+		<include refid="columnList" />
+		from b2b_order_offlinepay_voucher
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.OrderOfflinepayVoucher">
+		select
+		<include refid="columnList" />
+		from b2b_order_offlinepay_voucher
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findListByOrderSn" resultType="net.deepdragon.entity.weipu.OrderOfflinepayVoucher">
+		select
+		<include refid="columnList" />
+		from b2b_order_offlinepay_voucher
+		where orderSn = #{orderSn}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.OrderOfflinepayVoucher">
+		select
+		<include refid="columnList" />
+		from b2b_order_offlinepay_voucher
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.OrderOfflinepayVoucher">
+		select
+		<include refid="columnList" />
+		from b2b_order_offlinepay_voucher
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.OrderOfflinepayVoucher">
+		select
+		<include refid="columnList" />
+		from b2b_order_offlinepay_voucher 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.OrderOfflinepayVoucher">
+		select
+		<include refid="columnList" />
+		from b2b_order_offlinepay_voucher 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.OrderOfflinepayVoucher">
+		select
+		<include refid="columnList" />
+		from b2b_order_offlinepay_voucher 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from b2b_order_offlinepay_voucher where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from b2b_order_offlinepay_voucher 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.OrderOfflinepayVoucher"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into b2b_order_offlinepay_voucher
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="orderSn != null">,`orderSn`</if>
+			<if test="voucherType != null">,`voucherType`</if>
+			<if test="voucherPic1 != null">,`voucherPic1`</if>
+			<if test="voucherPic2 != null">,`voucherPic2`</if>
+			<if test="voucherPic3 != null">,`voucherPic3`</if>
+			<if test="paySerial != null">,`paySerial`</if>
+			<if test="bank != null">,`bank`</if>
+			<if test="payAccount != null">,`payAccount`</if>
+			<if test="payAmount != null">,`payAmount`</if>
+			<if test="payTime != null">,`payTime`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="orderSn != null">,#{orderSn}</if>
+			<if test="voucherType != null">,#{voucherType}</if>
+			<if test="voucherPic1 != null">,#{voucherPic1}</if>
+			<if test="voucherPic2 != null">,#{voucherPic2}</if>
+			<if test="voucherPic3 != null">,#{voucherPic3}</if>
+			<if test="paySerial != null">,#{paySerial}</if>
+			<if test="bank != null">,#{bank}</if>
+			<if test="payAccount != null">,#{payAccount}</if>
+			<if test="payAmount != null">,#{payAmount}</if>
+			<if test="payTime != null">,#{payTime}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.OrderOfflinepayVoucher">
+		update b2b_order_offlinepay_voucher
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="orderSn != null">,`orderSn` = #{orderSn}</if>
+			<if test="voucherType != null">,`voucherType` = #{voucherType}</if>
+			<if test="voucherPic1 != null">,`voucherPic1` = #{voucherPic1}</if>
+			<if test="voucherPic2 != null">,`voucherPic2` = #{voucherPic2}</if>
+			<if test="voucherPic3 != null">,`voucherPic3` = #{voucherPic3}</if>
+			<if test="paySerial != null">,`paySerial` = #{paySerial}</if>
+			<if test="bank != null">,`bank` = #{bank}</if>
+			<if test="payAccount != null">,`payAccount` = #{payAccount}</if>
+			<if test="payAmount != null">,`payAmount` = #{payAmount}</if>
+			<if test="payTime != null">,`payTime` = #{payTime}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from b2b_order_offlinepay_voucher
+		where id =	#{id}
+	</delete>
+	
+</mapper>

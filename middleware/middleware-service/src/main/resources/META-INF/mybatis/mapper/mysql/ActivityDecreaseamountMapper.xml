@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.ActivityDecreaseamountMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`fullCutItemId`,`totalPrice`,`decreaseAmount`,`isDelete`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.ActivityDecreaseamount">
+		select
+		<include refid="columnList" />
+		from cx_activity_decreaseamount
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.ActivityDecreaseamount">
+		select
+		<include refid="columnList" />
+		from cx_activity_decreaseamount
+		where tenantId = #{tenantId} and ${property}=#{value}
+		AND isDelete=1
+		order by totalPrice
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.ActivityDecreaseamount">
+		select
+		<include refid="columnList" />
+		from cx_activity_decreaseamount
+		where tenantId = #{tenantId} and ${property}=#{value}
+		AND isDelete=1
+		order by totalPrice
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.ActivityDecreaseamount">
+		select
+		<include refid="columnList" />
+		from cx_activity_decreaseamount
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.ActivityDecreaseamount">
+		select
+		<include refid="columnList" />
+		from cx_activity_decreaseamount 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.ActivityDecreaseamount">
+		select
+		<include refid="columnList" />
+		from cx_activity_decreaseamount 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.ActivityDecreaseamount">
+		select
+		<include refid="columnList" />
+		from cx_activity_decreaseamount 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from cx_activity_decreaseamount where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from cx_activity_decreaseamount 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.ActivityDecreaseamount"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into cx_activity_decreaseamount
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="fullCutItemId != null">,`fullCutItemId`</if>
+			<if test="totalPrice != null">,`totalPrice`</if>
+			<if test="decreaseAmount != null">,`decreaseAmount`</if>
+			<if test="isDelete != null">,`isDelete`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="fullCutItemId != null">,#{fullCutItemId}</if>
+			<if test="totalPrice != null">,#{totalPrice}</if>
+			<if test="decreaseAmount != null">,#{decreaseAmount}</if>
+			<if test="isDelete != null">,#{isDelete}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.ActivityDecreaseamount">
+		update cx_activity_decreaseamount
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="fullCutItemId != null">,`fullCutItemId` = #{fullCutItemId}</if>
+			<if test="totalPrice != null">,`totalPrice` = #{totalPrice}</if>
+			<if test="decreaseAmount != null">,`decreaseAmount` = #{decreaseAmount}</if>
+			<if test="isDelete != null">,`isDelete` = #{isDelete}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from cx_activity_decreaseamount
+		where id =	#{id}
+	</delete>
+
+
+	<!-- 根据商品ID和商品总金额查询满足的满减  TianYu 2016-04-15 14:26:07 Start -->
+	<select id="getDecreByGoodsId" resultType="net.deepdragon.entity.weipu.ActivityDecreaseamount">
+		SELECT
+			d.id,
+			d.fullCutItemId,
+			d.totalPrice,
+			d.decreaseAmount
+		FROM
+			cx_activity_decreaseamount d
+		WHERE
+			d.totalPrice &lt;= #{goodsPriceCount}
+			AND d.tenantId = #{tenantId}
+			AND d.isDelete = 1
+			AND d.fullCutItemId = (
+				SELECT
+					i.id
+				FROM
+					cx_activity_fullcut_item i,
+					(
+						SELECT
+							f.id,
+							f.startTime
+						FROM
+							cx_activity_fullcut f
+						WHERE
+							f.tenantId = #{tenantId}
+							AND f.startTime &lt;= SYSDATE()
+							AND f.endTime &gt;= SYSDATE()
+							AND f.isDelete = 1
+					) fc
+				WHERE i.fullCutId = fc.id
+					AND i.itemType = 'goods'
+					AND i.tenantId = #{tenantId}
+					AND i.itemId = #{goodsId}
+				ORDER BY
+					fc.startTime DESC
+				LIMIT 1
+			)
+		ORDER BY
+			d.totalPrice DESC
+		LIMIT 1
+	</select>
+	<!-- 根据商品ID和商品总金额查询满足的满减  TianYu 2016-04-15 14:26:07 End -->
+</mapper>

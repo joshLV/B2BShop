@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.MerchantMapper">
+
+	<sql id="columnList">
+		a.id, a.tenantId, a.typeId, a.name, a.shortName, CONCAT((select setvalue from shared_system_set where setKey='shopUrl'),CONCAT('/shop/',a.urlAddress)) as url,CONCAT((select setvalue from shared_system_set where setKey='imageUrl'),(select setvalue from wp_merchant_setting where setKey='pic' and shopId=a.id)) as pic, a.businessLicenseCode, a.businessLicense, a.groupName, a.imageWidth, a.imageHeight, a.head, a.sex, a.mobile, a.telphone, a.email, a.areaPath, a.address, a.status, a.sign, a.urlAddress, a.createUser, a.createDate, a.modifyUser, a.modifyDate, a.qqKeFu, a.hasRebate ,CONCAT((select setvalue from shared_system_set where setKey='imageUrl'), a.weixinImg) as weixinImg, a.deliveryDay, a.initialPost, a.website
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.Merchant">
+		select
+		<include refid="columnList" />
+		, (select q.linkMan from b2b_quotation q where q.merchantId=a.id order by q.createDate desc limit 1) as linkMan
+		, (select q.linkMobel from b2b_quotation q where q.merchantId=a.id order by q.createDate desc limit 1) as linkMobel
+		, (select q.linkTel from b2b_quotation q where q.merchantId=a.id order by q.createDate desc limit 1) as linkTel
+		<if test="atitude != null and longitude!=null">
+			,ROUND(6378.138 * 2 * ASIN(SQRT(POW(SIN(( #{atitude} * PI() / 180- a.atitude * PI() / 180) / 2),2) + COS(#{atitude} * PI() / 180) * COS(a.atitude * PI() / 180) * POW(SIN((#{longitude} * PI() / 180- a.longitude * PI() / 180) / 2),2)))*1000) AS km,
+			IFNULL((SELECT COUNT(o.id) FROM wp_order o WHERE o.shopId = a.id  AND o.orderStatus = 'trade_finished' LIMIT 1), '0' ) AS sile
+		</if>
+		from wp_merchant as a
+		where a.id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.Merchant">
+		select
+		<include refid="columnList" />
+		from wp_merchant as a
+		where a.tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.Merchant">
+		select
+		<include refid="columnList" />
+		from wp_merchant as a
+		where a.tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.Merchant">
+		select
+		<include refid="columnList" />
+		from wp_merchant as a
+		where a.id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.Merchant">
+		select
+		<include refid="columnList" />
+		from wp_merchant as a
+		where a.tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.Merchant">
+		select
+		<include refid="columnList" />
+		from wp_merchant as a
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.Merchant">
+		select
+		<include refid="columnList" />
+		from wp_merchant as a
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_merchant where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_merchant 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.Merchant"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_merchant
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="typeId != null">,`typeId`</if>
+			<if test="name != null">,`name`</if>
+			<if test="shortName != null">,`shortName`</if>
+			<if test="businessLicenseCode != null">,`businessLicenseCode`</if>
+			<if test="businessLicense != null">,`businessLicense`</if>
+			<if test="groupName != null">,`groupName`</if>
+			<if test="imageWidth != null">,`imageWidth`</if>
+			<if test="imageHeight != null">,`imageHeight`</if>
+			<if test="head != null">,`head`</if>
+			<if test="sex != null">,`sex`</if>
+			<if test="mobile != null">,`mobile`</if>
+			<if test="telphone != null">,`telphone`</if>
+			<if test="email != null">,`email`</if>
+			<if test="areaPath != null">,`areaPath`</if>
+			<if test="address != null">,`address`</if>
+			<if test="status != null">,`status`</if>
+			<if test="sign != null">,`sign`</if>
+			<if test="urlAddress != null">,`urlAddress`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="typeId != null">,#{typeId}</if>
+			<if test="name != null">,#{name}</if>
+			<if test="shortName != null">,#{shortName}</if>
+			<if test="businessLicenseCode != null">,#{businessLicenseCode}</if>
+			<if test="businessLicense != null">,#{businessLicense}</if>
+			<if test="groupName != null">,#{groupName}</if>
+			<if test="imageWidth != null">,#{imageWidth}</if>
+			<if test="imageHeight != null">,#{imageHeight}</if>
+			<if test="head != null">,#{head}</if>
+			<if test="sex != null">,#{sex}</if>
+			<if test="mobile != null">,#{mobile}</if>
+			<if test="telphone != null">,#{telphone}</if>
+			<if test="email != null">,#{email}</if>
+			<if test="areaPath != null">,#{areaPath}</if>
+			<if test="address != null">,#{address}</if>
+			<if test="status != null">,#{status}</if>
+			<if test="sign != null">,#{sign}</if>
+			<if test="urlAddress != null">,#{urlAddress}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.Merchant">
+		update wp_merchant
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="typeId != null">,`typeId` = #{typeId}</if>
+			<if test="name != null">,`name` = #{name}</if>
+			<if test="shortName != null">,`shortName` = #{shortName}</if>
+			<if test="businessLicenseCode != null">,`businessLicenseCode` = #{businessLicenseCode}</if>
+			<if test="businessLicense != null">,`businessLicense` = #{businessLicense}</if>
+			<if test="groupName != null">,`groupName` = #{groupName}</if>
+			<if test="imageWidth != null">,`imageWidth` = #{imageWidth}</if>
+			<if test="imageHeight != null">,`imageHeight` = #{imageHeight}</if>
+			<if test="head != null">,`head` = #{head}</if>
+			<if test="sex != null">,`sex` = #{sex}</if>
+			<if test="mobile != null">,`mobile` = #{mobile}</if>
+			<if test="telphone != null">,`telphone` = #{telphone}</if>
+			<if test="email != null">,`email` = #{email}</if>
+			<if test="areaPath != null">,`areaPath` = #{areaPath}</if>
+			<if test="address != null">,`address` = #{address}</if>
+			<if test="status != null">,`status` = #{status}</if>
+			<if test="sign != null">,`sign` = #{sign}</if>
+			<if test="urlAddress != null">,`urlAddress` = #{urlAddress}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_merchant
+		where id =	#{id}
+	</delete>
+
+	<select id="getNameMerchants" resultType="net.deepdragon.entity.weipu.Merchant">
+		select
+		a.*
+		from wp_merchant as a
+		Where a.tenantId=#{tenantId} AND a.status=3
+		AND a.name LIKE CONCAT(CONCAT('%', #{merchantName}), '%');
+	</select>
+	
+</mapper>

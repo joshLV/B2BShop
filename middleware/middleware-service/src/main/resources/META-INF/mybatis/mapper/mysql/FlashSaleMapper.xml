@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.FlashSaleMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`detailId`,`goodsId`,`total`,`ypice`,`frozen`,`sold`,`methodId`,`orderNo`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.FlashSale">
+		select
+		<include refid="columnList" />
+		from wp_flash_sale
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.FlashSale">
+		select
+		<include refid="columnList" />
+		from wp_flash_sale
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.FlashSale">
+		select
+		<include refid="columnList" />
+		from wp_flash_sale
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.FlashSale">
+		select
+		<include refid="columnList" />
+		from wp_flash_sale
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.FlashSale">
+		select
+		<include refid="columnList" />
+		from wp_flash_sale 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.FlashSale">
+		select
+		<include refid="columnList" />
+		from wp_flash_sale 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.FlashSale">
+		select
+		<include refid="columnList" />
+		from wp_flash_sale 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_flash_sale where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_flash_sale 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.FlashSale"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_flash_sale
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="detailId != null">,`detailId`</if>
+			<if test="goodsId != null">,`goodsId`</if>
+			<if test="total != null">,`total`</if>
+			<if test="ypice != null">,`ypice`</if>
+			<if test="frozen != null">,`frozen`</if>
+			<if test="sold != null">,`sold`</if>
+			<if test="methodId != null">,`methodId`</if>
+			<if test="orderNo != null">,`orderNo`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="detailId != null">,#{detailId}</if>
+			<if test="goodsId != null">,#{goodsId}</if>
+			<if test="total != null">,#{total}</if>
+			<if test="ypice != null">,#{ypice}</if>
+			<if test="frozen != null">,#{frozen}</if>
+			<if test="sold != null">,#{sold}</if>
+			<if test="methodId != null">,#{methodId}</if>
+			<if test="orderNo != null">,#{orderNo}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.FlashSale">
+		update wp_flash_sale
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="detailId != null">,`detailId` = #{detailId}</if>
+			<if test="goodsId != null">,`goodsId` = #{goodsId}</if>
+			<if test="total != null">,`total` = #{total}</if>
+			<if test="ypice != null">,`ypice` = #{ypice}</if>
+			<if test="frozen != null">,`frozen` = #{frozen}</if>
+			<if test="sold != null">,`sold` = #{sold}</if>
+			<if test="methodId != null">,`methodId` = #{methodId}</if>
+			<if test="orderNo != null">,`orderNo` = #{orderNo}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_flash_sale
+		where id =	#{id}
+	</delete>
+
+    <delete id="delFlashSale">
+        delete from wp_flash_sale
+        where detailId =	#{detailId}
+    </delete>
+
+
+    <select id="getFlashSaleGoods" resultType="java.util.HashMap">
+		SELECT g.id,g.name,g.price,g.marketPrice,g.categoryId,m.*, (SELECT CONCAT((SELECT setvalue FROM shared_system_set WHERE setKey='imageUrl'),CONCAT(CONCAT(groupName,'/'),url)) AS pic FROM wp_goods_images WHERE goodsId = g.id ORDER BY orderNo LIMIT 1) AS pic
+		FROM
+		(
+		SELECT fs.goodsId,fs.total,fs.ypice,fs.orderNo,fsp.startTime,fsp.endTime,fsp.planId FROM wp_flash_sale fs  
+		LEFT JOIN wp_flash_sale_plandetail fsp ON fs.detailId = fsp.id
+		WHERE fsp.endTime = (SELECT  MIN(endTime) FROM wp_flash_sale_plandetail WHERE `status`=1 AND `type` = #{type} AND tenantId=#{tenantId} AND endTime > NOW())
+		) m
+		LEFT JOIN wp_goods g ON g.id = m.goodsId
+		ORDER BY m.startTime ASC, m.orderNo ASC
+	</select>
+	
+	<select id="getAllFlashSaleGoods" resultType="java.util.HashMap">
+		SELECT g.id,g.name,g.price,g.marketPrice,g.categoryId,g.fullName,g.productId,m.*, (SELECT CONCAT((SELECT setvalue FROM shared_system_set WHERE setKey='imageUrl'),CONCAT(CONCAT(groupName,'/'),url)) AS pic FROM wp_goods_images WHERE goodsId = g.id ORDER BY orderNo LIMIT 1) AS pic
+		FROM
+		(
+		SELECT fs.goodsId,fs.total,fs.ypice,fs.orderNo,fsp.startTime,fsp.endTime,fsp.planId,fs.detailId FROM wp_flash_sale fs  
+		LEFT JOIN wp_flash_sale_plandetail fsp ON fs.detailId = fsp.id
+		WHERE fsp.`status`=1 AND fsp.`type` = #{type} AND fsp.tenantId=#{tenantId} AND fsp.endTime > NOW()
+		) m
+		LEFT JOIN wp_goods g ON g.id = m.goodsId
+		ORDER BY m.startTime ASC, m.orderNo ASC;
+	</select>
+	
+</mapper>

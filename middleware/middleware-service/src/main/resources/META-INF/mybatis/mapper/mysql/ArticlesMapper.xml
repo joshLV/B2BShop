@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.ArticlesMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`categoryId`,`title`,`author`,`content`,`isPublication`,`isTop`,`seoTitle`,`seoKeywords`,`seoDescription`,`orderNo`,`createUser`,`createDate`,`modifyUser`,`modifyDate`,`platform`,`phoneContent`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.Articles">
+		select
+		<include refid="columnList" />
+		from wp_articles
+		where id = #{id}
+		and tenantId = #{tenantId}
+		and platform = #{platform}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.Articles">
+		select
+		<include refid="columnList" />
+		from wp_articles
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.Articles">
+		select
+		<include refid="columnList" />
+		from wp_articles
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+		order by isTop desc,orderNo asc
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.Articles">
+		select
+		<include refid="columnList" />
+		from wp_articles
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+		and tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.Articles">
+		select
+		<include refid="columnList" />
+		from wp_articles 
+		where tenantId = #{tenantId} and platform = #{platform}
+		order by isTop desc,orderNo asc
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.Articles">
+		select
+		<include refid="columnList" />
+		from wp_articles 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.Articles">
+		select
+		<include refid="columnList" />
+		from wp_articles 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_articles where tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_articles 
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.Articles"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_articles
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`,`platform`
+			<if test="categoryId != null">,`categoryId`</if>
+			<if test="title != null">,`title`</if>
+			<if test="author != null">,`author`</if>
+			<if test="content != null">,`content`</if>
+			<if test="isPublication != null">,`isPublication`</if>
+			<if test="isTop != null">,`isTop`</if>
+			<if test="seoTitle != null">,`seoTitle`</if>
+			<if test="seoKeywords != null">,`seoKeywords`</if>
+			<if test="seoDescription != null">,`seoDescription`</if>
+			<if test="orderNo != null">,`orderNo`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId},#{platform}
+			<if test="categoryId != null">,#{categoryId}</if>
+			<if test="title != null">,#{title}</if>
+			<if test="author != null">,#{author}</if>
+			<if test="content != null">,#{content}</if>
+			<if test="isPublication != null">,#{isPublication}</if>
+			<if test="isTop != null">,#{isTop}</if>
+			<if test="seoTitle != null">,#{seoTitle}</if>
+			<if test="seoKeywords != null">,#{seoKeywords}</if>
+			<if test="seoDescription != null">,#{seoDescription}</if>
+			<if test="orderNo != null">,#{orderNo}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.Articles">
+		update wp_articles
+		<set>
+			`tenantId` = #{tenantId},`platform` = #{platform}
+			<if test="categoryId != null">,`categoryId` = #{categoryId}</if>
+			<if test="title != null">,`title` = #{title}</if>
+			<if test="author != null">,`author` = #{author}</if>
+			<if test="content != null">,`content` = #{content}</if>
+			<if test="isPublication != null">,`isPublication` = #{isPublication}</if>
+			<if test="isTop != null">,`isTop` = #{isTop}</if>
+			<if test="seoTitle != null">,`seoTitle` = #{seoTitle}</if>
+			<if test="seoKeywords != null">,`seoKeywords` = #{seoKeywords}</if>
+			<if test="seoDescription != null">,`seoDescription` = #{seoDescription}</if>
+			<if test="orderNo != null">,`orderNo` = #{orderNo}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_articles
+		where id =	#{id}
+		and tenantId = #{tenantId}
+		and platform = #{platform}
+	</delete>
+	
+    <!-- 保存文章的标签信息 -->
+    <insert id="saveArticleTagInfos">
+        insert into wp_articles_tag (articlesId, tagId)
+        values (#{articlesId}, #{tagId})
+    </insert>
+	
+    <!-- 删除文章的标签信息 -->
+    <delete id="deleteArticleTagInfos">
+        delete from wp_articles_tag
+        where articlesId = #{articlesId}
+    </delete>
+    
+    <!-- 根据文章分类sign和条件获取文章信息 -->
+    <select id="getArticles" resultType="net.deepdragon.entity.weipu.Articles">
+		select art.`id`,art.`categoryId`,art.`title`,art.`author`,art.`isPublication`,art.`isTop`,art.`seoTitle`,art.`seoKeywords`,art.`seoDescription`,art.`orderNo`  
+        from wp_articles art
+        left join wp_articles_category cate on art.categoryId=cate.id 
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getArticlesByID" resultType="net.deepdragon.entity.weipu.Articles">
+		select * from wp_articles g where
+		g.`tenantId` = #{tenantId} and g.platform = #{platform} and
+		g.categoryId = #{parentID}
+		order by createDate
+		desc limit #{size};
+	</select>
+
+	<select id="getArticlesByTwoID" resultType="net.deepdragon.entity.weipu.Articles">
+		select * from wp_articles g where
+		g.`tenantId` = #{tenantId} and g.platform = #{platform} and
+		g.categoryId in (select c.id from wp_articles_category c where c.parentId = #{categoryId})
+		order by createDate
+		desc limit #{size};
+	</select>
+	<select id="getArticlesByThree" resultType="net.deepdragon.entity.weipu.Articles">
+		select * from wp_articles g where g.`tenantId` = #{tenantId} and g.platform = #{platform} and g.categoryId in (select a.id from wp_articles_category a where a.parentId in(
+select c.id from wp_articles_category c where c.parentId = #{categoryId})) order by createDate desc limit #{size};
+	</select>
+	<select id="getArticlesOne" resultType="net.deepdragon.entity.weipu.ArticlesCategory">
+		select * from wp_articles_category g where
+		g.`tenantId` = #{tenantId} and g.platform = #{platform} and
+		g.parentId = #{categoryId}
+		order by createDate
+		desc limit #{size};
+	</select>
+</mapper>

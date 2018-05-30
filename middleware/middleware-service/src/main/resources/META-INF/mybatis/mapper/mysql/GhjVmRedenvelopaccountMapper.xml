@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.GhjVmRedenvelopaccountMapper">
+
+	<sql id="columnList">
+		id,`buyerId`,`groupId`,`redEnvelopType`,`redEnvelopId`,`createTime`,`expiryTime`,`amount`,`releaseSource`,`merchantId`,`type`,`pIsAssigned` as `isAssigned`,`pLimitation` as `limitation`,`pSingleMaximum` as `singleMaximum`,`pValidityPeriod` as `validityPeriod`
+    </sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.GhjVmRedenvelopaccount">
+		select
+		<include refid="columnList" />
+		from ghj_vm_redenvelopaccount
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.GhjVmRedenvelopaccount">
+		select
+		<include refid="columnList" />
+		from ghj_vm_redenvelopaccount
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.GhjVmRedenvelopaccount">
+		select
+		<include refid="columnList" />
+		from ghj_vm_redenvelopaccount
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.GhjVmRedenvelopaccount">
+		select
+		<include refid="columnList" />
+		from ghj_vm_redenvelopaccount
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.GhjVmRedenvelopaccount">
+		select
+		<include refid="columnList" />
+		from ghj_vm_redenvelopaccount
+		where tenantId = #{tenantId}
+	</select>
+
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.GhjVmRedenvelopaccount">
+		select
+		<include refid="columnList" />
+		from ghj_vm_redenvelopaccount
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getList" resultType="net.deepdragon.entity.weipu.GhjVmRedenvelopaccount">
+		select
+		<include refid="columnList" />
+		from ghj_vm_redenvelopaccount
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from ghj_vm_redenvelopaccount where tenantId = #{tenantId}
+	</select>
+
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from ghj_vm_redenvelopaccount
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.GhjVmRedenvelopaccount"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into ghj_vm_redenvelopaccount
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="buyerId != null">,`buyerId`</if>
+			<if test="redEnvelopId != null">,`redEnvelopId`</if>
+			<if test="amount != null">,`amount`</if>
+			<if test="merchantId != null">,`merchantId`</if>
+			<if test="type != null">,`type`</if>
+			<if test="limitation != null">,`limitation`</if>
+			<if test="singleMaximum != null">,`singleMaximum`</if>
+			<if test="limitRuleType != null">,`limitRuleType`</if>
+			<if test="StartTime != null">,`StartTime`</if>
+			<if test="EndTime != null">,`EndTime`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="buyerId != null">,#{buyerId}</if>
+			<if test="redEnvelopId != null">,#{redEnvelopId}</if>
+			<if test="amount != null">,#{amount}</if>
+			<if test="merchantId != null">,#{merchantId}</if>
+			<if test="type != null">,#{type}</if>
+			<if test="limitation != null">,#{limitation}</if>
+			<if test="singleMaximum != null">,#{singleMaximum}</if>
+			<if test="limitRuleType != null">,#{limitRuleType}</if>
+			<if test="StartTime != null">,#{StartTime}</if>
+			<if test="EndTime != null">,#{EndTime}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.GhjVmRedenvelopaccount">
+		update ghj_vm_redenvelopaccount
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="buyerId != null">,`buyerId` = #{buyerId}</if>
+			<if test="redEnvelopId != null">,`redEnvelopId` = #{redEnvelopId}</if>
+			<if test="amount != null">,`amount` = #{amount}</if>
+			<if test="merchantId != null">,`merchantId` = #{merchantId}</if>
+			<if test="type != null">,`type` = #{type}</if>
+			<if test="limitation != null">,`limitation` = #{limitation}</if>
+			<if test="singleMaximum != null">,`singleMaximum` = #{singleMaximum}</if>
+			<if test="limitRuleType != null">,`limitRuleType` = #{limitRuleType}</if>
+			<if test="StartTime != null">,`StartTime` = #{StartTime}</if>
+			<if test="EndTime != null">,`EndTime` = #{EndTime}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from ghj_vm_redenvelopaccount
+		where id =	#{id}
+	</delete>
+
+	<!-- 查询平台定向供应商的红包 -->
+	<select id="getDirectionalMerchantList" resultType="net.deepdragon.entity.weipu.GhjVmRedenvelopaccount">
+		select r.redEnvelopId AS id,vr.*
+		from ghj_vm_redenvelopaccount vr
+		left join ghj_redenvelop_rule r on vr.redEnvelopId = r.redEnvelopId
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getRedenvelopList" resultType="net.deepdragon.entity.weipu.GhjVmRedenvelopaccount">
+		select vr.*
+		from ghj_vm_redenvelopaccount vr
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<!--Desc:查询红包记录 Auth:zhangqiang Time:2016-03-09 15:50:16 Start-->
+	<select id="getRedenvelopRecord" resultType="net.deepdragon.entity.weipu.GhjVmRedenvelopaccount">
+		SELECT
+		v.id,
+		buyerId,
+		groupId,
+		redEnvelopType,
+		redEnvelopId,
+		createTime,
+		expiryTime,
+		amount,
+		releaseSource,
+		merchantId,
+		CASE pIsAssigned
+		WHEN 1 THEN '平台'
+		WHEN 0 THEN m.name
+		ELSE '平台'
+		END AS merchantName,
+		type,
+		pIsAssigned AS isAssigned,
+		pLimitation AS limitation,
+		pSingleMaximum AS singleMaximum,
+		pValidityPeriod AS validityPeriod
+		FROM
+		ghj_vm_redenvelopaccount v
+		LEFT JOIN WP_MERCHANT M ON M.id = v.merchantId
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	<!--Desc:查询红包记录 Auth:zhangqiang Time:2016-03-09 15:50:16 End-->
+</mapper>

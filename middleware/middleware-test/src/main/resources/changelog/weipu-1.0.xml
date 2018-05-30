@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+	<changeSet author="张莹" id="1">
+		<createTable catalogName="weipu" tableName="shared_resources_type">
+			<column name="id" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="description" type="VARCHAR(128)" />
+			<column name="createUser" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column defaultValueComputed="CURRENT_TIMESTAMP" name="createDate"
+				type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="modifyUser" type="VARCHAR(32)" />
+			<column name="modifyDate" type="datetime" />
+		</createTable>
+	</changeSet>
+	<changeSet author="张莹" id="2">
+		<createTable catalogName="weipu" tableName="shared_resources">
+			<column name="id" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="typeId" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(16)">
+				<constraints nullable="false" />
+			</column>
+			<column name="url" type="VARCHAR(128)">
+				<constraints nullable="false" />
+			</column>
+			<column defaultValueNumeric="0" name="orderNo" type="INT(10)">
+				<constraints nullable="false" />
+			</column>
+			<column name="description" type="VARCHAR(64)" />
+			<column name="createUser" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column defaultValueComputed="CURRENT_TIMESTAMP" name="createDate"
+				type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="modifyUser" type="VARCHAR(32)" />
+			<column name="modifyDate" type="datetime" />
+		</createTable>
+	</changeSet>
+	<changeSet author="张莹" id="3">
+		<createTable catalogName="weipu" tableName="shared_role">
+			<column name="id" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="tenantId" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="description" type="VARCHAR(128)" />
+			<column name="createUser" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column defaultValueComputed="CURRENT_TIMESTAMP" name="createDate"
+				type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="modifyUser" type="VARCHAR(32)" />
+			<column name="modifyDate" type="datetime" />
+		</createTable>
+	</changeSet>
+	<changeSet author="张莹" id="4">
+		<createTable catalogName="weipu" tableName="shared_user">
+			<column name="id" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="tenantId" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="userName" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="passwd" type="VARCHAR(64)">
+				<constraints nullable="false" />
+			</column>
+			<column name="email" type="VARCHAR(32)" />
+			<column name="nickName" type="VARCHAR(16)" />
+			<column name="realName" type="VARCHAR(16)" />
+			<column defaultValueNumeric="-1" name="sex" remarks="-1-保密,0-女,1-男"
+				type="INT(10)" />
+			<column name="mobile" type="VARCHAR(19)" />
+			<column name="birthday" type="datetime" />
+			<column defaultValueNumeric="0" name="status" type="INT(10)">
+				<constraints nullable="false" />
+			</column>
+			<column name="description" type="VARCHAR(128)" />
+			<column name="createUser" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column defaultValueComputed="CURRENT_TIMESTAMP" name="createDate"
+				type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="modifyUser" type="VARCHAR(32)" />
+			<column name="modifyDate" type="datetime" />
+		</createTable>
+	</changeSet>
+	<changeSet author="张莹" id="5">
+		<createTable catalogName="weipu" tableName="shared_module">
+			<column name="id" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="tenantId" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="resourcesId" type="BIGINT(19)" />
+			<column name="name" type="VARCHAR(16)">
+				<constraints nullable="false" />
+			</column>
+			<column name="icon" type="VARCHAR(128)" />
+			<column name="parentId" type="BIGINT(19)" />
+			<column name="orderNo" type="INT(10)" />
+			<column name="sign" type="VARCHAR(32)" />
+			<column name="functionIds" type="TINYTEXT" />
+			<column name="description" type="VARCHAR(128)" />
+			<column name="createUser" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column defaultValueComputed="CURRENT_TIMESTAMP" name="createDate"
+				type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="modifyUser" type="VARCHAR(32)" />
+			<column name="modifyDate" type="datetime" />
+		</createTable>
+	</changeSet>
+	<changeSet author="张莹" id="6">
+		<createTable catalogName="weipu" tableName="shared_user_role">
+			<column name="userId" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="roleId" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="张莹" id="7">
+		<createTable catalogName="weipu" tableName="shared_permissions">
+			<column name="id" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="roleId" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="moduleId" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="permissions" type="TINYTEXT" />
+			<column name="functionIds" type="TINYTEXT" />
+			<column name="createUser" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column defaultValueComputed="CURRENT_TIMESTAMP" name="createDate"
+				type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="modifyUser" type="VARCHAR(32)" />
+			<column name="modifyDate" type="datetime" />
+		</createTable>
+	</changeSet>
+	<changeSet author="张莹" id="8">
+		<createTable catalogName="weipu" tableName="shared_resources_function">
+			<column name="resourcesId" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="functionsId" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="张莹" id="9">
+		<createTable catalogName="weipu" tableName="shared_log_config">
+			<column name="id" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="tenantId" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="className" type="VARCHAR(64)">
+				<constraints nullable="false" />
+			</column>
+			<column name="methodName" type="VARCHAR(16)">
+				<constraints nullable="false" />
+			</column>
+			<column name="operation" type="VARCHAR(16)" />
+			<column defaultValueNumeric="0" name="enabled" type="INT(10)" />
+			<column name="description" type="VARCHAR(128)" />
+			<column name="createUser" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column defaultValueComputed="CURRENT_TIMESTAMP" name="createDate"
+				type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="modifyUser" type="VARCHAR(32)" />
+			<column name="modifyDate" type="datetime" />
+		</createTable>
+	</changeSet>
+	<changeSet author="张莹" id="10">
+		<createTable catalogName="weipu" tableName="shared_tenant">
+			<column name="id" remarks="系统主键" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="code" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(64)">
+				<constraints nullable="false" />
+			</column>
+			<column name="shortName" type="VARCHAR(64)" />
+			<column name="areaPath" type="VARCHAR(256)" />
+			<column name="address" type="VARCHAR(128)" />
+			<column name="linker" type="VARCHAR(32)" />
+			<column name="telphone" type="VARCHAR(32)" />
+			<column name="mobile" type="VARCHAR(16)" />
+			<column name="email" type="VARCHAR(64)" />
+			<column name="fax" type="VARCHAR(32)" />
+			<column defaultValueNumeric="1" name="status" remarks="1-正常0-冻结"
+				type="INT(10)" />
+			<column defaultValueComputed="CURRENT_TIMESTAMP" name="createDate"
+				type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="createUser" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="modifyDate" type="datetime" />
+			<column name="modifyUser" type="VARCHAR(32)" />
+		</createTable>
+	</changeSet>
+	<changeSet author="张莹" id="11">
+		<createTable catalogName="weipu" tableName="shared_functions">
+			<column name="id" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(16)">
+				<constraints nullable="false" />
+			</column>
+			<column name="sign" type="VARCHAR(16)">
+				<constraints nullable="false" />
+			</column>
+			<column defaultValueNumeric="0" name="orderNo" type="INT(10)">
+				<constraints nullable="false" />
+			</column>
+			<column name="description" type="VARCHAR(64)" />
+			<column name="createUser" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column defaultValueComputed="CURRENT_TIMESTAMP" name="createDate"
+				type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="modifyUser" type="VARCHAR(32)" />
+			<column name="modifyDate" type="datetime" />
+		</createTable>
+	</changeSet>
+	<changeSet author="张莹" id="12">
+		<createTable catalogName="weipu" tableName="shared_log">
+			<column name="id" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="tenantId" type="BIGINT(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="className" type="VARCHAR(64)">
+				<constraints nullable="false" />
+			</column>
+			<column name="methodName" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="action" type="VARCHAR(128)" />
+			<column name="operation" type="VARCHAR(16)" />
+			<column name="ip" type="VARCHAR(32)" />
+			<column name="createUser" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column defaultValueComputed="CURRENT_TIMESTAMP" name="createDate"
+				type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="modifyUser" type="VARCHAR(32)" />
+			<column name="modifyDate" type="datetime" />
+		</createTable>
+	</changeSet>
+	<changeSet author="张莹" id="14">
+		<addPrimaryKey catalogName="weipu" columnNames="id"
+			constraintName="PRIMARY" tableName="shared_resources" />
+	</changeSet>
+	<changeSet author="张莹" id="15">
+		<addPrimaryKey catalogName="weipu" columnNames="id"
+			constraintName="PRIMARY" tableName="shared_user" />
+	</changeSet>
+	<changeSet author="张莹" id="16">
+		<addPrimaryKey catalogName="weipu" columnNames="id"
+			constraintName="PRIMARY" tableName="shared_tenant" />
+	</changeSet>
+	<changeSet author="张莹" id="17">
+		<addPrimaryKey catalogName="weipu" columnNames="id"
+			constraintName="PRIMARY" tableName="department" />
+	</changeSet>
+	<changeSet author="张莹" id="18">
+		<addPrimaryKey catalogName="weipu" columnNames="id"
+			constraintName="PRIMARY" tableName="shared_log_config" />
+	</changeSet>
+	<changeSet author="张莹" id="19">
+		<addPrimaryKey catalogName="weipu" columnNames="id"
+			constraintName="PRIMARY" tableName="shared_role" />
+	</changeSet>
+	<changeSet author="张莹" id="20">
+		<addPrimaryKey catalogName="weipu" columnNames="id"
+			constraintName="PRIMARY" tableName="shared_permissions" />
+	</changeSet>
+	<changeSet author="张莹" id="21">
+		<addPrimaryKey catalogName="weipu" columnNames="id"
+			constraintName="PRIMARY" tableName="shared_functions" />
+	</changeSet>
+	<changeSet author="张莹" id="22">
+		<addPrimaryKey catalogName="weipu" columnNames="id"
+			constraintName="PRIMARY" tableName="shared_log" />
+	</changeSet>
+	<changeSet author="张莹" id="23">
+		<addPrimaryKey catalogName="weipu" columnNames="resourcesId, functionsId"
+			constraintName="PRIMARY" tableName="shared_resources_function" />
+	</changeSet>
+	<changeSet author="张莹" id="24">
+		<addPrimaryKey catalogName="weipu" columnNames="id"
+			constraintName="PRIMARY" tableName="shared_resources_type" />
+	</changeSet>
+	<changeSet author="张莹" id="25">
+		<addPrimaryKey catalogName="weipu" columnNames="userId, roleId"
+			constraintName="PRIMARY" tableName="shared_user_role" />
+	</changeSet>
+	<changeSet author="张莹" id="26">
+		<addPrimaryKey catalogName="weipu" columnNames="id"
+			constraintName="PRIMARY" tableName="shared_module" />
+	</changeSet>
+</databaseChangeLog>

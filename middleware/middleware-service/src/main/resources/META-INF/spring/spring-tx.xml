@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<description>数据库事务管理</description>
+
+	<tx:annotation-driven />
+	
+	<!-- 开启注解事务 只对当前配置文件有效 -->
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource">
+			<ref bean="routingDataSource" />
+		</property>
+	</bean>
+
+	<!-- 配置事务传播特性 -->
+	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="save*" propagation="REQUIRED"
+				rollback-for="java.lang.Exception" />
+			<tx:method name="update*" propagation="REQUIRED"
+				rollback-for="java.lang.Exception" />
+			<tx:method name="delete*" propagation="REQUIRED"
+				rollback-for="java.lang.Exception" />
+			<tx:method name="execute*" propagation="REQUIRED"
+				rollback-for="java.lang.Exception" />
+			<tx:method name="insert*" propagation="REQUIRED"
+				rollback-for="java.lang.Exception" />
+			<tx:method name="get*" propagation="SUPPORTS" />
+			<tx:method name="select*" propagation="SUPPORTS" />
+			<tx:method name="load*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="search*" read-only="true" />
+			<tx:method name="*" propagation="SUPPORTS" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 配置哪些类的哪些方法参与事务 -->
+	<aop:config proxy-target-class="true">
+	   	    
+	    <aop:pointcut id="servicePointcut" expression="(execution(* net.deepdragon.service..*.*(..))) " />
+	   	      
+	    <aop:advisor pointcut-ref="servicePointcut" advice-ref="routingDataSourceBeforeAdvice" />
+		<aop:advisor pointcut-ref="servicePointcut"	advice-ref="transactionAdvice" />
+		<aop:advisor pointcut-ref="servicePointcut" advice-ref="routingDataSourceAfterAdvice" />
+		<aop:advisor pointcut-ref="servicePointcut"	advice-ref="routingDataSourceThrowsAdvice" />
+		 
+	</aop:config>
+
+	<!-- 读写分离 -->
+	<util:list id="readMethodPatterns" list-class="java.util.ArrayList"  value-type="java.lang.String" >
+		<value>get*|find*</value>
+	</util:list>
+	
+</beans>

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.OrderItemMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`orderSn`,`goodsId`,`goodsName`,`goodsPrice`,`quantity`,`specification`,`ps`,`status`,`createUser`,`createDate`,`modifyUser`,`modifyDate`,`isReview`,`tablePkId`,`tableName`,`preferentialMoney`
+	</sql>
+
+	<sql id="columnListNew">
+		woi.id, woi.tenantId, woi.orderSn, woi.goodsId, woi.goodsName, woi.goodsPrice, woi.quantity, woi.specification, woi.ps, woi.status, woi.createUser, woi.createDate, woi.modifyUser, woi.modifyDate, woi.isReview, woi.tablePkId, woi.tableName, woi.preferentialMoney
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.OrderItem">
+		select
+		<include refid="columnList" />
+		from wp_order_item
+		where id = #{id}
+	</select>
+    <select id="getOrderItemPager" resultType="net.deepdragon.entity.weipu.OrderItem">
+        select
+        wp_order_item.* ,wp_goods.sn,wp_goods.barcode,wp_goods.fullName
+        from wp_order_item
+        left join wp_goods on wp_order_item.goodsId=wp_goods.id
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+    
+	<select id="find" resultType="net.deepdragon.entity.weipu.OrderItem">
+		select
+		<include refid="columnList" />
+		from wp_order_item
+		where tenantId = #{tenantId} and
+		${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.OrderItem">
+		select
+		<include refid="columnList" />
+		from wp_order_item
+		where tenantId = #{tenantId} and
+		${property}=#{value}
+	</select>
+
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.OrderItem">
+		select
+		<include refid="columnList" />
+		from wp_order_item
+		where id in
+		<foreach collection="list" item="id" index="index" open="("
+			close=")" separator=",">#{id}</foreach>
+	</select>
+
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.OrderItem">
+		select
+		<include refid="columnList" />
+		from wp_order_item
+		where tenantId = #{tenantId}
+	</select>
+
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.OrderItem">
+		select
+		<include refid="columnList" />
+		from wp_order_item
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getList" resultType="net.deepdragon.entity.weipu.OrderItem">
+		select
+		<include refid="columnListNew" />
+		, CONCAT(
+			(select setvalue from shared_system_set where setKey = 'imageUrl')
+			, CONCAT(CONCAT((select wgi.groupName from wp_goods_images wgi where wgi.goodsId=woi.goodsId order by wgi.createDate desc limit 1), '/'))
+			, (select wgi.url from wp_goods_images wgi where wgi.goodsId=woi.goodsId order by wgi.createDate desc limit 1)
+		) as pic
+		from wp_order_item woi
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getExportList" resultType="net.deepdragon.entity.weipu.OrderItem">
+		select i.*,g.barcode,g.sn,g.fullName from wp_order_item i left join wp_goods g on
+		i.goodsId = g.id
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_order_item where tenantId = #{tenantId}
+	</select>
+
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from
+		wp_order_item
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.OrderItem"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_order_item
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="orderSn != null">,`orderSn`</if>
+			<if test="goodsId != null">,`goodsId`</if>
+			<if test="goodsName != null">,`goodsName`</if>
+			<if test="goodsPrice != null">,`goodsPrice`</if>
+			<if test="quantity != null">,`quantity`</if>
+			<if test="status != null">,`status`</if>
+			<if test="specification != null">,`specification`</if>
+			<if test="ps != null">,`ps`</if>
+			<if test="isReview != null">,`isReview`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+			<if test="units != null">,`units`</if>
+			<if test="containTax != null">,`containTax`</if>
+			<if test="freight != null">,`freight`</if>
+			<if test="goodsPriceCount != null">,`goodsPriceCount`</if>
+			<if test="goodsType != null">,`goodsType`</if>
+			<if test="tablePkId != null">,`tablePkId`</if>
+			<if test="tableName != null">,`tableName`</if>
+			<if test="preferentialMoney != null">,`preferentialMoney`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="orderSn != null">,#{orderSn}</if>
+			<if test="goodsId != null">,#{goodsId}</if>
+			<if test="goodsName != null">,#{goodsName}</if>
+			<if test="goodsPrice != null">,#{goodsPrice}</if>
+			<if test="quantity != null">,#{quantity}</if>
+			<if test="status != null">,#{status}</if>
+			<if test="specification != null">,#{specification}</if>
+			<if test="ps != null">,#{ps}</if>
+			<if test="isReview != null">,#{isReview}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+			<if test="units != null">,#{units}</if>
+			<if test="containTax != null">,#{containTax}</if>
+			<if test="freight != null">,#{freight}</if>
+			<if test="goodsPriceCount != null">,#{goodsPriceCount}</if>
+			<if test="goodsType != null">,#{goodsType}</if>
+			<if test="tablePkId != null">,#{tablePkId}</if>
+			<if test="tableName != null">,#{tableName}</if>
+			<if test="preferentialMoney != null">,#{preferentialMoney}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.OrderItem">
+		update wp_order_item
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="orderSn != null">,`orderSn` = #{orderSn}</if>
+			<if test="goodsId != null">,`goodsId` = #{goodsId}</if>
+			<if test="goodsName != null">,`goodsName` = #{goodsName}</if>
+			<if test="goodsPrice != null">,`goodsPrice` = #{goodsPrice}</if>
+			<if test="quantity != null">,`quantity` = #{quantity}</if>
+			<if test="status != null">,`status` = #{status}</if>
+			<if test="specification != null">,`specification` = #{specification}</if>
+			<if test="ps != null">,`ps` = #{ps}</if>
+			<if test="isReview != null">,`isReview` = #{isReview}</if>
+			<if test="tablePkId != null">,`tablePkId` = #{tablePkId}</if>
+			<if test="tableName != null">,`tableName` = #{tableName}</if>
+			<if test="preferentialMoney != null">,`preferentialMoney` = #{preferentialMoney}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_order_item
+		where id = #{id}
+	</delete>
+
+	<!-- 根据条件删除 -->
+	<delete id="deleteByProperty">
+		delete
+		from wp_order_item
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</delete>
+	<!-- 获取满足时间的零销售商品 -->
+	<select id="getBestSellersGoodsByTime" resultType="java.util.Map">
+	SELECT * FROM (
+	SELECT g.barcode,g.fullName,g.unit,SUM(t.quantity) AS totalNum,SUM(t.quantity*t.goodsPrice) AS totalAmount,g.stock FROM wp_order_item t
+	 LEFT JOIN wp_order w ON t.orderSn = w.orderSn
+	 LEFT JOIN wp_goods g ON t.goodsId = g.id
+	 WHERE (w.orderStatus = 'trade_finished'
+	 OR w.orderStatus='wait_seller_send_goods'
+	 OR w.orderStatus='wait_buyer_confirm_goods')
+	 AND w.createDate BETWEEN #{start} AND #{end}
+	 GROUP BY t.goodsId ) a ORDER BY a.totalNum DESC LIMIT #{num}
+	</select>
+	<select id="getDullSellersGoodsByTime" resultType="java.util.Map">
+	SELECT * FROM (
+	SELECT g.barcode,g.fullName,g.unit,SUM(t.quantity) AS totalNum,SUM(t.quantity*t.goodsPrice) AS totalAmount,g.stock FROM wp_order_item t
+	 LEFT JOIN wp_order w ON t.orderSn = w.orderSn
+	 LEFT JOIN wp_goods g ON t.goodsId = g.id
+	 WHERE (w.orderStatus = 'trade_finished'
+	 OR w.orderStatus='wait_seller_send_goods'
+	 OR w.orderStatus='wait_buyer_confirm_goods')
+	 AND w.createDate BETWEEN #{start} AND #{end}
+	 GROUP BY t.goodsId ) a ORDER BY a.totalNum ASC LIMIT #{num}
+	</select>
+
+	<select id="getCrossBorderItemList" resultType="java.util.Map">
+		SELECT
+		'' AS itemNo,
+		g.barCode goodsNo,
+		g.fullName shelfGoodsName,
+		i.ps AS `describe`,
+		i.goodsName,
+		i.specification goodsModel,
+		'' AS taxCode,
+		CONVERT(i.goodsPrice, DECIMAL(20,2))  price,
+		'142' currency,
+		i.quantity,
+		CONVERT(i.goodsPriceCount, DECIMAL(20,2)) priceTotal,
+		g.unit unit,
+		'0' discount,
+		'0' giftFlag,
+		'502'country,
+		'2' purposeCode,
+		'1' wasteMaterials,
+		g.barcode,
+		'' brand,
+		'' note
+		FROM wp_order_item i LEFT JOIN wp_goods g ON i.`goodsId` = g.ID
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+
+	<select id="getPagerItemsGpGoodsId" resultType="net.deepdragon.entity.weipu.OrderItem">
+		select
+			o.goodsId
+			, o.goodsName
+			, SUM(o.quantity) as quantity
+			from
+			(select
+				woi.goodsId
+				, woi.goodsName
+				, woi.quantity
+
+			from
+				wp_order_item woi
+				left join wp_order wo on wo.orderSn=woi.orderSn
+				where 1=1
+				and wo.orderType='0'
+			) o
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+</mapper>

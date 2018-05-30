@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.PurchaseOrderDetailMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`purchaseOrderId`,`merchantId`,`goodsId`,`goodsBarcode`,`goodsPackageBarcode`,`goodsName`,`specification`,`quantity`,`inputPrice`,`isDelete`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.PurchaseOrderDetail">
+		select
+		<include refid="columnList" />
+		from ghj_purchase_order_detail
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.PurchaseOrderDetail">
+		select
+		<include refid="columnList" />
+		from ghj_purchase_order_detail
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.PurchaseOrderDetail">
+		select
+		<include refid="columnList" />
+		from ghj_purchase_order_detail
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.PurchaseOrderDetail">
+		select
+		<include refid="columnList" />
+		from ghj_purchase_order_detail
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.PurchaseOrderDetail">
+		select
+		<include refid="columnList" />
+		from ghj_purchase_order_detail
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.PurchaseOrderDetail">
+		select
+		<include refid="columnList" />
+		from ghj_purchase_order_detail
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.PurchaseOrderDetail">
+		select
+		<include refid="columnList" />
+		from ghj_purchase_order_detail
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from ghj_purchase_order_detail where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from ghj_purchase_order_detail
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.PurchaseOrderDetail"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into ghj_purchase_order_detail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="purchaseOrderId != null">,`purchaseOrderId`</if>
+			<if test="merchantId != null">,`merchantId`</if>
+			<if test="goodsId != null">,`goodsId`</if>
+			<if test="goodsBarcode != null">,`goodsBarcode`</if>
+			<if test="goodsPackageBarcode != null">,`goodsPackageBarcode`</if>
+			<if test="goodsName != null">,`goodsName`</if>
+			<if test="specification != null">,`specification`</if>
+			<if test="quantity != null">,`quantity`</if>
+			<if test="inputPrice != null">,`inputPrice`</if>
+			<if test="isDelete != null">,`isDelete`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="purchaseOrderId != null">,#{purchaseOrderId}</if>
+			<if test="merchantId != null">,#{merchantId}</if>
+			<if test="goodsId != null">,#{goodsId}</if>
+			<if test="goodsBarcode != null">,#{goodsBarcode}</if>
+			<if test="goodsPackageBarcode != null">,#{goodsPackageBarcode}</if>
+			<if test="goodsName != null">,#{goodsName}</if>
+			<if test="specification != null">,#{specification}</if>
+			<if test="quantity != null">,#{quantity}</if>
+			<if test="inputPrice != null">,#{inputPrice}</if>
+			<if test="isDelete != null">,#{isDelete}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.PurchaseOrderDetail">
+		update ghj_purchase_order_detail
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="purchaseOrderId != null">,`purchaseOrderId` = #{purchaseOrderId}</if>
+			<if test="merchantId != null">,`merchantId` = #{merchantId}</if>
+			<if test="goodsId != null">,`goodsId` = #{goodsId}</if>
+			<if test="goodsBarcode != null">,`goodsBarcode` = #{goodsBarcode}</if>
+			<if test="goodsPackageBarcode != null">,`goodsPackageBarcode` = #{goodsPackageBarcode}</if>
+			<if test="goodsName != null">,`goodsName` = #{goodsName}</if>
+			<if test="specification != null">,`specification` = #{specification}</if>
+			<if test="quantity != null">,`quantity` = #{quantity}</if>
+			<if test="inputPrice != null">,`inputPrice` = #{inputPrice}</if>
+			<if test="isDelete != null">,`isDelete` = #{isDelete}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from ghj_purchase_order_detail
+		where id =	#{id}
+	</delete>
+
+	<!--=============== Desc:采购单明细 Auth:zhangqiang Time:2016-02-23 15:50:54 Start =============== -->
+	<select id="getPurchaseOrderDetailInPlatform" resultType="net.deepdragon.entity.weipu.Goods">
+		SELECT
+		o.*
+		FROM
+		(
+		SELECT
+		g.id,g.stock,g.shopId,
+		g.isMarketable,g.STATUS,g.isDelete,
+		g.shortName,g.price,g.tenantId,g.platform,g.keywords,g.packageUnit,g.unit,
+		g.packageModulus,g.limitNum,gpod.id categoryId,gpod.inputPrice, gpod.createDate,g.enableBatchPrice,
+		gpod.purchaseOrderId productId,gpod.goodsName NAME,gpod.specification reserve1,gpod.quantity hits,
+		m.NAME AS shopName,
+		m.urlAddress shopUrlAddress,
+		IFNULL(c.minBatchPrice, price) minBatchPrice,
+		IFNULL(c.maxBatchPrice, price) maxBatchPrice,
+		IFNULL(CONCAT( c.minBatchPrice, '~', c.maxBatchPrice ), price) batchPrice,
+		IFNULL(c.startBatchNum, startNum) startBatchNum
+		FROM
+		wp_goods g
+		LEFT JOIN (
+		SELECT
+		bgp.goodsId,
+		MAX(bgp.batchPrice) maxBatchPrice,
+		MIN(bgp.batchPrice) minBatchPrice,
+		MIN(bgp.startBatchNum) startBatchNum
+		FROM
+		b2b_goods_price bgp
+		GROUP BY
+		bgp.goodsId
+		ORDER BY
+		bgp.goodsId ASC
+		) c ON c.goodsId = g.id,
+		wp_merchant m,ghj_purchase_order_detail gpod
+
+		WHERE
+		g.shopId = m.id
+		AND gpod.goodsId = g.id
+		) o
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	<!--AND g.isMarketable = 1 AND g.STATUS = 5 AND g.isDelete = 1 -->
+	<!--=============== Desc:采购单明细 Auth:zhangqiang Time:2016-02-23 15:50:54 End =============== -->
+
+	<!--=============== Desc:采购单非平台明细 Auth:zhangqiang Time:2016-02-25 11:23:54 Start =============== -->
+	<select id="getPurchaseOrderDetailNoPlatform" resultType="net.deepdragon.entity.weipu.PurchaseOrderDetail">
+		SELECT
+		   <include refid="columnList" />
+		from ghj_purchase_order_detail
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	<!--=============== Desc:采购单非平台明细 Auth:zhangqiang Time:2016-02-25 11:23:54 End =============== -->
+
+	<!--=============== Desc:根据采购单明细把采购单明细转为订单 Auth:zhangqiang Time:2016-02-29 10:26:54 Start =============== -->
+	<select id="getListByBuyerIdAndIdsPurchaseOrder" resultType="net.deepdragon.entity.weipu.CartItem">
+		SELECT c.id,c.tenantId,c.goodsId,c.quantity,c.merchantId,c.specification,c.createUser,c.createDate,
+		gpo.buyerId memberId,
+		c.goodsName AS NAME,
+		a.sn AS sn,
+		a.price AS price,
+		a.marketPrice AS marketPrice,
+		CONCAT(
+		(SELECT
+		setvalue
+		FROM
+		shared_system_set
+		WHERE setKey = 'imageUrl'),
+		CONCAT(CONCAT(d.groupName, '/'), d.url)
+		) AS pic,
+		m.shortName AS merchantShortName,
+		m.urlAddress AS merchantUrlAddress
+		FROM
+		ghj_purchase_order_detail c
+		LEFT JOIN ghj_purchase_order gpo
+		ON c.purchaseOrderId = gpo.id
+		LEFT JOIN wp_goods a
+		ON c.goodsId = a.id
+		LEFT JOIN wp_goods_images d
+		ON d.goodsId = c.goodsId
+		LEFT JOIN wp_merchant m
+		ON m.id = c.merchantId
+		WHERE gpo.parentBuyerId = #{buyerId}
+		AND c.id in
+		<foreach collection="ids" item="id" index="index" open="("
+				 close=")" separator=",">#{id}</foreach>
+		GROUP BY a.id ORDER BY d.orderNo,c.createDate desc
+	</select>
+	<!--=============== Desc:根据采购单明细把采购单明细转为订单 Auth:zhangqiang Time:2016-02-29 10:26:54 End =============== -->
+
+	<!-- 获取平台不存在的采购单明细统计 TianYu  2016-3-17 09:42:30 Start -->
+	<select id="getPagerGroupName" resultType="net.deepdragon.entity.weipu.PurchaseOrderDetail">
+		select o.* from
+			(SELECT
+			d.goodsName,
+			count(d.purchaseOrderId) purchaseOrderId,
+			sum(d.quantity) quantity
+			FROM
+			ghj_purchase_order_detail d
+			WHERE
+			d.goodsId IS NULL
+			GROUP BY
+			d.goodsName
+			ORDER BY
+			d.createDate DESC) o
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	<!-- 获取平台不存在的采购单明细统计 TianYu  2016-3-17 09:42:30 End -->
+
+
+	<!-- 获取平台采购单导出数据 TianYu  2016-07-07 08:59:11 Start -->
+	<select id="getInPlatformExportData" resultType="java.util.HashMap">
+		SELECT
+		o1.goodsBarcode,
+		concat('',o1.goodsName) goodsName,
+		concat('',CONVERT(o1.inputPrice,CHAR)) inputPrice,
+		concat('',CONVERT(o1.price, CHAR)) price,
+		concat('',o1.inputPrice-o1.price) as djc,
+		concat('',o1.quantity) quantity,
+		concat('',(o1.inputPrice-o1.price) * o1.quantity) as ct
+		FROM
+		(SELECT
+		d.goodsBarcode,
+		d.goodsName,
+		d.inputPrice,
+		case
+		when g.enableBatchPrice = 0 then g.price
+		when g.enableBatchPrice = 1 then
+		(SELECT p.batchPrice FROM b2b_goods_price p
+		WHERE p.goodsId = g.id AND ((p.startBatchNum &lt;= d.quantity AND p.endBatchNum &gt;= d.quantity) or p.endBatchNum &lt; d.quantity)
+		order by p.endBatchNum desc LIMIT 1)
+		else g.price end price,
+		d.quantity
+		FROM
+		ghj_purchase_order_detail d,
+		wp_goods g
+		where d.goodsId = g.id
+		<if test="purchasOrdereId != null"> and d.purchaseOrderId = #{purchasOrdereId}</if>
+		<if test="list != null">
+			and d.id in
+			<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+		</if>
+		) o1
+
+		UNION
+
+		select
+		'' goodsBarcode,
+		concat('原采购金额总计：￥', sum(o.inputPrice * o.quantity)) goodsName,
+		concat('平台采购金额总计：￥', sum(o.price * o.quantity)) inputPrice,
+		concat('','采购单总差额：') price,
+		concat('￥',sum(o.inputPrice * o.quantity) - sum(o.price * o.quantity)) djc,
+		concat('优惠比例：') quantity,
+		concat('',ROUND(((sum(o.inputPrice * o.quantity) - sum(o.price * o.quantity))/sum(o.inputPrice * o.quantity) * 100),2),'%') ct
+		from
+		(SELECT
+		d.goodsName,
+		d.inputPrice,
+		case
+		when g.enableBatchPrice = 0 then g.price
+		when g.enableBatchPrice = 1 then
+		(SELECT p.batchPrice FROM b2b_goods_price p WHERE p.goodsId = g.id AND ((p.startBatchNum &lt;= d.quantity AND p.endBatchNum &gt;= d.quantity) or p.endBatchNum &lt; d.quantity) order by p.endBatchNum desc LIMIT 1)
+		else g.price end price,
+		d.quantity
+		FROM
+		ghj_purchase_order_detail d,
+		wp_goods g
+		where d.goodsId = g.id
+		<if test="purchasOrdereId != null"> and d.purchaseOrderId = #{purchasOrdereId}</if>
+		<if test="list != null">
+		  and d.id in
+			<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+		</if>
+		) o
+	</select>
+	<!-- 获取平台采购单导出数据 TianYu  2016-07-07 08:59:11 End -->
+
+</mapper>

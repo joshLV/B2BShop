@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.AccountMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`userId`,`userName`,`accountTotal`,`accountBlock`,`platform`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.Account">
+		select
+		<include refid="columnList" />
+		from wp_account
+		where id = #{id}
+	</select>
+
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.Account">
+		select
+		<include refid="columnList" />
+		from wp_account
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findAccountByUser" resultType="net.deepdragon.entity.weipu.Account">
+		select
+		<include refid="columnList" />
+		from wp_account
+		where tenantId = #{tenantId} and userId=#{userId} and platform=#{platform}
+		<if test="userName != null"> and userName=#{userName}</if>
+	</select>
+
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.Account"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_account
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="userId != null">,`userId`</if>
+			<if test="userName != null">,`userName`</if>
+			<if test="accountTotal != null">,`accountTotal`</if>
+			<if test="accountBlock != null">,`accountBlock`</if>
+			<if test="platform != null">,`platform`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="userId != null">,#{userId}</if>
+			<if test="userName != null">,#{userName}</if>
+			<if test="accountTotal != null">,#{accountTotal}</if>
+			<if test="accountBlock != null">,#{accountBlock}</if>
+			<if test="platform != null">,#{platform}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.Account">
+		update wp_account
+			<set>
+			<if test="accountTotal != null">accountTotal = accountTotal+(#{accountTotal}) </if>
+			<if test="accountBlock != null">,accountBlock = accountBlock+(#{accountBlock})</if>
+			<if test="modifyUser != null">,modifyUser = #{modifyUser}</if>
+			<if test="modifyDate != null">,modifyDate = #{modifyDate}</if>
+		</set>
+		where id=#{id}
+	</update>
+
+</mapper>

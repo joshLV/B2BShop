@@ -1,0 +1,46 @@
+@CHARSET "UTF-8";
+
+/* ---------- ad begin ---------- */
+.adLayer {
+	display: none;
+	position: absolute;
+	z-index: 100;
+	top: 215px;
+}
+.leftAdLayer {
+	left: 5px;
+}
+.rightAdLayer {
+	right: 5px;
+}
+.adMain {
+	display: none;
+}
+.adMain .middle {
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	margin-top: 0px;
+	border-style: solid;
+	border-top-width: 2px;
+	border-right-width: 2px;
+	border-bottom-width: 2px;
+	border-left-width: 2px;
+	border-color: #aeaeae;
+	width: 115px;
+	height: 262px;
+	background-color: #ffffff;
+	position: relative;
+	overflow: hidden;
+	float: none;
+}
+.adMain .bottom {
+	width: 123px;
+	height: 22px;
+	clear: both;
+	cursor: pointer;
+	background: url(../img/close1.gif) no-repeat;
+}
+/* ---------- ad end ---------- */
+

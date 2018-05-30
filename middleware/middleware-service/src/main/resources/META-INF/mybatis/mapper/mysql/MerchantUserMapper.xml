@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.MerchantUserMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`merchantId`,`userName`,`passwd`,`email`,`nickName`,`sex`,`mobile`,`birthday`,`status`,`roles`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.MerchantUser">
+		select
+		<include refid="columnList" />
+		from merchant_sys_user
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.MerchantUser">
+		select
+		<include refid="columnList" />
+		from merchant_sys_user
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.MerchantUser">
+		select
+		<include refid="columnList" />
+		from merchant_sys_user
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.MerchantUser">
+		select
+		<include refid="columnList" />
+		from merchant_sys_user
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.MerchantUser">
+		select
+		<include refid="columnList" />
+		from merchant_sys_user 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.MerchantUser">
+		select
+		<include refid="columnList" />
+		from merchant_sys_user 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.MerchantUser">
+		select
+		<include refid="columnList" />
+		from merchant_sys_user 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from merchant_sys_user where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from merchant_sys_user 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.MerchantUser"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into merchant_sys_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="merchantId != null">,`merchantId`</if>
+			<if test="userName != null">,`userName`</if>
+			<if test="passwd != null">,`passwd`</if>
+			<if test="email != null">,`email`</if>
+			<if test="nickName != null">,`nickName`</if>
+			<if test="sex != null">,`sex`</if>
+			<if test="mobile != null">,`mobile`</if>
+			<if test="birthday != null">,`birthday`</if>
+			<if test="status != null">,`status`</if>
+			<if test="roles != null">,`roles`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="merchantId != null">,#{merchantId}</if>
+			<if test="userName != null">,#{userName}</if>
+			<if test="passwd != null">,#{passwd}</if>
+			<if test="email != null">,#{email}</if>
+			<if test="nickName != null">,#{nickName}</if>
+			<if test="sex != null">,#{sex}</if>
+			<if test="mobile != null">,#{mobile}</if>
+			<if test="birthday != null">,#{birthday}</if>
+			<if test="status != null">,#{status}</if>
+			<if test="roles != null">,#{roles}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.MerchantUser">
+		update merchant_sys_user
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="merchantId != null">,`merchantId` = #{merchantId}</if>
+			<if test="userName != null">,`userName` = #{userName}</if>
+			<if test="passwd != null">,`passwd` = #{passwd}</if>
+			<if test="email != null">,`email` = #{email}</if>
+			<if test="nickName != null">,`nickName` = #{nickName}</if>
+			<if test="sex != null">,`sex` = #{sex}</if>
+			<if test="mobile != null">,`mobile` = #{mobile}</if>
+			<if test="birthday != null">,`birthday` = #{birthday}</if>
+			<if test="status != null">,`status` = #{status}</if>
+			<if test="roles != null">,`roles` = #{roles}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from merchant_sys_user
+		where id =	#{id}
+	</delete>
+	
+	<update id="updatePasswd">
+		update merchant_sys_user
+		set passwd=#{passwd} 
+		where id = #{userId}
+	</update>
+	
+</mapper>

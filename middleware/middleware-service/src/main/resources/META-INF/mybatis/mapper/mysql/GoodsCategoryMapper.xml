@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.GoodsCategoryMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`parentId`,`name`,`sign`,`path`,`orderNo`,`enabled`,`description`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.GoodsCategory">
+		select
+		<include refid="columnList" />
+		from wp_catelog
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.GoodsCategory">
+		select
+		<include refid="columnList" />
+		from wp_catelog
+		where tenantId = #{tenantId} and
+		${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.GoodsCategory">
+		select
+		<include refid="columnList" />
+		from wp_catelog
+		where tenantId = #{tenantId} and
+		${property}=#{value}
+	</select>
+
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.GoodsCategory">
+		select
+		<include refid="columnList" />
+		from wp_catelog
+		where id in
+		<foreach collection="list" item="id" index="index" open="("
+			close=")" separator=",">#{id}</foreach>
+	</select>
+
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.GoodsCategory">
+		select
+		<include refid="columnList" />
+		from wp_catelog
+		where tenantId = #{tenantId}
+	</select>
+
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.GoodsCategory">
+		select
+		<include refid="columnList" />
+		from wp_catelog
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getList" resultType="net.deepdragon.entity.weipu.GoodsCategory">
+		select
+		<include refid="columnList" />
+		from wp_catelog
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_catelog where tenantId = #{tenantId}
+	</select>
+
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from
+		wp_catelog
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.GoodsCategory"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_catelog
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="parentId != null">,`parentId`</if>
+			<if test="name != null">,`name`</if>
+			<if test="sign != null">,`sign`</if>
+			,`path`
+			<if test="orderNo != null">,`orderNo`</if>
+			<if test="enabled != null">,`enabled`</if>
+			<if test="description != null">,`description`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="parentId != null">,#{parentId}</if>
+			<if test="name != null">,#{name}</if>
+			<if test="sign != null">,#{sign}</if>
+			,IF(ISNULL(parentId),id,CONCAT(CONCAT(#{path},','),id)) 
+			<if test="orderNo != null">,#{orderNo}</if>
+			<if test="enabled != null">,#{enabled}</if>
+			<if test="description != null">,#{description}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.GoodsCategory">
+		update wp_catelog
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="parentId != null">,`parentId` = #{parentId}</if>
+			<if test="name != null">,`name` = #{name}</if>
+			<if test="sign != null">,`sign` = #{sign}</if>
+			,`path` = IF(ISNULL(parentId),id,CONCAT(CONCAT(#{path},','),id)) 
+			<if test="orderNo != null">,`orderNo` = #{orderNo}</if>
+			<if test="enabled != null">,`enabled` = #{enabled}</if>
+			<if test="description != null">,`description` = #{description}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_catelog
+		where id = #{id}
+	</delete>
+	<!-- 获取商品类别拥有的品牌信息ID集合 -->
+	<select id="getBrandIdsBycategoryId" resultType="java.lang.String">
+		select
+		brandId from wp_goods_category_brand
+		where categoryId = #{categoryId}
+	</select>
+
+	<!-- 获取商品级别下所有品牌信息ID集合 -->
+	<select id="getBrandIds" resultType="java.lang.String">
+		select distinct
+		<!-- 查询时关联品牌表并增加是否启用条件 Auth:zhangqiang Time:2015-09-21 16:55:35 Start -->
+		  <!--brandId from wp_goods_category_brand-->
+		  <!--where categoryId like #{categoryId} limit #{size}-->
+		       brandId
+		  from wp_goods_category_brand c,wp_goods_brand b
+		 where c.brandId = b.id AND c.categoryId = #{categoryId}
+		   AND b.enabled =1
+		limit #{size}
+		<!-- 查询时关联品牌表并增加是否启用条件 Auth:zhangqiang Time:2015-09-21 16:55:35 End -->
+	</select>
+    <!-- 获取商品级别下所有品牌信息ID集合 -->
+
+	<!-- 获取商品级别下所有品牌信息集合 TianYu 2015-12-09 15:01:32 Start -->
+	<select id="getGoodsBrandByCatelogId" resultType="net.deepdragon.entity.weipu.GoodsBrand">
+		select distinct b.`id`,
+			b.`tenantId`,
+			b.`name`,
+			b.`sign`,
+			concat((select setvalue from
+			shared_system_set where
+			setKey='imageUrl'),
+			concat(concat(groupName,
+			'/'),
+			logo)) as
+			`pic`,
+			b.`logo`,
+			b.`groupName`,
+			b.`orderNo`,
+			b.`enabled`,
+			b.`description`,
+			b.`createUser`,
+			b.`createDate`,
+			b.`modifyUser`,
+			b.`modifyDate`
+		from wp_goods_category_brand c,wp_goods_brand b
+		where c.brandId = b.id AND c.categoryId = #{categoryId}
+		AND b.enabled =1
+		order by b.orderNo
+		limit #{size}
+		<!-- 查询时关联品牌表并增加是否启用条件 Auth:zhangqiang Time:2015-09-21 16:55:35 End -->
+	</select>
+	<!-- 获取商品级别下所有品牌信息集合 TianYu 2015-12-09 15:01:32 End -->
+
+    <select id="getBrandBycatcategoryId" resultType="java.lang.String">
+        select distinct
+        brandId from wp_goods_category_brand
+        where categoryId like #{categoryId}
+    </select>
+	<!-- 保存商品类别的品牌信息 -->
+	<insert id="saveRelationCategoryBrand">
+		insert into wp_goods_category_brand (categoryId, brandId)
+		values (#{categoryId}, #{brandId})
+	</insert>
+
+	<!-- 删除商品类别的品牌信息 -->
+	<delete id="delRelationCategoryBrand">
+		delete from wp_goods_category_brand
+		where categoryId = #{categoryId}
+	</delete>
+
+    <!-- 根据前端catelog获取对应的后台GoodsCategory对象 -->
+    <select id="getGategoryByCatelog" resultType="net.deepdragon.entity.weipu.GoodsCategory">
+        select
+        <include refid="columnList"/>
+        from wp_catelog
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+    <!-- 根据前端shopId获取对应的商品类别 -->
+    <select id="getGategoryByshopId" resultType="net.deepdragon.entity.weipu.GoodsCategory">
+        select
+        <include refid="columnList"/>
+        from wp_catelog
+        WHERE id IN (
+        SELECT categoryId FROM wp_goods a,wp_catelog b  WHERE a.shopid
+        = #{shopId}
+        AND a.categoryId=b.id)
+    </select>
+</mapper>

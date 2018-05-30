@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.CartItemMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`memberId`,`parentBuyerId`,`userkey`,`merchantId`,`goodsId`,`quantity`,`specification`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.CartItem">
+		select
+		<include refid="columnList" />
+		from wp_cart_item
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.CartItem">
+		select
+		<include refid="columnList" />
+		from wp_cart_item
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.CartItem">
+		select
+		<include refid="columnList" />
+		from wp_cart_item
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findListByIds"
+		resultType="net.deepdragon.entity.weipu.CartItem">
+		select
+		<include refid="columnList" />
+		from wp_cart_item
+		where id in
+		<foreach collection="list" item="id" index="index" open="("
+			close=")" separator=",">#{id}</foreach>
+	</select>
+
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.CartItem">
+		select
+		<include refid="columnList" />
+		from wp_cart_item
+		where tenantId = #{tenantId}
+	</select>
+
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.CartItem">
+		select
+		<include refid="columnList" />
+		from wp_cart_item
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<!-- 添加购物车查询字段 商户名称和商户地址 TianYu 2015-8-19    modify-->
+	<!-- 添加购物车查询字段 商品默认起批数量、起批数量、限购数量、包装系数、是否启用阶梯价 yuech 2016-02-24    modify-->
+	<select id="getListByMemberId" resultType="net.deepdragon.entity.weipu.CartItem">
+		SELECT c.*, a.name as name, a.sn as sn, a.price as price,a.marketPrice
+		 as marketPrice,a.startNum as startNum,a.limitNum as limitNum,a.packageModulus as packageModulus,a.enableBatchPrice as enableBatchPrice,a.packageUnit as packageUnit,a.packageUnit as packageUnit,
+		 a.stock, CONCAT((SELECT
+		setvalue FROM shared_system_set WHERE
+		setKey='imageUrl'),CONCAT(CONCAT(d.groupName,'/'),d.url)) AS pic,
+		m.name as merchantShortName,m.urlAddress as merchantUrlAddress,
+        IFNULL(bp.startBatchNum,1) startBatchNum,IFNULL(bp.batchPrice,a.price) batchPrice
+		FROM
+		wp_cart_item c
+		LEFT JOIN wp_goods a ON c.goodsId = a.id
+		LEFT JOIN wp_goods_images d ON d.goodsId = c.goodsId
+		LEFT JOIN wp_merchant m on m.id = c.merchantId
+		LEFT JOIN  (
+        SELECT bgp.goodsId, min(bgp.startBatchNum) startBatchNum,bgp.batchPrice
+        FROM b2b_goods_price bgp
+        GROUP BY bgp.goodsId
+        ORDER BY bgp.goodsId ASC
+        ) bp ON bp.goodsId = c.goodsId
+		WHERE c.memberId = #{memberId}
+		GROUP BY a.id ORDER BY d.orderNo,c.createDate asc
+	</select>
+
+	<!-- 根据 商品ID，数量 查询商品批发价  hks 2015-10-16 -->
+	<select id="getGoodsTradePrice" resultType="net.deepdragon.entity.weipu.B2BGoodsPrice">
+		SELECT * FROM b2b_goods_price WHERE goodsId = #{goodsId}
+		<if test="quantity >1">AND (startBatchNum &lt;= #{quantity} AND endBatchNum &gt;= #{quantity})</if>
+		<if test="quantity ==1">AND startBatchNum = #{quantity}</if>
+		ORDER BY startBatchNum ASC
+	</select>
+
+	<!-- 根据订单ID获取结算数据 TianYu  -->
+	<select id="getListByMemberIdAndIds" resultType="net.deepdragon.entity.weipu.CartItem">
+		SELECT c.*, a.name as name, a.sn as sn, a.price as price,a.marketPrice as
+		marketPrice, CONCAT((SELECT
+		setvalue FROM shared_system_set WHERE
+		setKey='imageUrl'),CONCAT(CONCAT(d.groupName,'/'),d.url)) AS pic,
+		m.shortName as merchantShortName,m.urlAddress as merchantUrlAddress
+		FROM
+		wp_cart_item c
+		LEFT JOIN wp_goods a ON c.goodsId = a.id
+		LEFT JOIN wp_goods_images d ON d.goodsId = c.goodsId
+		LEFT JOIN wp_merchant m on m.id = c.merchantId
+		WHERE c.memberId = #{memberId}
+		AND c.id in
+		<foreach collection="ids" item="id" index="index" open="("
+						  close=")" separator=",">#{id}</foreach>
+		GROUP BY a.id ORDER BY d.orderNo,c.createDate desc
+	</select>
+
+
+	<select id="getIdAndGoodsIdByMemberIdAndIds" resultType="net.deepdragon.entity.weipu.CartItem">
+		SELECT c.id, c.goodsId, c.quantity
+		FROM
+		wp_cart_item c
+		WHERE c.memberId = #{memberId}
+		AND c.id in
+		<foreach collection="ids" item="id" index="index" open="("
+				 close=")" separator=",">#{id}</foreach>
+	</select>
+
+	<select id="getListByUserKey" resultType="net.deepdragon.entity.weipu.CartItem">
+		SELECT c.*, a.name as name, a.sn as sn, a.price as price,a.marketPrice as
+		marketPrice, a.stock, CONCAT((SELECT
+		setvalue FROM shared_system_set WHERE
+		setKey='imageUrl'),CONCAT(CONCAT(d.groupName,'/'),d.url)) AS pic,
+		m.shortName as merchantShortName,m.urlAddress as merchantUrlAddress
+		FROM
+		wp_cart_item c
+		LEFT JOIN wp_goods a ON c.goodsId = a.id
+		LEFT JOIN wp_goods_images d ON d.goodsId = c.goodsId
+		LEFT JOIN wp_merchant m on m.id = c.merchantId
+		WHERE c.userKey = #{userKey}
+		GROUP BY a.id ORDER BY d.orderNo,c.createDate desc
+	</select>
+
+	<select id="getList" resultType="net.deepdragon.entity.weipu.CartItem">
+		select
+		<include refid="columnList" />
+		from wp_cart_item
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_cart_item where tenantId = #{tenantId}
+	</select>
+
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from
+		wp_cart_item
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.CartItem"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_cart_item
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="memberId != null">,`memberId`</if>
+			<if test="parentBuyerId != null">,`parentBuyerId`</if>
+			<if test="userkey != null">,`userkey`</if>
+			<if test="merchantId != null">,`merchantId`</if>
+			<if test="goodsId != null">,`goodsId`</if>
+			<if test="quantity != null">,`quantity`</if>
+			<if test="specification != null">,`specification`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="memberId != null">,#{memberId}</if>
+			<if test="parentBuyerId != null">,#{parentBuyerId}</if>
+			<if test="userkey != null">,#{userkey}</if>
+			<if test="merchantId != null">,#{merchantId}</if>
+			<if test="goodsId != null">,#{goodsId}</if>
+			<if test="quantity != null">,#{quantity}</if>
+			<if test="specification != null">,#{specification}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.CartItem">
+		update wp_cart_item
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="memberId != null">,`memberId` = #{memberId}</if>
+			<if test="parentBuyerId != null">,`parentBuyerId` = #{parentBuyerId}</if>
+			<if test="userkey != null">,`userkey` = #{userkey}</if>
+			<if test="merchantId != null">,`merchantId` = #{merchantId}</if>
+			<if test="goodsId != null">,`goodsId` = #{goodsId}</if>
+			<if test="quantity != null">,`quantity` = #{quantity}</if>
+			<if test="specification != null">,`specification` = #{specification}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_cart_item
+		where id = #{id}
+	</delete>
+
+	<delete id="deleteByProperty">
+		delete
+		from wp_cart_item
+		where tenantId = #{tenantId}
+		and ${property}=#{value}
+	</delete>
+
+
+	<delete id="deleteByIds">
+		delete
+		from wp_cart_item
+		where tenantId = #{tenantId}
+		and id in
+		<foreach collection="ids" item="id" index="index" open="("
+				 close=")" separator=",">#{id}</foreach>
+	</delete>
+
+
+	<!-- 广货街物流对接，根据购物车ID获取商品名称、条码、份类、体积、重量、数量 TianYu  -->
+	<select id="getBuyGoodsByIds" resultType="map">
+		select
+			g.name gname, g.barcode, g.categoryId, g.volume, g.weight, c.quantity
+		from
+			wp_cart_item c, wp_goods g
+		where
+			c.goodsId = g.id
+			and c.id in
+		<foreach collection="ids" item="id" index="index" open="("
+				 close=")" separator=",">#{id}</foreach>
+		order by c.createDate
+	</select>
+</mapper>

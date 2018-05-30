@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.MerchantExtendMapper">
+
+	<sql id="columnList">
+		`id`,`merchantId`,`tenantId`,`introduce`,`ex1`,`ex2`,`ex3`,`ex4`,`ex5`,`ex6`,`ex7`,`ex8`,`ex9`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.MerchantExtend">
+		select
+		<include refid="columnList" />
+		from wp_merchant_extend
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.MerchantExtend">
+		select
+		<include refid="columnList" />
+		from wp_merchant_extend
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.MerchantExtend">
+		select
+		<include refid="columnList" />
+		from wp_merchant_extend
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.MerchantExtend">
+		select
+		<include refid="columnList" />
+		from wp_merchant_extend
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.MerchantExtend">
+		select
+		<include refid="columnList" />
+		from wp_merchant_extend 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.MerchantExtend">
+		select
+		<include refid="columnList" />
+		from wp_merchant_extend 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.MerchantExtend">
+		select
+		<include refid="columnList" />
+		from wp_merchant_extend 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_merchant_extend where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_merchant_extend 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.MerchantExtend"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_merchant_extend
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="merchantId != null">,`merchantId`</if>
+			<if test="introduce != null">,`introduce`</if>
+			<if test="ex1 != null">,`ex1`</if>
+			<if test="ex2 != null">,`ex2`</if>
+			<if test="ex3 != null">,`ex3`</if>
+			<if test="ex4 != null">,`ex4`</if>
+			<if test="ex5 != null">,`ex5`</if>
+			<if test="ex6 != null">,`ex6`</if>
+			<if test="ex7 != null">,`ex7`</if>
+			<if test="ex8 != null">,`ex8`</if>
+			<if test="ex9 != null">,`ex9`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="merchantId != null">,#{merchantId}</if>
+			<if test="introduce != null">,#{introduce}</if>
+			<if test="ex1 != null">,#{ex1}</if>
+			<if test="ex2 != null">,#{ex2}</if>
+			<if test="ex3 != null">,#{ex3}</if>
+			<if test="ex4 != null">,#{ex4}</if>
+			<if test="ex5 != null">,#{ex5}</if>
+			<if test="ex6 != null">,#{ex6}</if>
+			<if test="ex7 != null">,#{ex7}</if>
+			<if test="ex8 != null">,#{ex8}</if>
+			<if test="ex9 != null">,#{ex9}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.MerchantExtend">
+		update wp_merchant_extend
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="merchantId != null">,`merchantId` = #{merchantId}</if>
+			<if test="introduce != null">,`introduce` = #{introduce}</if>
+			<if test="ex1 != null">,`ex1` = #{ex1}</if>
+			<if test="ex2 != null">,`ex2` = #{ex2}</if>
+			<if test="ex3 != null">,`ex3` = #{ex3}</if>
+			<if test="ex4 != null">,`ex4` = #{ex4}</if>
+			<if test="ex5 != null">,`ex5` = #{ex5}</if>
+			<if test="ex6 != null">,`ex6` = #{ex6}</if>
+			<if test="ex7 != null">,`ex7` = #{ex7}</if>
+			<if test="ex8 != null">,`ex8` = #{ex8}</if>
+			<if test="ex9 != null">,`ex9` = #{ex9}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_merchant_extend
+		where id =	#{id}
+	</delete>
+	<select id="getMerchantExtend" resultType="net.deepdragon.entity.weipu.MerchantExtend">
+	select g.id,g.merchantId,g.tenantId,g.introduce from wp_merchant_extend g where
+		g.`tenantId` = #{tenantId} and
+		g.merchantId = #{id}
+	</select>
+</mapper>

@@ -1,0 +1,861 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<description>微铺服务接口定义</description>
+
+	<!-- 商品分类表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GoodsCategoryService"
+		ref="weipuGoodsCategoryServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 商品品牌表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GoodsBrandService"
+		ref="weipuGoodsBrandServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 商品分类属性服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GoodsAttributeService"
+		ref="weipuGoodsAttributeServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 商品分类属性项服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GoodsAttributeItemService"
+		ref="weipuGoodsAttributeItemServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 商品参数分组表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GoodsParameterGroupService"
+		ref="weipuGoodsParameterGroupServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 商品参数选项表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GoodsParameterService"
+		ref="weipuGoodsParameterServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 规格定义表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.SpecificationService"
+		ref="weipuSpecificationServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 商品规格项服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.SpecificationValueService"
+		ref="weipuSpecificationValueServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 商品信息表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GoodsService"
+		ref="weipuGoodsServiceImpl" version="${weipu.service.version}" group="${weipu.service.group}"
+		timeout="${weipu.service.timeout}" retries="${weipu.service.retries}" />
+
+	<!-- 前台类目服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.CatelogService"
+		ref="weipuCatelogServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 标签管理表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.TagService"
+		ref="weipuTagServiceImpl" version="${weipu.service.version}" group="${weipu.service.group}"
+		timeout="${weipu.service.timeout}" retries="${weipu.service.retries}" />
+
+	<!-- 单品信息表服务 -->
+	<!--<dubbo:service interface="net.deepdragon.service.weipu.ProductService"
+		ref="weipuProductServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />-->
+
+	<!-- 商品图片表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GoodsImagesService"
+		ref="weipuGoodsImagesServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 到货提醒表服务 -->
+	<!--<dubbo:service interface="net.deepdragon.service.weipu.GoodsNotifyService"
+		ref="weipuGoodsNotifyServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />-->
+
+	<!-- 会员等级服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.MemberRankService"
+		ref="weipuMemberRankServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 会员信息服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.MemberService"
+		ref="weipuMemberServiceImpl" version="${weipu.service.version}" group="${weipu.service.group}"
+		timeout="${weipu.service.timeout}" retries="${weipu.service.retries}" />
+
+	<!-- 文章分类服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.ArticlesCategoryService"
+		ref="weipuArticlesCategoryServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 文章管理服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.ArticlesService"
+		ref="weipuArticlesServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 友情链接服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.FriendlyLinkService"
+		ref="weipuFriendlyLinkServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 导航管理服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.NavigationService"
+		ref="weipuNavigationServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 商家类型服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.MerchantTypeService"
+		ref="weipuMerchantTypeServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 商家(店铺)信息服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.MerchantService"
+		ref="weipuMerchantServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 店铺操作员服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.MerchantUserService"
+		ref="weipuMerchantUserServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 店铺审核意见服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.MerchantAuditService"
+		ref="weipuMerchantAuditServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 广告位管理服务 -->
+	<!-- <dubbo:service interface="net.deepdragon.service.weipu.AdvertisingService"
+		ref="weipuAdvertisingServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />-->
+
+	<!-- 广告图片管理服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.AdvertisingImageService"
+		ref="weipuAdvertisingImageServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 首页商品类目服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.CatelogIndexService"
+		ref="weipuCatelogIndexServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 轮播广告服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.CarouselAdvertisingService"
+		ref="weipuCarouselAdvertisingServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 购物车项服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.CartItemService"
+		ref="weipuCartItemServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 订单信息服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.OrderService"
+		ref="weipuOrderServiceImpl" version="${weipu.service.version}" group="${weipu.service.group}"
+		timeout="${weipu.service.timeout}" retries="${weipu.service.retries}" />
+
+	<!-- 订单信息服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.CrossBorderOrderService"
+				   ref="weipuCrossBorderOrderServiceImpl" version="${weipu.service.version}" group="${weipu.service.group}"
+				   timeout="${weipu.service.timeout}" retries="${weipu.service.retries}" />
+
+	<!-- 积分信息服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.MemberScoreService"
+				   ref="weipuMemberScoreServiceImpl" version="${weipu.service.version}" group="${weipu.service.group}"
+				   timeout="${weipu.service.timeout}" retries="${weipu.service.retries}" />
+
+	<!-- 发票信息服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.MemberInvoiceService"
+				   ref="weipuMemberInvoiceServiceImpl" version="${weipu.service.version}" group="${weipu.service.group}"
+				   timeout="${weipu.service.timeout}" retries="${weipu.service.retries}" />
+
+	<!-- 订单日志服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.OrderLogService"
+		ref="weipuOrderLogServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 订单(购物)明细服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.OrderItemService"
+		ref="weipuOrderItemServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 收货地址服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.ReceiverService"
+		ref="weipuReceiverServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 会员菜单服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.MenuService"
+		ref="weipuMenuServiceImpl" version="${weipu.service.version}" group="${weipu.service.group}"
+		timeout="${weipu.service.timeout}" retries="${weipu.service.retries}" />
+
+	<!-- 配送清单服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.OrderDistributionService"
+		ref="weipuOrderDistributionServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 店铺设置服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.MerchantSettingService"
+		ref="weipuMerchantSettingServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 会员浏览历史表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.HistoryService"
+		ref="weipuHistoryServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 精彩展示服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.WonderfulShowService"
+		ref="weipuWonderfulShowServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 商品关注列表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GoodsAttentionService"
+		ref="weipuGoodsAttentionServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 商品评论表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GoodsReviewService"
+		ref="weipuGoodsReviewServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 会员需求表服务 -->
+	<!--<dubbo:service interface="net.deepdragon.service.weipu.DemandService"
+		ref="weipuDemandServiceImpl" version="${weipu.service.version}" group="${weipu.service.group}"
+		timeout="${weipu.service.timeout}" retries="${weipu.service.retries}" />-->
+
+	<!-- 秒杀方案服务 -->
+	<!--<dubbo:service interface="net.deepdragon.service.weipu.FlashSalePlanService"
+		ref="weipuFlashSalePlanServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />-->
+
+	<!-- 参与活动的产品服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.FlashSaleService"
+		ref="weipuFlashSaleServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 档期表服务 -->
+	<!--<dubbo:service interface="net.deepdragon.service.weipu.ScheduleService"
+		ref="weipuScheduleServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 秒杀方案明细服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.FlashSalePlandetailService"
+		ref="weipuFlashSalePlandetailServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 方案档期关联表服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.PlanScheduleService"
+		ref="weipuPlanScheduleServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 会员秒杀记录服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.FlashMemberService"
+		ref="weipuFlashMemberServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 会员乐付宝卡表服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.MemberCardService"
+		ref="weipuMemberCardServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 乐付宝银行卡关联表服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.CardBankService"
+		ref="weipuCardBankServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 乐付宝网上交易流水服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.CardTradeFlowService"
+		ref="weipuCardTradeFlowServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 乐付宝操作流水表服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.CardOperateFlowService"
+		ref="weipuCardOperateFlowServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 乐付宝卡号管理服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.CardnoService"
+		ref="weipuCardnoServiceImpl" version="${weipu.service.version}" group="${weipu.service.group}"
+		timeout="${weipu.service.timeout}" retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 乐付宝卡号方案服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.CardnoPlanService"
+		ref="weipuCardnoPlanServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 活动商品表服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.ActivityShopService"
+		ref="weipuActivityShopServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 会员参与活动记录服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.ActivityMemberService"
+		ref="weipuActivityMemberServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 欧泊原浆活动商品表服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.ObShopService"
+		ref="weipuObShopServiceImpl" version="${weipu.service.version}" group="${weipu.service.group}"
+		timeout="${weipu.service.timeout}" retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 会员参与欧泊原浆记录服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.ObMemberService"
+		ref="weipuObMemberServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />-->
+
+	<!-- 订单支付记录服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.OrderPaylogService"
+		ref="weipuOrderPaylogServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+	<!-- 退款单信息服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.OrderRefundService"
+		ref="weipuOrderRefundServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 退款凭证表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.OrderRefundImagesService"
+		ref="weipuOrderRefundImagesServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 退款记录服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.OrderRefundLogService"
+		ref="weipuOrderRefundLogServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 会员沃商卡服务 -->
+	<!--<dubbo:service interface="net.deepdragon.service.weipu.MemberWscardService"
+		ref="weipuMemberWscardServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />-->
+
+	<!-- 店铺广告服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.MerchantAdvertisingService"
+		ref="weipuMerchantAdvertisingServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 会员团购记录服务 -->
+	<!--<dubbo:service interface="net.deepdragon.service.weipu.GroupMemberService"
+		ref="weipuGroupMemberServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 团购商品表服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.GroupSaleService"
+		ref="weipuGroupSaleServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 短信模板服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.SmsTemplateService"
+		ref="weipuSmsTemplateServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 短信消息记录服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.SmsLogService"
+		ref="weipuSmsLogServiceImpl" version="${weipu.service.version}" group="${weipu.service.group}"
+		timeout="${weipu.service.timeout}" retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 红包方案表服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.HongbaoSchemeService"
+		ref="weipuHongbaoSchemeServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 使用规则服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.HongbaoUseruleService"
+		ref="weipuHongbaoUseruleServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 售后规则服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.HongbaoShouhouruleService"
+		ref="weipuHongbaoShouhouruleServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 发行规则服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.HongbaoFaxingruleService"
+		ref="weipuHongbaoFaxingruleServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 红包服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.HongbaoFactoryService"
+		ref="weipuHongbaoFactoryServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 用户红包服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.HongbaoMemberService"
+		ref="weipuHongbaoMemberServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	&lt;!&ndash; 标签活动购买记录服务 &ndash;&gt;
+	<dubbo:service interface="net.deepdragon.service.weipu.TagMemberService"
+		ref="weipuTagMemberServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />-->
+
+	<!-- 配送员信息服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.DeliveryManService"
+		ref="weipuDeliveryManServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 订单积分信息服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.OrderJifenService"
+		ref="weipuOrderJifenServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+
+	<!-- 标签日志表服务 -->
+	<!--<dubbo:service interface="net.deepdragon.service.weipu.TagLogService"
+		ref="weipuTagLogServiceImpl" version="${weipu.service.version}" group="${weipu.service.group}"
+		timeout="${weipu.service.timeout}" retries="${weipu.service.retries}" />-->
+
+	<!-- 订单优惠表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.OrderOnsaleService"
+		ref="weipuOrderOnsaleServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+	<!-- 分享记录表服务 -->
+	<!--<dubbo:service interface="net.deepdragon.service.weipu.ShareLogService"
+		ref="weipuShareLogServiceImpl" version="${weipu.service.version}"
+		group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+		retries="${weipu.service.retries}" />
+		&lt;!&ndash; 门店记录表服务 &ndash;&gt;
+<dubbo:service interface="net.deepdragon.service.weipu.DeliveryStoreService"
+	ref="weipuDeliveryStoreServiceImpl" version="${weipu.service.version}"
+	group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+	retries="${weipu.service.retries}" />
+	
+&lt;!&ndash; 街道记录表服务 &ndash;&gt;
+<dubbo:service interface="net.deepdragon.service.weipu.DeliveryStreetService"
+	ref="weipuDeliveryStreetServiceImpl" version="${weipu.service.version}"
+	group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+	retries="${weipu.service.retries}" />
+	
+&lt;!&ndash; 小区记录表服务 &ndash;&gt;
+<dubbo:service interface="net.deepdragon.service.weipu.DeliveryCommutifyService"
+	ref="weipuDeliveryCommutifyServiceImpl" version="${weipu.service.version}"
+	group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+	retries="${weipu.service.retries}" />-->
+
+
+	<!-- 商家介绍服务器 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.MerchantExtendService"
+				   ref="weipuMerchantExtendServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 务商家入住服 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.InviteBusinessService"
+				   ref="weipuInvitebusinessServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+
+	<!--Message:B2B需求增加  修改人:zhanqiang Time:2015-10-13 16:51:35 -->
+	<!-- B2B...............................................................................................Start -->
+	<!-- 采购商模块....................................................................................End-->
+	<!-- 采购商审核表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.BuyerAuditService"
+				   ref="weipuBuyerAuditServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 采购商证照表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.BuyerCertificateService"
+				   ref="weipuBuyerCertificateServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 采购商发票表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.BuyerInvoiceService"
+				   ref="weipuBuyerInvoiceServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 采购商标签表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.BuyerLabelService"
+				   ref="weipuBuyerLabelServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 我的供应商表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.BuyerMerchantService"
+				   ref="weipuBuyerMerchantServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 采购商等级表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.BuyerRankService"
+				   ref="weipuBuyerRankServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 采购商收货地址表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.BuyerReceiverService"
+				   ref="weipuBuyerReceiverServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 采购商积分表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.BuyerScoreService"
+				   ref="weipuBuyerScoreServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 采购商积分规则表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.BuyerScoreSetService"
+				   ref="weipuBuyerScoreSetServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 采购商表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.BuyerService"
+				   ref="weipuBuyerServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+	<!-- 采购商模块....................................................................................End-->
+
+
+	<!-- 询价模块....................................................................................Start-->
+	<!-- 询价单采购商中间表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.EnquiryMerchantService"
+				   ref="weipuEnquiryMerchantServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 询价商品表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.EnquiryGoodsService"
+				   ref="weipuEnquiryGoodsServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 询价单日志表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.EnquiryLogService"
+				   ref="weipuEnquiryLogServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 询价表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.EnquiryService"
+				   ref="weipuEnquiryServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+	<!-- 询价模块....................................................................................End-->
+
+
+	<!-- 企业基本资格证书表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.EnterpriseBaseQcService"
+				   ref="weipuEnterpriseBaseQcServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+
+	<!-- 供应商-采购商标签关联表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.MerchantLabelService"
+				   ref="weipuMerchantLabelServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 报价模块....................................................................................Start-->
+	<!-- 报价详情表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.QuotationDetailsService"
+				   ref="weipuQuotationDetailsServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 报价表日志表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.QuotationLogService"
+				   ref="weipuQuotationLogServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 报价表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.QuotationService"
+				   ref="weipuQuotationServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+	<!-- 报价模块....................................................................................End-->
+
+	<!-- 商品评论表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.B2BGoodsReviewService"
+				   ref="weipuB2BGoodsReviewServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 商品关注列表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.B2BGoodsAttentionService"
+				   ref="weipuB2BGoodsAttentionServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 会员浏览历史表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.B2BBuyerHistoryService"
+				   ref="weipuB2BBuyerHistoryServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- B2B........................................................................................................End -->
+	<!-- 短信发送记录服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.SMSLogService"
+				   ref="weipuSMSLogServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 账户信息服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.AccountService"
+				   ref="weipuAccountServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+	<dubbo:service interface="net.deepdragon.service.weipu.AccountCashService"
+				   ref="weipuAccountCashServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+	<dubbo:service interface="net.deepdragon.service.weipu.AccountLogService"
+				   ref="weipuAccountLogServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+
+	<!-- 搜索关键字日志服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.KeywordsLogService"
+				   ref="weipuKeywordsLogServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+<!-- GHJ ........................................................................................................Start-->
+	<!-- 采购商操作员 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.BuyerOperatorService"
+				   ref="weipuBuyerOperatorServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 银行卡绑定 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.BankCardService"
+				   ref="weipuBankCardServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 采购单 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.PurchaseOrderService"
+				   ref="weipuPurchaseOrderServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 采购单明细 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.PurchaseOrderDetailService"
+				   ref="weipuPurchaseOrderDetailServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+
+	<!-- 红包相关  TianYu 2016-2-23 17:01:04 Start-->
+	<!-- ghj_ghj_redenvelop_accesslog服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GhjRedenvelopAccesslogService"
+				   ref="weipuGhjRedenvelopAccesslogServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- ghj_ghj_redenvelop_grandlog服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GhjRedenvelopGrandlogService"
+				   ref="weipuGhjRedenvelopGrandlogServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- ghj_ghj_redenvelop_rule服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GhjRedenvelopRuleService"
+				   ref="weipuGhjRedenvelopRuleServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- ghj_ghj_vm_redenvelopaccount服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GhjVmRedenvelopaccountService"
+				   ref="weipuGhjVmRedenvelopaccountServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+	<!-- 红包相关  TianYu 2016-2-23 17:01:04 End-->
+
+	<!-- 授信相关  TianYu 2016-2-25 13:51:41 Start-->
+	<!-- ghj_ghj_credit服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GhjCreditService"
+				   ref="weipuGhjCreditServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- ghj_ghj_credit_reply服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GhjCreditReplyService"
+				   ref="weipuGhjCreditReplyServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- ghj_ghj_credit_used_log服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GhjCreditUsedLogService"
+				   ref="weipuGhjCreditUsedLogServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+	<!-- 授信相关  TianYu 2016-2-25 13:51:41 Start-->
+
+	<!-- ghj_complaint_form 申诉服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.ComplaintService"
+				   ref="weipuComplaintServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+	<!-- 授信相关  TianYu 2016-2-25 13:51:41 Start-->
+
+	<!-- 申请放款记录表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GhjCreditLoanLogService"
+				   ref="weipuGhjCreditLoanLogServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+
+	<!-- ghj_redenvelop_action服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GhjRedenvelopActionService"
+				   ref="weipuGhjRedenvelopActionServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- ghj_redenvelop_actiondetail服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GhjRedenvelopActiondetailService"
+				   ref="weipuGhjRedenvelopActiondetailServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- ghj_redenvelop_rangerebaterule服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GhjRedenvelopRangerebateruleService"
+				   ref="weipuGhjRedenvelopRangerebateruleServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+<!-- GHJ ........................................................................................................End-->
+
+	<!--服务暴露部分开始-->
+	<!-- 满减活动优惠价格区间服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.ActivityDecreaseamountService"
+				   ref="weipuActivityDecreaseamountServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 促销满减活动主表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.ActivityFullcutService"
+				   ref="weipuActivityFullcutServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- 参与活动商品表服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.ActivityFullcutItemService"
+				   ref="weipuActivityFullcutItemServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+	<!--专题活动服务-->
+	<dubbo:service interface="net.deepdragon.service.cuxiao.PromotionsService"
+				   ref="cxPromotionsServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+	<dubbo:service interface="net.deepdragon.service.cuxiao.PromotionsGoodsService"
+				   ref="cxPromotionsGoodsServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- ghj_tool_hks服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.ToolHksService"
+				   ref="weipuToolHksServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+	<!-- sys_bec_log服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.BecLogService"
+				   ref="weipuBecLogServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+	<!-- sys_ec_log服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.EcLogService"
+				   ref="weipuEcLogServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+
+	<!--部分退货服务-->
+	<!-- wp_goods_rejected服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GoodsRejectedService"
+				   ref="weipuGoodsRejectedServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+	<!-- wp_goods_rejected_detail服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.GoodsRejectedDetailService"
+				   ref="weipuGoodsRejectedDetailServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+	<!-- b2b_order_offlinepay_voucher服务 -->
+	<dubbo:service interface="net.deepdragon.service.weipu.OrderOfflinepayVoucherService"
+				   ref="weipuOrderOfflinepayVoucherServiceImpl" version="${weipu.service.version}"
+				   group="${weipu.service.group}" timeout="${weipu.service.timeout}"
+				   retries="${weipu.service.retries}" />
+
+</beans>

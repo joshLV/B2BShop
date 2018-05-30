@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.HistoryMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`memberId`,`userkey`,`goodsId`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.History">
+		select
+		<include refid="columnList" />
+		from wp_history
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.History">
+		select
+		<include refid="columnList" />
+		from wp_history
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.History">
+		select
+		<include refid="columnList" />
+		from wp_history
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.History">
+		select
+		<include refid="columnList" />
+		from wp_history
+		where id in
+		<foreach collection="list" item="id" index="index" open="("
+			close=")" separator=",">#{id}</foreach>
+	</select>
+
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.History">
+		select
+		<include refid="columnList" />
+		from wp_history
+		where tenantId = #{tenantId}
+	</select>
+
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.History">
+		select c.*,a.name,a.sn,a.price,a.marketPrice,a.isMarketable, CONCAT((SELECT
+		setvalue FROM shared_system_set WHERE
+		setKey='imageUrl'),CONCAT(CONCAT(groupName,'/'),d.url)) AS image from
+		wp_history c
+		LEFT JOIN wp_goods a ON c.goodsId = a.id
+		LEFT JOIN wp_goods_images d ON d.goodsId = a.id
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getList" resultType="net.deepdragon.entity.weipu.History">
+		select c.*,a.name,a.sn,a.price,a.marketPrice, CONCAT((SELECT
+		setvalue FROM shared_system_set WHERE
+		setKey='imageUrl'),CONCAT(CONCAT(groupName,'/'),d.url)) AS image from
+		wp_history c
+		LEFT JOIN wp_goods a ON c.goodsId = a.id
+		LEFT JOIN wp_goods_images d ON d.goodsId = a.id
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_history where tenantId = #{tenantId}
+	</select>
+
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from
+		wp_history
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+    <!--根据会员ID获取会员浏览历史记录,增加GROUP BY d.goodsId条件 一个商品只展示一条数据(商品与商品图片一对多) Auth:zhangqiang Time:2015-11-10 16:04:32 -->
+	<select id="getListByMemberId" resultType="net.deepdragon.entity.weipu.History">
+		select c.*,a.name,a.sn,a.price,a.marketPrice, CONCAT((SELECT
+		setvalue FROM shared_system_set WHERE
+		setKey='imageUrl'),CONCAT(CONCAT(groupName,'/'),d.url)) AS image from
+		wp_history c
+		LEFT JOIN wp_goods a ON c.goodsId = a.id
+		LEFT JOIN wp_goods_images d ON d.goodsId = a.id
+		where c.memberId = #{memberId}
+		GROUP BY d.goodsId
+		order by c.createDate desc  limit 0,6
+	</select>
+
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.History"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_history
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="memberId != null">,`memberId`</if>
+			<if test="userkey != null">,`userkey`</if>
+			<if test="goodsId != null">,`goodsId`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="memberId != null">,#{memberId}</if>
+			<if test="userkey != null">,#{userkey}</if>
+			<if test="goodsId != null">,#{goodsId}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.History">
+		update wp_history
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="memberId != null">,`memberId` = #{memberId}</if>
+			<if test="userkey != null">,`userkey` = #{userkey}</if>
+			<if test="goodsId != null">,`goodsId` = #{goodsId}</if>
+			<if test="createUser != null">,createUser = #{createUser}</if>
+			<if test="createDate != null">,createDate = #{createDate}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_history
+		where id = #{id}
+	</delete>
+
+	<delete id="deleteAllByMemberId">
+		delete from wp_history
+		where memberId = #{memberId}
+	</delete>
+
+	<select id="getGoodsByCatelog4ViewCount" resultType="net.deepdragon.entity.weipu.Goods">
+		SELECT
+			h.goodsId,
+			count(1) c,
+			g.id,
+			g.`name`,
+			g.fullName,
+			g.categoryId,
+			g.categoryPath,
+			g.price,
+			(select CONCAT((SELECT setvalue FROM shared_system_set WHERE setKey='imageUrl'),
+				CONCAT(CONCAT(i.groupName,'/'),i.url)) from wp_goods_images i where i.goodsId = h.goodsId ORDER BY i.createDate limit 1) pic
+		FROM
+			wp_history h
+		LEFT JOIN wp_goods g ON g.id = h.goodsId
+		WHERE
+			g.isMarketable = 1
+		AND g.status = 5
+		AND g.platform &lt;= 2
+		AND concat(',',g.categoryPath,',') LIKE concat(',',#{categoryPath}, '')
+		GROUP BY h.goodsId
+		ORDER BY c DESC
+		limit 3
+	</select>
+
+</mapper>

@@ -1,0 +1,215 @@
+/* CSS Document */
+body{background:#e12f45 !important;}
+/* topbar */
+.top-bar-nav{background:#e12f45; height:44px; line-height:44px; text-align:center; width:100%;}
+.top-btn-left{float:left;}
+.top-back{display: block; width: 20px; height: 20px; margin: 12px 0 0 10px; overflow: hidden; background:url(../../images/back.png) no-repeat;}
+.top-back:hover{width:25px; height:43px; background:url(../../images/back_press.png) no-repeat; display:block;}
+.top-bar-title{font-weight: 400; font-size: 16px; color:#FFF; line-height: 44px !important;}
+/* 内容 */
+.content{background:#ffffff; height:auto; border-radius:10px; margin-left:10px; margin-right:10px; margin-top:60px; overflow:hidden; padding-top:20px; padding-bottom:40px;margin-bottom:10px;}
+.content ul{ float:left; width:100%; overflow:hidden;}
+.con-li{font-size:16px; border-bottom:1px solid #c3c3c3; margin-left:10px; margin-right:10px; float:left; width:95%; overflow:hidden;  height:auto;}
+.con-li span{ width:25%; float:left;padding-top:15px; padding-bottom:15px;}
+.reg-inputs{width:75% !important; height:44px !important; line-height:normal !important; font-size:16px; border:none;  font-family: '\5fae\8f6f\96c5\9ed1'; color: #252525; float:left;}
+.con-li em{color:#d8001b; font-size:18px; padding-top:5px; float:left;}
+.choose-city{ background:#e12f45; color:#FFF; display:block; height:34px; line-height:34px; float:left; margin-top:8px; padding-left:15%; padding-right:15%; border-radius:20px;}
+
+.con-addr{font-size:16px; border-bottom:1px solid #c3c3c3; margin-left:10px; margin-right:10px; float:left; width:95%; overflow:hidden; height:100px; line-height:100px;}
+.con-addr span{ width:25%; float:left;}
+.con-addr em{color:#d8001b; font-size:18px; padding-top:5px; float:left;}
+.addr-textarea{width:75%; height:auto; line-height:24px; font-size:16px; border:none;  font-family: '\5fae\8f6f\96c5\9ed1'; color: #252525; float:left; margin-top:15px;}
+
+/* 注册按钮 */
+.reg-btn{ width:100%;}
+.submits-btn{ width:90%; background:#ffffff; height:44px; line-height:44px;  border:none; border-radius:10px; margin-left:20px; margin-right:10px; margin-bottom:20px; font-size:18px; color:#e12f45;}
+
+.mui-input-group:after {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	height: 0;
+	content: '';
+	-webkit-transform: scaleY(.5);
+	transform: scaleY(.5);
+	background-color: #c8c7cc
+}
+.mui-input-group:before {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	height: 0;
+	content: '';
+	-webkit-transform: scaleY(.5);
+	transform: scaleY(.5);
+	background-color: #c8c7cc
+}
+.mui-input-group .mui-input-row:after {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 15px;
+	height: 0;
+	content: '';
+	-webkit-transform: scaleY(.5);
+	transform: scaleY(.5);
+	background-color: #c8c7cc
+}
+/* 注册第二步 */
+.reg-step2-inputs{width:70%;/* height:44px;*/ line-height:normal; font-size:16px; border:none;  font-family: '\5fae\8f6f\96c5\9ed1'; color: #252525; float:left; margin-top:12px;}
+.con-li2{font-size:16px; border-bottom:1px solid #c3c3c3; margin-left:10px; margin-right:10px; float:left; width:95%; overflow:hidden; height:auto; padding-bottom: 15px;}
+.con-li2 span{ width:25%; float:left; padding-top:15px;/* padding-bottom:15px;*/ display: block;}
+.con-li2 em{color:#d8001b; font-size:18px; padding-top:2px; float:left;}
+/* 验证码 */
+.captchainput{width:80% !important; height:34px !important; border-radius:50px !important; padding-left:20px !important; line-height:normal !important; font-size:16px; border:1px solid #e8e8e8 !important;  font-family: '\5fae\8f6f\96c5\9ed1'; color: #252525;/* float:left;*/ margin-top:15px !important;}
+.captcha-bot{/* float:left;*/}
+.captcha{float:left; margin-top:5px;}
+.changeyzm{float:left;margin-top:5px; margin-left:15px; margin-bottom:18px;}
+
+.protocol{ margin-top:15px; float:left;}
+
+
+/* 复选框美化 */
+.checkboxFive {
+	width: 25px !important;
+	float:left !important;
+	margin-top:18px !important;
+	position: relative !important;
+	margin-left:30px !important;
+}
+.checkboxFive label {
+	cursor: pointer !important;
+	position: absolute !important;
+	width: 20px !important;
+	height: 20px !important;
+  	left: -5px !important;
+	top:-5px !important;
+	background: #fff !important;
+	border:1px solid #ddd !important;
+	border-radius:20px !important;
+}
+.checkboxFive label:after {
+	
+	content: '' !important;
+	position: absolute !important;
+	
+}
+/**
+ * Create the hover event of the tick
+ */
+.checkboxFive label:after {
+	width: 8px !important;
+	height: 4px !important;
+	background: transparent !important;
+	top: 6px !important;
+	left: 5px !important;
+	border: 2px solid #F00 !important;
+	border-top: none !important;
+	border-right: none !important;
+	-webkit-transform: rotate(-45deg) !important;
+	-moz-transform: rotate(-45deg) !important;
+	-o-transform: rotate(-45deg) !important;
+	-ms-transform: rotate(-45deg) !important;
+	transform: rotate(-45deg) !important;
+}
+ 
+/**
+ * Create the checkbox state for the tick
+ */
+.checkboxFive input[type=checkbox]:checked + label:after {
+	cursor: pointer !important;
+	position: absolute !important;
+	width: 20px !important;
+	height: 20px !important;
+  	left: -1px !important;
+	top:-1px !important;
+	background: #fff !important;
+	border:1px solid #ddd !important;
+	border-radius:20px !important;
+	
+}
+
+/* 弹出层 */
+.black-overlay{ 
+	display: none; 
+	position: absolute; 
+	top: 0%; 
+	left: 0%; 
+	width: 100%; 
+	height: 100%; 
+	background-color: black; 
+	z-index:1001; 
+	-moz-opacity: 0.8; 
+	opacity:.80; 
+	filter: alpha(opacity=88); 
+} 
+.white-content { 
+	display: none; 
+	position: absolute; 
+	top: 10%; 
+	left: 5%; 
+	width: 78%; 
+	height: 70%; 
+	padding: 20px; 
+	border: 3px solid #e12f45; 
+	background-color: white;
+	border-radius:5px;
+	z-index:1002; 
+	overflow: auto; 
+} 
+.con-tit{ float:left; width:100%;}
+.con-tit h3{
+	float:left;
+	margin-top: 20px;
+}		
+.con-tit a{
+	float:right;
+}
+.con-con{
+float:left;
+ width:100%;
+ font-size:12px;
+ line-height:22px;
+ color:#999;
+	}
+	
+	
+/* 登录 */
+.login-tel{margin-top:60px;filter:alpha(opacity=100 finishopacity=50 style=1 startx=0,starty=0,finishx=0,finishy=150) progid:DXImageTransform.Microsoft.gradient(startcolorstr=#aa0202,endcolorstr=#fea1a3,gradientType=0); 
+-ms-filter:alpha(opacity=100 finishopacity=50 style=1 startx=0,starty=0,finishx=0,finishy=150) progid:DXImageTransform.Microsoft.gradient(startcolorstr=#aa0202,endcolorstr=#fea1a3,gradientType=0);/*IE8*/ 
+background:#aa0202; /* 一些不支持背景渐变的浏览器 */ 
+background:-moz-linear-gradient(top, #aa0202, rgba(170, 2, 2,1)); 
+background:-webkit-gradient(linear, 0 0, 0 bottom, from(#aa0202), to(rgba(254, 161, 163, 1))); padding:5px; border-radius:60px; width:94%; margin-left:2%;}
+.login-pwd{margin-top:60px;filter:alpha(opacity=100 finishopacity=50 style=1 startx=0,starty=0,finishx=0,finishy=150) progid:DXImageTransform.Microsoft.gradient(startcolorstr=#aa0202,endcolorstr=#fea1a3,gradientType=0);
+-ms-filter:alpha(opacity=100 finishopacity=50 style=1 startx=0,starty=0,finishx=0,finishy=150) progid:DXImageTransform.Microsoft.gradient(startcolorstr=#aa0202,endcolorstr=#fea1a3,gradientType=0);/*IE8*/ 
+background:#aa0202; /* 一些不支持背景渐变的浏览器 */ 
+background:-moz-linear-gradient(top, #aa0202, rgba(170, 2, 2,1)); 
+background:-webkit-gradient(linear, 0 0, 0 bottom, from(#aa0202), to(rgba(254, 161, 163, 1))); padding:5px; border-radius:60px; width:94%; margin-left:2%;}
+.login-pwd{ margin-top:20px;}
+.login-inputs{ width:100% !important; height:50px !important; line-height:50px !important; border:none !important; background:#ebebeb !important; border-radius:60px !important; padding-left:20px !important; font-size:16px; margin-bottom: 0px !important;}
+.login-btn{ margin-top:30px;}
+.reg-numb{ width:100%; text-align:center; color:#FFF; height:50px; line-height:50px; font-size:16px;}
+.reg-numb a{color:#fff;}
+
+
+input[type=color], input[type=date], input[type=datetime-local], input[type=datetime], input[type=email], input[type=month], input[type=number], input[type=password], input[type=search], input[type=tel], input[type=text], input[type=time], input[type=url], input[type=week], select, textarea{
+	line-height:auto;
+	width: auto;
+	height: auto;
+	 margin-bottom: 0;
+	padding:0;
+	-webkit-user-select: text;
+	border:none;
+	border-radius:0px;
+	outline: 0;
+	background-color: #fff;
+	-webkit-appearance: none;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.mui-btn.mui-active:enabled, .mui-btn:enabled:active, button.mui-active:enabled, button:enabled:active, input[type=button].mui-active:enabled, input[type=button]:enabled:active, input[type=reset].mui-active:enabled, input[type=reset]:enabled:active, input[type=submit].mui-active:enabled, input[type=submit]:enabled:active {
+	color: #e12f45;
+	background-color:#e3e3e3;
+}

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.GoodsRejectedMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`platform`,`rejectedSn`,`orderSn`,`memberId`,`shopId`,`rejectedReason`,`rejectedMoney`,`freightTake`,`freight`,`deliveryAddress`,`logisticsName`,`logisticsNo`,`shippingInstructions`,`shippingVoucher1`,`shippingVoucher2`,`shippingVoucher3`,`shippingTime`,`rejectedStatus`,`remark`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.GoodsRejected">
+		select
+		<include refid="columnList" />
+		from wp_goods_rejected
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.GoodsRejected">
+		select
+		<include refid="columnList" />
+		from wp_goods_rejected
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.GoodsRejected">
+		select
+		<include refid="columnList" />
+		from wp_goods_rejected
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.GoodsRejected">
+		select
+		<include refid="columnList" />
+		from wp_goods_rejected
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.GoodsRejected">
+		select
+		<include refid="columnList" />
+		from wp_goods_rejected 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.GoodsRejected">
+		select
+		<include refid="columnList" />
+		from wp_goods_rejected 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.GoodsRejected">
+		select
+		<include refid="columnList" />
+		from wp_goods_rejected 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_goods_rejected where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_goods_rejected 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.GoodsRejected" useGeneratedKeys="true" keyProperty="id">
+		insert into wp_goods_rejected
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="platform != null">,`platform`</if>
+			<if test="rejectedSn != null">,`rejectedSn`</if>
+			<if test="orderSn != null">,`orderSn`</if>
+			<if test="memberId != null">,`memberId`</if>
+			<if test="shopId != null">,`shopId`</if>
+			<if test="rejectedReason != null">,`rejectedReason`</if>
+			<if test="rejectedMoney != null">,`rejectedMoney`</if>
+			<if test="freightTake != null">,`freightTake`</if>
+			<if test="freight != null">,`freight`</if>
+			<if test="deliveryAddress != null">,`deliveryAddress`</if>
+			<if test="logisticsName != null">,`logisticsName`</if>
+			<if test="logisticsNo != null">,`logisticsNo`</if>
+			<if test="shippingInstructions != null">,`shippingInstructions`</if>
+			<if test="shippingVoucher1 != null">,`shippingVoucher1`</if>
+			<if test="shippingVoucher2 != null">,`shippingVoucher2`</if>
+			<if test="shippingVoucher3 != null">,`shippingVoucher3`</if>
+			<if test="shippingTime != null">,`shippingTime`</if>
+			<if test="rejectedStatus != null">,`rejectedStatus`</if>
+			<if test="remark != null">,`remark`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="platform != null">,#{platform}</if>
+			<if test="rejectedSn != null">,#{rejectedSn}</if>
+			<if test="orderSn != null">,#{orderSn}</if>
+			<if test="memberId != null">,#{memberId}</if>
+			<if test="shopId != null">,#{shopId}</if>
+			<if test="rejectedReason != null">,#{rejectedReason}</if>
+			<if test="rejectedMoney != null">,#{rejectedMoney}</if>
+			<if test="freightTake != null">,#{freightTake}</if>
+			<if test="freight != null">,#{freight}</if>
+			<if test="deliveryAddress != null">,#{deliveryAddress}</if>
+			<if test="logisticsName != null">,#{logisticsName}</if>
+			<if test="logisticsNo != null">,#{logisticsNo}</if>
+			<if test="shippingInstructions != null">,#{shippingInstructions}</if>
+			<if test="shippingVoucher1 != null">,#{shippingVoucher1}</if>
+			<if test="shippingVoucher2 != null">,#{shippingVoucher2}</if>
+			<if test="shippingVoucher3 != null">,#{shippingVoucher3}</if>
+			<if test="shippingTime != null">,#{shippingTime}</if>
+			<if test="rejectedStatus != null">,#{rejectedStatus}</if>
+			<if test="remark != null">,#{remark}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.GoodsRejected">
+		update wp_goods_rejected
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="platform != null">,`platform` = #{platform}</if>
+			<if test="rejectedSn != null">,`rejectedSn` = #{rejectedSn}</if>
+			<if test="orderSn != null">,`orderSn` = #{orderSn}</if>
+			<if test="memberId != null">,`memberId` = #{memberId}</if>
+			<if test="shopId != null">,`shopId` = #{shopId}</if>
+			<if test="rejectedReason != null">,`rejectedReason` = #{rejectedReason}</if>
+			<if test="rejectedMoney != null">,`rejectedMoney` = #{rejectedMoney}</if>
+			<if test="freightTake != null">,`freightTake` = #{freightTake}</if>
+			<if test="freight != null">,`freight` = #{freight}</if>
+			<if test="deliveryAddress != null">,`deliveryAddress` = #{deliveryAddress}</if>
+			<if test="logisticsName != null">,`logisticsName` = #{logisticsName}</if>
+			<if test="logisticsNo != null">,`logisticsNo` = #{logisticsNo}</if>
+			<if test="shippingInstructions != null">,`shippingInstructions` = #{shippingInstructions}</if>
+			<if test="shippingVoucher1 != null">,`shippingVoucher1` = #{shippingVoucher1}</if>
+			<if test="shippingVoucher2 != null">,`shippingVoucher2` = #{shippingVoucher2}</if>
+			<if test="shippingVoucher3 != null">,`shippingVoucher3` = #{shippingVoucher3}</if>
+			<if test="shippingTime != null">,`shippingTime` = #{shippingTime}</if>
+			<if test="rejectedStatus != null">,`rejectedStatus` = #{rejectedStatus}</if>
+			<if test="remark != null">,`remark` = #{remark}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_goods_rejected
+		where id =	#{id}
+	</delete>
+	
+</mapper>

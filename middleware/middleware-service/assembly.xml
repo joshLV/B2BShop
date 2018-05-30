@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.0.0.xsd">
+	<id>package</id>
+	<formats>
+		<format>dir</format>
+		<!-- <format>zip</format> -->
+		<!--<format>tar</format>-->
+	</formats>
+	<includeBaseDirectory>true</includeBaseDirectory>
+	<fileSets>
+		<fileSet>
+			<directory>src/main/bin</directory>
+			<outputDirectory>bin</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>target/classes</directory>
+			<outputDirectory>bin</outputDirectory>
+			<includes>
+				<include>config.properties</include>
+				<include>log4j.properties</include>
+			</includes>
+		</fileSet>	
+		<fileSet>
+			<directory>${profile.config.path}/${profile.file.monitor.directory}</directory>
+			<outputDirectory>bin/${profile.file.monitor.directory}</outputDirectory>
+			<includes>
+				<include>*.*</include>
+			</includes>
+		</fileSet>		
+		<fileSet>
+			<directory>src/main/conf</directory>
+			<outputDirectory>conf</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/logs</directory>
+			<outputDirectory>logs</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/lib</directory>
+			<outputDirectory>lib</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/temp</directory>
+			<outputDirectory>temp</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/webapps</directory>
+			<outputDirectory>webapps</outputDirectory>
+		</fileSet>
+	</fileSets>
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>lib</outputDirectory>
+			<scope>runtime</scope>
+		</dependencySet>
+	</dependencySets>
+</assembly>

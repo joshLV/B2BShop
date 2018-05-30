@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.InvitebusinessMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`name`,`businessLicenseCode`,`businessLicense`,`head`,`sex`,`mobile`,`telphone`,`email`,`areaPath`,`address`,`status`,`createUser`,`createDate`,`modifyUser`,`modifyDate`,`remarks`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.Invitebusiness">
+		select
+		<include refid="columnList" />
+		from wp_invitebusiness
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.Invitebusiness">
+		select
+		<include refid="columnList" />
+		from wp_invitebusiness
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.Invitebusiness">
+		select
+		<include refid="columnList" />
+		from wp_invitebusiness
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.Invitebusiness">
+		select
+		<include refid="columnList" />
+		from wp_invitebusiness
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.Invitebusiness">
+		select
+		<include refid="columnList" />
+		from wp_invitebusiness 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.Invitebusiness">
+		select
+		<include refid="columnList" />
+		from wp_invitebusiness 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.Invitebusiness">
+		select
+		<include refid="columnList" />
+		from wp_invitebusiness 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_invitebusiness where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_invitebusiness 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.Invitebusiness"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_invitebusiness
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="name != null">,`name`</if>
+			<if test="businessLicenseCode != null">,`businessLicenseCode`</if>
+			<if test="businessLicense != null">,`businessLicense`</if>
+			<if test="head != null">,`head`</if>
+			<if test="sex != null">,`sex`</if>
+			<if test="mobile != null">,`mobile`</if>
+			<if test="telphone != null">,`telphone`</if>
+			<if test="email != null">,`email`</if>
+			<if test="areaPath != null">,`areaPath`</if>
+			<if test="address != null">,`address`</if>
+			<if test="status != null">,`status`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+			<if test="remarks != null">,`remarks`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="name != null">,#{name}</if>
+			<if test="businessLicenseCode != null">,#{businessLicenseCode}</if>
+			<if test="businessLicense != null">,#{businessLicense}</if>
+			<if test="head != null">,#{head}</if>
+			<if test="sex != null">,#{sex}</if>
+			<if test="mobile != null">,#{mobile}</if>
+			<if test="telphone != null">,#{telphone}</if>
+			<if test="email != null">,#{email}</if>
+			<if test="areaPath != null">,#{areaPath}</if>
+			<if test="address != null">,#{address}</if>
+			<if test="status != null">,#{status}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+			<if test="remarks != null">,#{remarks}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.Invitebusiness">
+		update wp_invitebusiness
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="name != null">,`name` = #{name}</if>
+			<if test="businessLicenseCode != null">,`businessLicenseCode` = #{businessLicenseCode}</if>
+			<if test="businessLicense != null">,`businessLicense` = #{businessLicense}</if>
+			<if test="head != null">,`head` = #{head}</if>
+			<if test="sex != null">,`sex` = #{sex}</if>
+			<if test="mobile != null">,`mobile` = #{mobile}</if>
+			<if test="telphone != null">,`telphone` = #{telphone}</if>
+			<if test="email != null">,`email` = #{email}</if>
+			<if test="areaPath != null">,`areaPath` = #{areaPath}</if>
+			<if test="address != null">,`address` = #{address}</if>
+			<if test="status != null">,`status` = #{status}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+			<if test="remarks != null">,`remarks` = #{remarks}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_invitebusiness
+		where id =	#{id}
+	</delete>
+	
+</mapper>

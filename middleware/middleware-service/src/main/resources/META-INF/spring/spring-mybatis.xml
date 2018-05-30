@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+	<description>MyBatis数据源模式</description>
+
+	<!-- 定义aspectj -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="routingDataSource" />
+		<property name="typeAliasesPackage" value="net.deepdragon.entity" />
+		<property name="typeHandlersPackage" value="net.deepdragon.mybatis.handlers" />
+		<property name="configLocation" value="classpath:META-INF/mybatis/mybatis-config.xml" />
+		<property name="mapperLocations" value="classpath*:META-INF/mybatis/mapper/mysql/**/*.xml" />
+		<property name="typeAliases" value="org.springframework.util.LinkedCaseInsensitiveMap" />
+		<property name="databaseIdProvider" ref="databaseIdProvider" />
+
+		<property name="plugins">
+			<list>
+				<bean class="net.deepdragon.mybatis.plugins.PagerInterceptor">
+					<property name="properties">
+						<props>
+							<prop key="dialectClass">net.deepdragon.mybatis.support.MySQLDialect</prop>
+           					<prop key="asyncTotalCount">true</prop>
+           					<prop key="poolMaxSize">5</prop>
+						</props>
+					</property>
+				</bean>
+				<bean class="net.deepdragon.mybatis.plugins.IDInterceptor">
+					<constructor-arg index="0" ref="idWorker" />					
+				</bean>
+				<bean class="net.deepdragon.mybatis.plugins.MyBatisLogInterceptor">
+					<property name="slowExecuteTime" value="200" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="sqlSessionTemplateFactory" class="net.deepdragon.mybatis.SqlSessionTemplateFactory">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="databaseIdProvider" class="net.deepdragon.VendorDatabaseIdProvider">
+		<property name="properties">
+			<bean
+				class="org.springframework.beans.factory.config.PropertiesFactoryBean" />
+		</property>
+	</bean>
+
+	<bean id="idWorker" class="net.deepdragon.util.IdWorker">
+		<constructor-arg index="0" value="${id.worker}" />
+		<constructor-arg index="1" value="${id.center}" />
+		<constructor-arg index="2" value="${id.sequence}" />
+	</bean>
+</beans>

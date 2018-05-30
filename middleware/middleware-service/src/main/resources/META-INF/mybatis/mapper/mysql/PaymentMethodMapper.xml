@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.PaymentMethodMapper">
+
+	<sql id="columnList">
+		`id`,`name`,`type`,`enabled`,`orderNo`,`description`,`createUser`,`createDate`,`modifyUser`,`modifyDate`,platform
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.PaymentMethod">
+		select
+		<include refid="columnList" />
+		from shared_payment_method
+		where id = #{id}
+		and platform = #{platform}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.PaymentMethod">
+		select
+		<include refid="columnList" />
+		from shared_payment_method
+		where ${property}=#{value} and platform = #{platform}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.PaymentMethod">
+		select
+		<include refid="columnList" />
+		from shared_payment_method
+		where ${property}=#{value} and platform = #{platform}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.PaymentMethod">
+		select
+		<include refid="columnList" />
+		from shared_payment_method
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+		and platform = #{platform}
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.PaymentMethod">
+		select
+		<include refid="columnList" />
+		from shared_payment_method
+		where platform = #{platform}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.PaymentMethod">
+		select
+		<include refid="columnList" />
+		from shared_payment_method 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.PaymentMethod">
+		select
+		<include refid="columnList" />
+		from shared_payment_method 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from shared_payment_method
+		where platform = #{platform}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from shared_payment_method 
+		where ${property}=#{value} and platform = #{platform}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.PaymentMethod"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into shared_payment_method
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`platform`
+			<if test="name != null">,`name`</if>
+			<if test="type != null">,`type`</if>
+			<if test="enabled != null">,`enabled`</if>
+			<if test="orderNo != null">,`orderNo`</if>
+			<if test="description != null">,`description`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{platform}
+			<if test="name != null">,#{name}</if>
+			<if test="type != null">,#{type}</if>
+			<if test="enabled != null">,#{enabled}</if>
+			<if test="orderNo != null">,#{orderNo}</if>
+			<if test="description != null">,#{description}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.PaymentMethod">
+		update shared_payment_method
+		<set>
+			`platform` = #{platform}
+			<if test="name != null">`name` = #{name},</if>
+			<if test="type != null">`type` = #{type},</if>
+			<if test="enabled != null">`enabled` = #{enabled},</if>
+			<if test="orderNo != null">`orderNo` = #{orderNo},</if>
+			<if test="description != null">`description` = #{description},</if>
+			<if test="modifyUser != null">`modifyUser` = #{modifyUser},</if>
+			<if test="modifyDate != null">`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from shared_payment_method
+		where id =	#{id}
+		and platform = #{platform}
+	</delete>
+	
+</mapper>

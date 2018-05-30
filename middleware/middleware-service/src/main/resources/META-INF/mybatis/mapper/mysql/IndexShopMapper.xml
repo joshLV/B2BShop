@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.IndexShopMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,
+		concat((select setvalue from
+		shared_system_set where
+		setKey='imageUrl'),concat(concat(groupName,'/'),url)) as
+		`pic`,
+		`name`,`shopId`,`groupName`,`url`,`imageWidth`,`imageHeight`,`orderNo`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.IndexShop">
+		select
+		<include refid="columnList" />
+		from wp_index_shop
+		where id = #{id}
+		and tenantId = #{tenantId}
+		and platform = #{platform}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.IndexShop">
+		select
+		<include refid="columnList" />
+		from wp_index_shop
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.IndexShop">
+		select
+		<include refid="columnList" />
+		from wp_index_shop
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.IndexShop">
+		select
+		<include refid="columnList" />
+		from wp_index_shop
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+		and tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.IndexShop">
+		select
+		<include refid="columnList" />
+		from wp_index_shop 
+		where tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.IndexShop">
+		select
+		wis.`id`,wis.`tenantId`,concat((select setvalue from shared_system_set where setKey='imageUrl'),concat(concat(wis.groupName,'/'),url)) as `pic`,
+		wis.`name`,wis.`shopId`,wis.`groupName`,wis.`url`,wis.`imageWidth`,wis.`imageHeight`,wis.`orderNo`,
+		wis.`createUser`,wis.`createDate`,wis.`modifyUser`,wis.`modifyDate`,
+		wm.name as shopName,wm.urlAddress 
+		from wp_index_shop wis 
+		left join wp_merchant wm on wis.shopId=wm.id 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.IndexShop">
+		select
+		wis.`id`,wis.`tenantId`,concat((select setvalue from shared_system_set where setKey='imageUrl'),concat(concat(wis.groupName,'/'),url)) as `pic`,
+		wis.`name`,wis.`shopId`,wis.`groupName`,wis.`url`,wis.`imageWidth`,wis.`imageHeight`,wis.`orderNo`,
+		wm.`telphone` createUser,wis.`createDate`,wis.`modifyUser`,wis.`modifyDate`,
+		wm.name as shopName,wm.urlAddress,CONCAT((select setvalue from shared_system_set where setKey='imageUrl'), wm.weixinImg) as weixinImg
+		from wp_index_shop wis 
+		left join wp_merchant wm on wis.shopId=wm.id 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_index_shop where tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_index_shop 
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.IndexShop"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_index_shop
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`,`platform`
+			<if test="name != null">,`name`</if>
+			<if test="shopId != null">,`shopId`</if>
+			<if test="groupName != null">,`groupName`</if>
+			<if test="url != null">,`url`</if>
+			<if test="imageWidth != null">,`imageWidth`</if>
+			<if test="imageHeight != null">,`imageHeight`</if>
+			<if test="orderNo != null">,`orderNo`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId},#{platform}
+			<if test="name != null">,#{name}</if>
+			<if test="shopId != null">,#{shopId}</if>
+			<if test="groupName != null">,#{groupName}</if>
+			<if test="url != null">,#{url}</if>
+			<if test="imageWidth != null">,#{imageWidth}</if>
+			<if test="imageHeight != null">,#{imageHeight}</if>
+			<if test="orderNo != null">,#{orderNo}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.IndexShop">
+		update wp_index_shop
+		<set>
+			`tenantId` = #{tenantId},`platform` = #{platform}
+			<if test="name != null">,`name` = #{name}</if>
+			<if test="shopId != null">,`shopId` = #{shopId}</if>
+			<if test="groupName != null">,`groupName` = #{groupName}</if>
+			<if test="url != null">,`url` = #{url}</if>
+			<if test="imageWidth != null">,`imageWidth` = #{imageWidth}</if>
+			<if test="imageHeight != null">,`imageHeight` = #{imageHeight}</if>
+			<if test="orderNo != null">,`orderNo` = #{orderNo}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_index_shop
+		where id =	#{id}
+		and tenantId = #{tenantId}
+		and platform = #{platform}
+	</delete>
+
+	<select id="getPager4JULI" parameterType="java.util.Map" resultType="net.deepdragon.entity.weipu.IndexShop">
+		SELECT
+		a.id, a.tenantId, a.typeId, a.name, a.shortName, CONCAT((select setvalue from shared_system_set where setKey='shopUrl'),CONCAT('/shop/',a.urlAddress)) as url,CONCAT((select setvalue from shared_system_set where setKey='imageUrl'),(select setvalue from wp_merchant_setting where setKey='pic' and shopId=a.id)) as pic, a.businessLicenseCode, a.businessLicense, a.groupName, a.imageWidth, a.imageHeight, a.head, a.sex, a.mobile, a.telphone, a.email, a.areaPath, a.address, a.status, a.sign, a.urlAddress, a.createUser, a.createDate, a.modifyUser, a.modifyDate, a.qqKeFu, a.hasRebate ,CONCAT((select setvalue from shared_system_set where setKey='imageUrl'), a.weixinImg) as weixinImg, a.deliveryDay, a.initialPost,a.atitude,a.longitude,
+		ROUND(6378.138 * 2 * ASIN(SQRT(POW(SIN((#{atitude} * PI() / 180- a.atitude * PI() / 180) / 2),2) + COS(#{atitude} * PI() / 180) * COS(a.atitude * PI() / 180) * POW(SIN((#{longitude} * PI() / 180- a.longitude * PI() / 180) / 2),2)))*1000) AS km,
+		IFNULL((SELECT COUNT(o.id) FROM wp_order o WHERE o.shopId=a.id GROUP BY o.shopId AND o.orderStatus='trade_finished' LIMIT 1), '0')  AS sile
+		FROM
+		wp_merchant a
+		WHERE a.status='3'
+		<if test="shopId != null">
+			<if test="shopId != ''">
+				and a.id=#{shopId}
+			</if>
+		</if>
+		<if test="filterType == 'km'">
+			<if test="filter == 'GT_LT'"> HAVING km &gt;=#{km_GT} AND km &lt;#{km_LT} </if>
+			<if test="filter == 'GT'"> HAVING km &gt;=#{km_GT}</if>
+			<if test="filter == 'LT'"> HAVING km &lt;#{km_LT} </if>
+		</if>
+		<if test="filterType == 'sile'">
+			<if test="filter == 'GT_LT'"> HAVING sile &gt;=#{sile_GT} AND sile &lt;#{sile_LT} </if>
+			<if test="filter == 'GT'"> HAVING sile &gt;=#{sile_GT}</if>
+			<if test="filter == 'LT'"> HAVING sile &lt;#{sile_LT} </if>
+		</if>
+
+		<if test="filterType == 'km'"> ORDER BY km ASC </if>
+		<if test="filterType == 'sile'"> ORDER BY sile DESC </if>
+
+		<if test="limtString != null"> LIMIT #{s},#{e} </if>
+
+	</select>
+
+	<select id="getPager4JULICout"  parameterType="java.util.Map" resultType="java.lang.Long">
+		SELECT count(1) FROM (SELECT
+		a.id, a.tenantId, a.typeId, a.name, a.shortName, CONCAT((select setvalue from shared_system_set where setKey='shopUrl'),CONCAT('/shop/',a.urlAddress)) as url,CONCAT((select setvalue from shared_system_set where setKey='imageUrl'),(select setvalue from wp_merchant_setting where setKey='pic' and shopId=a.id)) as pic, a.businessLicenseCode, a.businessLicense, a.groupName, a.imageWidth, a.imageHeight, a.head, a.sex, a.mobile, a.telphone, a.email, a.areaPath, a.address, a.status, a.sign, a.urlAddress, a.createUser, a.createDate, a.modifyUser, a.modifyDate, a.qqKeFu, a.hasRebate ,CONCAT((select setvalue from shared_system_set where setKey='imageUrl'), a.weixinImg) as weixinImg, a.deliveryDay, a.initialPost,a.atitude,a.longitude,
+		ROUND(6378.138 * 2 * ASIN(SQRT(POW(SIN((#{atitude} * PI() / 180- a.atitude * PI() / 180) / 2),2) + COS(#{atitude} * PI() / 180) * COS(a.atitude * PI() / 180) * POW(SIN((#{longitude} * PI() / 180- a.longitude * PI() / 180) / 2),2)))*1000) AS km,
+		IFNULL((SELECT COUNT(o.id) FROM wp_order o WHERE o.shopId=a.id GROUP BY o.shopId AND o.orderStatus='trade_finished' LIMIT 1), '0')  AS sile
+		FROM
+		wp_merchant a
+		WHERE a.status='3'
+		<if test="filterType == 'km'">
+			<if test="filter == 'GT_LT'"> HAVING km &gt;=#{km_GT} AND km &lt;#{km_LT} </if>
+			<if test="filter == 'GT'"> HAVING km &gt;=#{km_GT}</if>
+			<if test="filter == 'LT'"> HAVING km &lt;#{km_LT} </if>
+		</if>
+		<if test="filterType == 'sile'">
+			<if test="filter == 'GT_LT'"> HAVING sile &gt;=#{sile_GT} AND sile &lt;#{sile_LT} </if>
+			<if test="filter == 'GT'"> HAVING sile &gt;=#{sile_GT}</if>
+			<if test="filter == 'LT'"> HAVING sile &lt;#{sile_LT} </if>
+		</if>
+		ORDER BY km ASC
+		) as result
+	</select>
+
+	<!-- 2016-08-31 lxb
+	点击首页“搜索栏”或是点击首页图标“商品分类”， 可按商品进行搜索。
+		（1）首先进入销售该商品的商家列表，搜索规则为：根据商品关键词检索商品，获取该商品对应商家；以当前“定位框”获取的地址为中心，以1000m为半径，搜索出距离在1000m内的商家；按商家距离从小到大排序。
+		（2）在（1）中商家列表，每个商家下挂上搜索的目标商品列表。商品列表数量默认显示3个，超过3个的商品隐藏，提供”查看更多(条数)”下拉功能来查看所有商品。点击商品进入商品详情页面。
+	-->
+	<select id="getPager4JULI4SJ" parameterType="java.util.Map" resultType="net.deepdragon.entity.weipu.IndexShop">
+		SELECT m.* FROM (
+		<if test="queryop =='search'">
+			SELECT
+			CONCAT(g.shopId, '') AS shopId
+			FROM
+			wp_goods g,
+			wp_catelog c
+			WHERE g.categoryId = c.id
+			AND g.STATUS = 5
+			AND g.isDelete = 1
+			AND g.isMarketable = 1
+			AND g.platform &lt;= 2
+			AND g.type = 0
+			AND c.enabled = 1
+			AND (g.NAME LIKE CONCAT('%', #{keywords}, '%')
+			OR g.fullName LIKE CONCAT('%', #{keywords}, '%')
+			OR g.keywords LIKE CONCAT('%', #{keywords}, '%')
+			OR g.barcode LIKE CONCAT('%', #{keywords}, '%')
+			OR g.packageBarCode LIKE CONCAT('%', #{keywords}, '%')
+			OR c.NAME LIKE CONCAT('%',  #{keywords}, '%')
+			OR c.sign LIKE CONCAT('%', #{keywords}, '%'))
+			GROUP BY shopId
+		</if>
+		<if test="queryop =='query'">
+			SELECT g.shopId FROM wp_goods g WHERE  g.categoryPath like (#{categoryPath}) GROUP BY g.shopId
+		</if>
+		) g  LEFT JOIN ((SELECT
+		mc.id,
+		mc.tenantId,
+		mc.typeId,
+		mc.name,
+		mc.shortName,
+		CONCAT(
+		(SELECT
+		setvalue
+		FROM
+		shared_system_set
+		WHERE setKey = 'shopUrl'),
+		CONCAT('/shop/', mc.urlAddress)
+		) AS url,
+		CONCAT(
+		(SELECT
+		setvalue
+		FROM
+		shared_system_set
+		WHERE setKey = 'imageUrl'),
+		(SELECT
+		setvalue
+		FROM
+		wp_merchant_setting
+		WHERE setKey = 'pic'
+		AND shopId = mc.id)
+		) AS pic,
+		mc.businessLicenseCode,
+		mc.businessLicense,
+		mc.groupName,
+		mc.imageWidth,
+		mc.imageHeight,
+		mc.head,
+		mc.sex,
+		mc.mobile,
+		mc.telphone,
+		mc.email,
+		mc.areaPath,
+		mc.address,
+		mc.status,
+		mc.sign,
+		mc.urlAddress,
+		mc.createUser,
+		mc.createDate,
+		mc.modifyUser,
+		mc.modifyDate,
+		mc.qqKeFu,
+		mc.hasRebate,
+		CONCAT(
+		(SELECT
+		setvalue
+		FROM
+		shared_system_set
+		WHERE setKey = 'imageUrl'),
+		mc.weixinImg
+		) AS weixinImg,
+		mc.deliveryDay,
+		mc.initialPost,
+		mc.atitude,
+		mc.longitude,
+		ROUND(6378.138 * 2 * ASIN(SQRT(POW(SIN((#{atitude} * PI() / 180- mc.atitude * PI() / 180) / 2),2) + COS(#{atitude} * PI() / 180) * COS(mc.atitude * PI() / 180) * POW(SIN((#{longitude} * PI() / 180- mc.longitude * PI() / 180) / 2),2)))*1000) AS km,
+		IFNULL(
+		(SELECT
+		COUNT(o.id)
+		FROM
+		wp_order o
+		WHERE o.shopId = mc.id
+		AND o.orderStatus = 'trade_finished'
+		LIMIT 1),
+		'0'
+		) AS sile FROM wp_merchant mc WHERE mc.status = '3'  ) m ) ON m.id=g.shopId
+
+		<if test="filterType == 'km'">
+			<if test="filter == 'GT_LT'"> HAVING km &gt;=#{km_GT} AND km &lt;#{km_LT} </if>
+			<if test="filter == 'GT'"> HAVING km &gt;=#{km_GT}</if>
+			<if test="filter == 'LT'"> HAVING km &lt;#{km_LT} </if>
+		</if>
+		<if test="filterType == 'sile'">
+			<if test="filter == 'GT_LT'"> HAVING sile &gt;=#{sile_GT} AND sile &lt;#{sile_LT} </if>
+			<if test="filter == 'GT'"> HAVING sile &gt;=#{sile_GT}</if>
+			<if test="filter == 'LT'"> HAVING sile &lt;#{sile_LT} </if>
+		</if>
+
+		<if test="filterType == 'km'"> ORDER BY km ASC </if>
+		<if test="filterType == 'sile'"> ORDER BY sile DESC </if>
+
+		<if test="limtString != null"> LIMIT #{s},#{e} </if>
+
+
+	</select>
+
+	<select id="getPager4JULI4SJCout"  parameterType="java.util.Map" resultType="java.lang.Long">
+		SELECT count(1) FROM (SELECT m.* FROM (
+		<if test="queryop =='search'">
+			SELECT
+			CONCAT(g.shopId, '') AS shopId
+			FROM
+			wp_goods g,
+			wp_catelog c
+			WHERE g.categoryId = c.id
+			AND g.STATUS = 5
+			AND g.isDelete = 1
+			AND g.isMarketable = 1
+			AND g.platform &lt;= 2
+			AND g.type = 0
+			AND c.enabled = 1
+			AND (g.NAME LIKE CONCAT('%', #{keywords}, '%')
+			OR g.fullName LIKE CONCAT('%', #{keywords}, '%')
+			OR g.keywords LIKE CONCAT('%', #{keywords}, '%')
+			OR g.barcode LIKE CONCAT('%', #{keywords}, '%')
+			OR g.packageBarCode LIKE CONCAT('%', #{keywords}, '%')
+			OR c.NAME LIKE CONCAT('%',  #{keywords}, '%')
+			OR c.sign LIKE CONCAT('%', #{keywords}, '%'))
+			GROUP BY shopId
+		</if>
+		<if test="queryop =='query'">
+			SELECT g.shopId FROM wp_goods g WHERE  g.categoryPath like (#{categoryPath}) GROUP BY g.shopId
+		</if>
+		) g  LEFT JOIN ((SELECT
+		mc.id,
+		mc.tenantId,
+		mc.typeId,
+		mc.name,
+		mc.shortName,
+		CONCAT(
+		(SELECT
+		setvalue
+		FROM
+		shared_system_set
+		WHERE setKey = 'shopUrl'),
+		CONCAT('/shop/', mc.urlAddress)
+		) AS url,
+		CONCAT(
+		(SELECT
+		setvalue
+		FROM
+		shared_system_set
+		WHERE setKey = 'imageUrl'),
+		(SELECT
+		setvalue
+		FROM
+		wp_merchant_setting
+		WHERE setKey = 'pic'
+		AND shopId = mc.id)
+		) AS pic,
+		mc.businessLicenseCode,
+		mc.businessLicense,
+		mc.groupName,
+		mc.imageWidth,
+		mc.imageHeight,
+		mc.head,
+		mc.sex,
+		mc.mobile,
+		mc.telphone,
+		mc.email,
+		mc.areaPath,
+		mc.address,
+		mc.status,
+		mc.sign,
+		mc.urlAddress,
+		mc.createUser,
+		mc.createDate,
+		mc.modifyUser,
+		mc.modifyDate,
+		mc.qqKeFu,
+		mc.hasRebate,
+		CONCAT(
+		(SELECT
+		setvalue
+		FROM
+		shared_system_set
+		WHERE setKey = 'imageUrl'),
+		mc.weixinImg
+		) AS weixinImg,
+		mc.deliveryDay,
+		mc.initialPost,
+		mc.atitude,
+		mc.longitude,
+		ROUND(6378.138 * 2 * ASIN(SQRT(POW(SIN((#{atitude} * PI() / 180- mc.atitude * PI() / 180) / 2),2) + COS(#{atitude} * PI() / 180) * COS(mc.atitude * PI() / 180) * POW(SIN((#{longitude} * PI() / 180- mc.longitude * PI() / 180) / 2),2)))*1000) AS km,
+		IFNULL(
+		(SELECT
+		COUNT(o.id)
+		FROM
+		wp_order o
+		WHERE o.shopId = mc.id
+		AND o.orderStatus = 'trade_finished'
+		LIMIT 1),
+		'0'
+		) AS sile FROM wp_merchant mc WHERE mc.status = '3'  ) m ) ON m.id=g.shopId
+		WHERE 1=1
+		<if test="filterType == 'km'">
+			<if test="filter == 'GT_LT'"> AND km &gt;=#{km_GT} AND km &lt;#{km_LT} </if>
+			<if test="filter == 'GT'">AND  km &gt;=#{km_GT}</if>
+			<if test="filter == 'LT'"> AND km &lt;#{km_LT} </if>
+		</if>
+		<if test="filterType == 'sile'">
+			<if test="filter == 'GT_LT'">  AND sile &gt;=#{sile_GT} AND sile &lt;#{sile_LT} </if>
+			<if test="filter == 'GT'">  AND sile &gt;=#{sile_GT}</if>
+			<if test="filter == 'LT'">  AND sile &lt;#{sile_LT} </if>
+		</if>
+		ORDER BY km ASC
+		) as result
+	</select>
+
+</mapper>

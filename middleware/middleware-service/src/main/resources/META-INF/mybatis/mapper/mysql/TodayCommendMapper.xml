@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.TodayCommendMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`title`,`goodsId`,`status`,`createUser`,`createDate`,`modifyUser`,`modifyDate`,`platform`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.TodayCommend">
+		select
+		<include refid="columnList" />
+		from wp_today_commend
+		where id = #{id}
+		and tenantId = #{tenantId}
+		and platform = #{platform}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.TodayCommend">
+		select
+		<include refid="columnList" />
+		from wp_today_commend
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.TodayCommend">
+		select
+		<include refid="columnList" />
+		from wp_today_commend
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.TodayCommend">
+		select
+		<include refid="columnList" />
+		from wp_today_commend
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+		and tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.TodayCommend">
+		select
+		<include refid="columnList" />
+		from wp_today_commend 
+		where tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.TodayCommend">
+		select
+		<include refid="columnList" />
+		from wp_today_commend 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.TodayCommend">
+		select
+		<include refid="columnList" />
+		from wp_today_commend 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_today_commend where tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_today_commend 
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.TodayCommend"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_today_commend
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`,`platform`
+			<if test="title != null">,`title`</if>
+			<if test="goodsId != null">,`goodsId`</if>
+			<if test="status != null">,`status`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId},#{platform}
+			<if test="title != null">,#{title}</if>
+			<if test="goodsId != null">,#{goodsId}</if>
+			<if test="status != null">,#{status}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.TodayCommend">
+		update wp_today_commend
+		<set>
+			`tenantId` = #{tenantId},`platform` = #{platform}
+			<if test="title != null">,`title` = #{title}</if>
+			<if test="goodsId != null">,`goodsId` = #{goodsId}</if>
+			<if test="status != null">,`status` = #{status}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_today_commend
+		where id =	#{id}
+		and tenantId = #{tenantId}
+		and platform = #{platform}
+	</delete>
+
+	<!--=============== Desc:获取今日爆款商品 Auth:zhangqiang Time:2015-12-11 11:50:54 Start =============== -->
+	<select id="getTodayCommendGoods" resultType="net.deepdragon.entity.weipu.Goods">
+		select g.*
+		FROM wp_goods g
+		LEFT JOIN wp_today_commend t ON g.id = t.goodsId
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	<!--=============== Desc:获取今日爆款商品 Auth:zhangqiang Time:2015-12-11 11:50:54 End =============== -->
+
+	<select id="getTodayCommendGoodsNew" resultType="net.deepdragon.entity.weipu.Goods">
+		SELECT
+		a.id,
+		a.name,
+		a.barcode,
+		a.price,
+		a.marketPrice,
+		CONCAT(
+		(SELECT
+		setvalue
+		FROM
+		shared_system_set
+		WHERE setKey = 'imageUrl'),
+		CONCAT(CONCAT(groupName, '/'), d.url)
+		) AS image,
+		(SELECT
+		CONCAT(
+		IFNULL(MIN(batchPrice), 0),
+		'~',
+		IFNULL(MAX(batchPrice), 0)
+		) sn
+		FROM
+		b2b_goods_price
+		WHERE goodsId = c.goodsId) sn
+		FROM
+		wp_today_commend c
+		LEFT JOIN wp_goods a
+		ON c.goodsId = a.id
+		LEFT JOIN wp_goods_images d
+		ON d.goodsId = a.id
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+
+	<select id="getPagerByTag4EC" resultType="net.deepdragon.entity.weipu.Goods">
+		select o.* from (
+		SELECT
+		gt.goodsId,
+		t.sign AS tagSign,
+		g.*
+		FROM
+		wp_goods_tag gt
+		LEFT JOIN wp_tag t ON tagId = t.id
+		LEFT JOIN (
+		SELECT
+		a.id,
+		a.tenantId,
+		a.categoryId,
+		/**a.categoryPath,
+		a.brandId,*/
+		a.shopId,
+		/**a.productId,*/
+		a. NAME,
+		a.barcode,
+		/**
+		a.sn,
+		a.shortName,
+		a.phoneShopNo,
+		*/
+		a.fullName,
+		a.price,
+		/**a.erpPkCode,
+		a.SupCode,
+		a.spec,
+		a.cost, */
+		a.marketPrice,
+		/**a.isMemberPrice,*/
+		a.unit,
+		/**
+		a.weight,
+		a.adwords,
+		a.image,
+		*/
+		a.stock,
+		/**
+		a.stockMemo,
+		a.POINT,
+		a.defaultPrice,
+		*/
+		a.isMarketable,
+		/**
+		a.isTop,
+		a.isList,
+		a.isGift,
+		a.isLianYing,
+		a.introduction,
+		a.keywords,
+		a.hits,
+		a.weekHits,
+		a.weekHitsDate,
+		a.monthHits,
+		a.monthHitsDate,*/
+		a.sales,
+		/**
+		a.weekSales,
+		a.weekSalesDate,
+		a.monthSales,
+		a.monthSalesDate,*/
+		a.scoreCount,
+		/**
+		a.scoreTotal,
+		a.score,
+		a.becScoreCount,
+		a.becScoreTotal,
+		a.becScore,*/
+		a.isIndex,
+		/**
+		a.indexOrder,
+		a.description,
+		a.createUser,
+		a.createDate,
+		a.modifyUser,
+		a.modifyDate,*/
+		a. STATUS,
+		/**
+		a.isDelete,
+		a.shippingOrderUrl,
+		a.scoreSet,*/
+		a.platform,
+		/**a.predictDay,
+		a.supplierId,
+		a.type,
+		a.checkDate,
+		a.hasRebate,
+		a.startNum,
+		a.limitNum,
+		a.packageModulus,
+		a.packageUnit,
+		a.packageBarCode,
+		a.phoneIntroduction,
+		a.enableBatchPrice, */
+		b.pic
+		FROM
+		wp_goods a
+		LEFT JOIN (
+		SELECT
+		c.goodsId,
+		c.pic
+		FROM
+		(
+		SELECT
+		goodsId,
+		concat(
+		(
+		SELECT
+		setvalue
+		FROM
+		shared_system_set
+		WHERE
+		setKey = 'imageUrl'
+		), concat(concat(groupName, '/'), url) ) AS `pic`
+		FROM
+		wp_goods_images
+		ORDER BY
+		orderNo
+		) c
+		GROUP BY
+		c.goodsId
+		) b ON a.id = b.goodsId
+		WHERE (a.platform = 1 or a.platform =2)
+		) g on gt.goodsId = g.id
+		WHERE
+		g. STATUS = '5'
+		and g.isMarketable = 1
+		) o
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+</mapper>

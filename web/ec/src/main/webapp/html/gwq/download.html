@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <title>手机APP下载</title>
+</head>
+<body style="background-color: #d7eefe;">
+<div>
+    <img id="img" src="./wx-bg.png" style="display: none;width: 100%;">
+</div>
+</body>
+<script type="text/javascript">
+
+
+
+    // 获取终端的相关信息
+    var Terminal = {
+        //是否是微信浏览器
+        isWeiXin: function(){
+            var ua = window.navigator.userAgent.toLowerCase();
+            if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+                return true;
+            }else{
+                return false;
+            }
+        }(),
+        // 辨别移动终端类型
+        platform : function(){
+            var u = navigator.userAgent, app = navigator.appVersion;
+            return {
+                // android终端或者uc浏览器
+                android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1,
+                // 是否为iPhone或者QQHD浏览器
+                iPhone: u.indexOf('iPhone') > -1 ,
+                // 是否iPad
+                iPad: u.indexOf('iPad') > -1
+            };
+        }(),
+        // 辨别移动终端的语言：zh-cn、en-us、ko-kr、ja-jp...
+        language : (navigator.browserLanguage || navigator.language).toLowerCase(),
+        redirect: function(){
+            var u = navigator.userAgent, app = navigator.appVersion;
+            var theUrl = '';
+            var code = false;
+            var msg = '';
+            if(u.indexOf('Android') > -1 || u.indexOf('Linux') > -1){
+                code = true;
+                theUrl = 'http://www.ulife.sx.cn/ec/static/app/apk/gwq.apk';
+            }else if(u.indexOf('iPhone') > -1){
+                msg='iOS版本正在努力上架中，敬请期待!';
+            }else if(u.indexOf('iPad') > -1){
+                msg='暂不支持iPad';
+            }else{
+                msg='请在手机浏览器中打开本页面';
+            }
+
+            return {
+                url: theUrl,
+                code: code,
+                msg: msg
+            };
+        }()
+    };
+
+
+    if(Terminal.isWeiXin){
+        document.getElementById("img").style.display="block";
+    }else{
+        if (Terminal.redirect.code){
+            location.href = Terminal.redirect.url;
+        }else{
+            alert(Terminal.redirect.msg);
+        }
+    }
+
+
+
+
+
+</script>
+</html>

@@ -1,0 +1,45 @@
+/* CSS Document */
+/* 返回 */
+.mui-bar .mui-btn-link {
+    font-size: 16px;
+    line-height: 44px;
+    top: 0px;
+    padding: 0px;
+    color: #096DC9;
+    border: 0px none;
+}
+.mui-bar .mui-title {
+	font-size:18px;
+	color:#096DC9;
+	font-family:"微软雅黑";
+	left:40px;
+}
+.mui-content{
+	padding-bottom:50px;
+	}
+.mui-slider .mui-slider-group .mui-slider-item img {
+    width: 100%;
+}
+.mui-segmented-control-positive.mui-segmented-control-inverted .mui-control-item.mui-active {
+    color: #096DC9;
+    border-bottom: 2px solid #096DC9;
+    background: 0 0;
+}
+.mui-shopname{
+    color:#096DC9 ;
+}
+/* 提交btn */
+.mui-btn-blue, .mui-btn-primary, input[type="submit"] {
+    color: #FFF;
+    border: 1px solid #096DC9;
+    background-color: #096DC9;
+}
+.mui-btn-blue.mui-active:enabled, .mui-btn-blue:enabled:active, .mui-btn-primary.mui-active:enabled, .mui-btn-primary:enabled:active, input[type=submit].mui-active:enabled, input[type=submit]:enabled:active {
+	color: #fff;
+	border: 1px solid #096DC9;
+	background-color: #096DC9
+}
+a {
+  text-decoration: none;
+  color: #fff;
+}

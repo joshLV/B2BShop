@@ -1,0 +1,2434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.GoodsMapper">
+
+    <sql id="columnList">
+		`id`,`tenantId`,`categoryId`,`categoryPath`,`brandId`,`shopId`,`productId`,`name`,`sn`,`shortName`,`barcode`,`phoneShopNo`,`fullName`,`price`,`erpPkCode`,`SupCode`,`cost`,`spec`,`marketPrice`,`isMemberPrice`,`unit`,`weight`,`adwords`,`image`,`stock`,`stockMemo`,`point`,`defaultPrice`,`isMarketable`,`isTop`,`isList`,`isGift`,`isLianYing`,`introduction`,`keywords`,`hits`,`weekHits`,`weekHitsDate`,`monthHits`,`monthHitsDate`,`sales`,`weekSales`,`weekSalesDate`,`monthSales`,`monthSalesDate`,`scoreCount`,`scoreTotal`,`score`,`becScoreCount`,`becScoreTotal`,`becScore`,`isIndex`,`indexOrder`,`description`,`createUser`,`createDate`,`modifyUser`,`modifyDate`,`status`,`isDelete`,`shippingOrderUrl`,`scoreSet`,`platform`,`predictDay`,`supplierId`,`type`,`checkDate`,`hasRebate`,`startNum`,`limitNum`,`packageModulus`,`packageUnit`,`packageBarCode`,`phoneIntroduction`,`enableBatchPrice`,`isPost`, volume
+	</sql>
+
+    <sql id="columnListAlias">
+        g.id ,g.tenantId ,g.categoryId ,g.categoryPath ,g.brandId
+        ,g.shopId ,g.productId ,g.name ,g.sn ,g.shortName
+        ,g.barcode ,g.phoneShopNo ,g.fullName ,g.price ,g.erpPkCode
+        ,g.SupCode ,g.cost ,g.spec ,g.marketPrice ,g.isMemberPrice ,g.unit ,g.weight ,g.adwords ,g.image ,g.stock ,g.stockMemo ,g.point ,g.defaultPrice ,g.isMarketable ,g.isTop ,g.isList ,g.isGift ,g.isLianYing ,g.introduction ,g.keywords ,g.hits ,g.weekHits ,g.weekHitsDate ,g.monthHits ,g.monthHitsDate ,g.sales ,g.weekSales ,g.weekSalesDate ,g.monthSales ,g.monthSalesDate ,g.scoreCount ,g.scoreTotal ,g.score ,g.becScoreCount ,g.becScoreTotal ,g.becScore ,g.isIndex ,g.indexOrder ,g.description ,g.createUser ,g.createDate ,g.modifyUser ,g.modifyDate ,g.status ,g.isDelete ,g.shippingOrderUrl ,g.scoreSet ,g.platform ,g.predictDay ,g.supplierId ,g.type ,g.checkDate ,g.hasRebate ,g.startNum ,g.limitNum ,g.packageModulus ,g.packageUnit ,g.packageBarCode ,g.phoneIntroduction ,g.enableBatchPrice ,g.isPost, g.volume
+    </sql>
+
+    <select id="get" resultType="net.deepdragon.entity.weipu.Goods">
+        select
+        <include refid="columnListAlias"/>
+        <if test="buyerId!=null and buyerId!=''">
+          , (select count(1) from b2b_goods_attention bga where bga.buyerId = #{buyerId} and bga.goodsId=g.id) as attentionCount
+        </if>
+        <if test="buyerId!=null or buyerId!=''">
+          , '-1' as attentionCount
+        </if>
+        from wp_goods g
+        where g.id = #{id}
+    </select>
+
+    <select id="getSeckill" resultType="net.deepdragon.entity.weipu.Goods">
+		select d.*,c.methodId as
+		methodId,c.ypice as ypice,c.total as total,c.frozen as frozen,c.sold
+		as sold ,c.startTime as startTime, c.endTime as endTime ,c.id as
+		saleId from wp_goods d left join
+		(select a.*,b.startTime,b.endTime from
+		wp_flash_sale a left join
+		wp_flash_sale_plandetail b on a.detailId =
+		b.id )c on d.id = c.goodsId
+		where d.id=#{id} and endTime > now() and d.status='5' order
+		by endTime limit 1
+	</select>
+    <select id="getSeckillByDetailId" resultType="net.deepdragon.entity.weipu.Goods">
+		SELECT d.*,c.methodId AS
+		methodId,c.ypice AS ypice,c.total AS total,c.frozen AS frozen,c.sold
+		AS sold ,c.startTime AS startTime, c.endTime AS endTime ,c.id AS
+		saleId FROM wp_goods d LEFT JOIN
+		(SELECT a.*,b.startTime,b.endTime FROM
+		wp_flash_sale a LEFT JOIN
+		wp_flash_sale_plandetail b ON a.detailId =
+		b.id WHERE a.detailId=#{detailId})c ON d.id = c.goodsId
+		WHERE d.id=#{goodsId}  and d.status='5'  AND endTime > NOW() ORDER
+		BY endTime
+	</select>
+    <select id="getShipGoods" resultType="net.deepdragon.entity.weipu.Goods">
+		select a.*,b.id as saleId
+		,b.total as total,b.ypice as ypice,b.startTime as startTime,b.endTime
+		as endTime,b.methodId as methodId from wp_goods a left join
+		wp_activity_shop b on a.id =
+		b.goodsId where a.id =#{id}  and a.status='5'  limit 1
+	</select>
+
+    <select id="find" resultType="net.deepdragon.entity.weipu.Goods">
+        select
+        <include refid="columnList"/>
+        from wp_goods
+        where tenantId = #{tenantId} and ${property}=#{value}
+    </select>
+
+    <select id="findList" resultType="net.deepdragon.entity.weipu.Goods">
+        select
+        <include refid="columnList"/>
+        from wp_goods
+        where tenantId = #{tenantId} and ${property}=#{value} and status='5'
+    </select>
+
+    <select id="findListByIds" parameterType="java.lang.String"
+            resultType="net.deepdragon.entity.weipu.Goods">
+        select
+        <include refid="columnList"/>
+        from wp_goods
+        where id in
+        <foreach collection="list" item="id" index="index" open="("
+                 close=")" separator=",">#{id}
+        </foreach>
+        and status='5'
+    </select>
+
+    <select id="getAll" resultType="net.deepdragon.entity.weipu.Goods">
+        select
+        <include refid="columnList"/>
+        from wp_goods
+        where tenantId = #{tenantId}
+        and status='5'
+    </select>
+
+    <!-- 最直接的分页获取数据 -->
+    <select id="getListByPager" resultType="net.deepdragon.entity.weipu.Goods">
+        select
+        <include refid="columnList"/>
+        from wp_goods
+        where
+        status='5'
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+
+    <select id="getPager" resultType="net.deepdragon.entity.weipu.Goods">
+            select a.*/*, CONCAT((SELECT
+            setvalue FROM shared_system_set WHERE
+            setKey='imageUrl'),CONCAT(CONCAT(groupName,'/'),d.url)) AS pic*/
+        from
+            wp_goods a
+            /*LEFT JOIN wp_goods_images d ON d.goodsId = a.id*/
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+
+    <select id="getList" resultType="net.deepdragon.entity.weipu.Goods">
+        select a.*, CONCAT((SELECT
+        setvalue FROM shared_system_set WHERE
+        setKey='imageUrl'),CONCAT(CONCAT(groupName,'/'),d.url)) AS pic from
+        wp_goods a
+        LEFT JOIN wp_goods_images d ON d.goodsId = a.id
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+
+    <select id="getPager4BEC" resultType="net.deepdragon.entity.weipu.Goods">
+        select o.* from (
+            select <include refid="columnList"/>,
+            pic, IFNULL(maxBatchPrice,price)  maxBatchPrice, IFNULL(minBatchPrice,price)  minBatchPrice,batchPrice,startBatchNum,shopName, clName
+        from (
+            SELECT
+                a.*, '' pic,/*img.image AS pic,*/
+                c.maxBatchPrice,
+                c.minBatchPrice,mm.name shopName,
+                concat(
+                c.minBatchPrice,
+                '~',
+                c.maxBatchPrice
+                ) batchPrice,
+                ifnull(c.startBatchNum, 1) startBatchNum
+                , clOut.clName
+            FROM
+                wp_goods a
+                /*LEFT JOIN (
+                    SELECT
+                    goodsId,
+                    concat((SELECT setvalue FROM shared_system_set WHERE setKey = 'imageUrl'),groupName, '/', url) image
+                    FROM
+                    wp_goods_images
+                    GROUP BY
+                    goodsId
+                ) img ON img.goodsId = a.id*/
+                LEFT JOIN (
+                    SELECT bgp.goodsId, max(bgp.batchPrice) maxBatchPrice, min(bgp.batchPrice) minBatchPrice,min(bgp.startBatchNum) startBatchNum
+                    FROM b2b_goods_price bgp
+                    GROUP BY bgp.goodsId
+                    ORDER BY bgp.goodsId ASC
+                ) c ON c.goodsId = a.id
+                LEFT JOIN (
+                  SELECT m.name,m.id FROM wp_merchant m
+                ) mm
+                ON a.shopId = mm.id
+                -- 关联商品分类表信息查询分类名称
+                left join
+                (select
+                cl.id
+                , CONCAT(cl.p1, '-', cl.p2, '-', cl.p3) as clName
+                from
+                (select
+                g1.id
+                , (select g2.NAME from wp_catelog g2  where CONCAT(g2.id, '') = SUBSTRING(g1.path, 1, LOCATE(',', g1.path) - 1)) as p1
+                , (select g2.NAME from wp_catelog g2  where g2.id = g1.parentId) as p2
+                , g1.name as p3
+                from
+                wp_catelog g1
+                where g1.path like '%,%,%'
+                )
+                cl
+                )
+                clOut
+                on clOut.id = a.categoryId
+            ) i
+        ) o
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+
+    <select id="getList4BEC" resultType="net.deepdragon.entity.weipu.Goods">
+        select o.* from (
+            select
+                <include refid="columnList"/>,
+                pic, IFNULL(maxBatchPrice,price)  maxBatchPrice, IFNULL(minBatchPrice,price)  minBatchPrice,batchPrice,startBatchNum,shopName
+                from (
+                SELECT
+                    a.*, img.image AS pic,
+                    c.maxBatchPrice,
+                    c.minBatchPrice,mm.name shopName,
+                    concat(
+                    c.minBatchPrice,
+                    '~',
+                    c.maxBatchPrice
+                    ) batchPrice,
+                    ifnull(c.startBatchNum, 1) startBatchNum
+                FROM
+                    wp_goods a
+                LEFT JOIN (
+                    SELECT
+                    goodsId,
+                    concat((SELECT setvalue FROM shared_system_set WHERE setKey = 'imageUrl'),groupName, '/', url) image
+                    FROM
+                    wp_goods_images
+                    GROUP BY
+                    goodsId
+                ) img ON img.goodsId = a.id
+                LEFT JOIN (
+                    SELECT bgp.goodsId, max(bgp.batchPrice) maxBatchPrice, min(bgp.batchPrice) minBatchPrice,min(bgp.startBatchNum) startBatchNum
+                    FROM b2b_goods_price bgp
+                    GROUP BY bgp.goodsId
+                    ORDER BY bgp.goodsId ASC
+                ) c ON c.goodsId = a.id
+                LEFT JOIN (
+                    SELECT m.name,m.id FROM wp_merchant m
+                ) mm
+                ON a.shopId = mm.id
+            ) i
+        ) o
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+
+    <select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_goods where tenantId = #{tenantId} getList and status='5'
+	</select>
+
+    <select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from
+		wp_goods
+		where tenantId = #{tenantId} and ${property}=#{value} and status='5'
+	</select>
+
+    <insert id="save" parameterType="net.deepdragon.entity.weipu.Goods"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into wp_goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            `id`,`tenantId`
+            <if test="categoryId != null">,`categoryId`</if>
+            <if test="categoryPath != null">,`categoryPath`</if>
+            <if test="brandId != null">,`brandId`</if>
+            <if test="shopId != null">,`shopId`</if>
+            <if test="productId != null">,`productId`</if>
+            <if test="name != null">,`name`</if>
+            <if test="sn != null">,`sn`</if>
+            <if test="barcode != null">,`barcode`</if>
+            <if test="phoneShopNo != null">,`phoneShopNo`</if>
+            <if test="fullName != null">,`fullName`</if>
+            <if test="price != null">,`price`</if>
+            <if test="cost != null">,`cost`</if>
+            <if test="marketPrice != null">,`marketPrice`</if>
+            <if test="defaultPrice != null">,`defaultPrice`</if>
+            <if test="isMemberPrice != null">,`isMemberPrice`</if>
+            <if test="unit != null">,`unit`</if>
+            <if test="weight != null">,`weight`</if>
+            <if test="adwords != null">,`adwords`</if>
+            <if test="image != null">,`image`</if>
+            <if test="stock != null">,`stock`</if>
+            <if test="stockMemo != null">,`stockMemo`</if>
+            <if test="point != null">,`point`</if>
+            <if test="isMarketable != null">,`isMarketable`</if>
+            <if test="isTop != null">,`isTop`</if>
+            <if test="isList != null">,`isList`</if>
+            <if test="isGift != null">,`isGift`</if>
+            <if test="isLianYing != null">,`isLianYing`</if>
+            <if test="introduction != null">,`introduction`</if>
+            <if test="keywords != null">,`keywords`</if>
+            <if test="hits != null">,`hits`</if>
+            <if test="weekHits != null">,`weekHits`</if>
+            <if test="weekHitsDate != null">,`weekHitsDate`</if>
+            <if test="monthHits != null">,`monthHits`</if>
+            <if test="monthHitsDate != null">,`monthHitsDate`</if>
+            <if test="sales != null">,`sales`</if>
+            <if test="weekSales != null">,`weekSales`</if>
+            <if test="weekSalesDate != null">,`weekSalesDate`</if>
+            <if test="monthSales != null">,`monthSales`</if>
+            <if test="monthSalesDate != null">,`monthSalesDate`</if>
+            <if test="scoreCount != null">,`scoreCount`</if>
+            <if test="scoreTotal != null">,`scoreTotal`</if>
+            <if test="score != null">,`score`</if>
+            <if test="isIndex != null">,`isIndex`</if>
+            <if test="indexOrder != null">,`indexOrder`</if>
+            <if test="description != null">,`description`</if>
+            <if test="createUser != null">,`createUser`</if>
+            <if test="createDate != null">,`createDate`</if>
+            <if test="status != null">,`createDate`</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id},#{tenantId}
+            <if test="categoryId != null">,#{categoryId}</if>
+            <if test="categoryPath != null">,#{categoryPath}</if>
+            <if test="brandId != null">,#{brandId}</if>
+            <if test="shopId != null">,#{shopId}</if>
+            <if test="productId != null">,#{productId}</if>
+            <if test="name != null">,#{name}</if>
+            <if test="sn != null">,#{sn}</if>
+            <if test="barcode != null">,#{barcode}</if>
+            <if test="phoneShopNo != null">,#{phoneShopNo}</if>
+            <if test="fullName != null">,#{fullName}</if>
+            <if test="price != null">,#{price}</if>
+            <if test="cost != null">,#{cost}</if>
+            <if test="marketPrice != null">,#{marketPrice}</if>
+            <if test="defaultPrice != null">,#{defaultPrice}</if>
+            <if test="isMemberPrice != null">,#{isMemberPrice}</if>
+            <if test="unit != null">,#{unit}</if>
+            <if test="weight != null">,#{weight}</if>
+            <if test="adwords != null">,#{adwords}</if>
+            <if test="image != null">,#{image}</if>
+            <if test="stock != null">,#{stock}</if>
+            <if test="stockMemo != null">,#{stockMemo}</if>
+            <if test="point != null">,#{point}</if>
+            <if test="isMarketable != null">,#{isMarketable}</if>
+            <if test="isTop != null">,#{isTop}</if>
+            <if test="isList != null">,#{isList}</if>
+            <if test="isGift != null">,#{isGift}</if>
+            <if test="isLianYing != null">,#{isLianYing}</if>
+            <if test="introduction != null">,#{introduction}</if>
+            <if test="keywords != null">,#{keywords}</if>
+            <if test="hits != null">,#{hits}</if>
+            <if test="weekHits != null">,#{weekHits}</if>
+            <if test="weekHitsDate != null">,#{weekHitsDate}</if>
+            <if test="monthHits != null">,#{monthHits}</if>
+            <if test="monthHitsDate != null">,#{monthHitsDate}</if>
+            <if test="sales != null">,#{sales}</if>
+            <if test="weekSales != null">,#{weekSales}</if>
+            <if test="weekSalesDate != null">,#{weekSalesDate}</if>
+            <if test="monthSales != null">,#{monthSales}</if>
+            <if test="monthSalesDate != null">,#{monthSalesDate}</if>
+            <if test="scoreCount != null">,#{scoreCount}</if>
+            <if test="scoreTotal != null">,#{scoreTotal}</if>
+            <if test="score != null">,#{score}</if>
+            <if test="isIndex != null">,#{isIndex}</if>
+            <if test="indexOrder != null">,#{indexOrder}</if>
+            <if test="description != null">,#{description}</if>
+            <if test="createUser != null">,#{createUser}</if>
+            <if test="createDate != null">,#{createDate}</if>
+            <if test="status != null">,#{status}</if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="net.deepdragon.entity.weipu.Goods">
+        update wp_goods
+        <set>
+            `tenantId` = #{tenantId}
+            <if test="categoryId != null">,`categoryId` = #{categoryId}</if>
+            <if test="categoryPath != null">,`categoryPath` = #{categoryPath}</if>
+            <if test="brandId != null">,`brandId` = #{brandId}</if>
+            <if test="shopId != null">,`shopId` = #{shopId}</if>
+            <if test="productId != null">,`productId` = #{productId}</if>
+            <if test="name != null">,`name` = #{name}</if>
+            <if test="sn != null">,`sn` = #{sn}</if>
+            <if test="barcode != null">,`barcode` = #{barcode}</if>
+            <if test="phoneShopNo != null">,`phoneShopNo` = #{phoneShopNo}</if>
+            <if test="fullName != null">,`fullName` = #{fullName}</if>
+            <if test="price != null">,`price` = #{price}</if>
+            <if test="cost != null">,`cost` = #{cost}</if>
+            <if test="marketPrice != null">,`marketPrice` = #{marketPrice}</if>
+            <if test="defaultPrice != null">,`defaultPrice` = #{defaultPrice}</if>
+            <if test="isMemberPrice != null">,`isMemberPrice` = #{isMemberPrice}</if>
+            <if test="unit != null">,`unit` = #{unit}</if>
+            <if test="weight != null">,`weight` = #{weight}</if>
+            <if test="adwords != null">,`adwords` = #{adwords}</if>
+            <if test="image != null">,`image` = #{image}</if>
+            <if test="stock != null">,`stock` = #{stock}</if>
+            <if test="stockMemo != null">,`stockMemo` = #{stockMemo}</if>
+            <if test="point != null">,`point` = #{point}</if>
+            <if test="isMarketable != null">,`isMarketable` = #{isMarketable}</if>
+            <if test="isTop != null">,`isTop` = #{isTop}</if>
+            <if test="isList != null">,`isList` = #{isList}</if>
+            <if test="isGift != null">,`isGift` = #{isGift}</if>
+            <if test="isLianYing != null">,`isLianYing` = #{isLianYing}</if>
+            <if test="introduction != null">,`introduction` = #{introduction}</if>
+            <if test="keywords != null">,`keywords` = #{keywords}</if>
+            <if test="hits != null">,`hits` = #{hits}</if>
+            <if test="weekHits != null">,`weekHits` = #{weekHits}</if>
+            <if test="weekHitsDate != null">,`weekHitsDate` = #{weekHitsDate}</if>
+            <if test="monthHits != null">,`monthHits` = #{monthHits}</if>
+            <if test="monthHitsDate != null">,`monthHitsDate` = #{monthHitsDate}</if>
+            <if test="sales != null">,`sales` = #{sales}</if>
+            <if test="weekSales != null">,`weekSales` = #{weekSales}</if>
+            <if test="weekSalesDate != null">,`weekSalesDate` = #{weekSalesDate}</if>
+            <if test="monthSales != null">,`monthSales` = #{monthSales}</if>
+            <if test="monthSalesDate != null">,`monthSalesDate` = #{monthSalesDate}</if>
+            <if test="scoreCount != null">,`scoreCount` = #{scoreCount}</if>
+            <if test="scoreTotal != null">,`scoreTotal` = #{scoreTotal}</if>
+            <if test="score != null">,`score` = #{score}</if>
+            <if test="isIndex != null">,`isIndex` = #{isIndex}</if>
+            <if test="indexOrder != null">,`indexOrder` = #{indexOrder}</if>
+            <if test="description != null">,`description` = #{description}</if>
+            <if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+            <if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+            <if test="status != null">,`status` = #{status}</if>
+            <if test="startNum != null">,`startNum` = #{startNum}</if>
+            <if test="limitNum != null">,`limitNum` = #{limitNum}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from wp_goods
+		where id = #{id}
+	</delete>
+
+    <!--=============== 处理商品参数详细信息 =============== -->
+    <insert id="saveGoodsParamDetail" parameterType="java.util.Map"
+            useGeneratedKeys="false">
+        insert into wp_goods_parameter_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            `goodsId`
+            <if test="parameterId != null">,`parameterId`</if>
+            <if test="content != null">,`content`</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{goodsId}
+            <if test="parameterId != null">,#{parameterId}</if>
+            <if test="content != null">,#{content}</if>
+        </trim>
+    </insert>
+    <!--=============== 保存商品属性详细信息 =============== -->
+    <insert id="saveGoodsAttrValues" parameterType="java.util.Map"
+            useGeneratedKeys="false">
+        insert into wp_goods_attribute_value
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            `goodsId`
+            <if test="value1 != null">,`value1`</if>
+            <if test="value2 != null">,`value2`</if>
+            <if test="value3 != null">,`value3`</if>
+            <if test="value4 != null">,`value4`</if>
+            <if test="value5 != null">,`value5`</if>
+            <if test="value6 != null">,`value6`</if>
+            <if test="value7 != null">,`value7`</if>
+            <if test="value8 != null">,`value8`</if>
+            <if test="value9 != null">,`value9`</if>
+            <if test="value10 != null">,`value10`</if>
+            <if test="value11 != null">,`value11`</if>
+            <if test="value12 != null">,`value12`</if>
+            <if test="value13 != null">,`value13`</if>
+            <if test="value14 != null">,`value14`</if>
+            <if test="value15 != null">,`value15`</if>
+            <if test="value16 != null">,`value16`</if>
+            <if test="value17 != null">,`value17`</if>
+            <if test="value18 != null">,`value18`</if>
+            <if test="value19 != null">,`value19`</if>
+            <if test="value20 != null">,`value20`</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{goodsId}
+            <if test="value1 != null">,#{value1}</if>
+            <if test="value2 != null">,#{value2}</if>
+            <if test="value3 != null">,#{value3}</if>
+            <if test="value4 != null">,#{value4}</if>
+            <if test="value5 != null">,#{value5}</if>
+            <if test="value6 != null">,#{value6}</if>
+            <if test="value7 != null">,#{value7}</if>
+            <if test="value8 != null">,#{value8}</if>
+            <if test="value9 != null">,#{value9}</if>
+            <if test="value10 != null">,#{value10}</if>
+            <if test="value11 != null">,#{value11}</if>
+            <if test="value12 != null">,#{value12}</if>
+            <if test="value13 != null">,#{value13}</if>
+            <if test="value14 != null">,#{value14}</if>
+            <if test="value15 != null">,#{value15}</if>
+            <if test="value16 != null">,#{value16}</if>
+            <if test="value17 != null">,#{value17}</if>
+            <if test="value18 != null">,#{value18}</if>
+            <if test="value19 != null">,#{value19}</if>
+            <if test="value20 != null">,#{value20}</if>
+        </trim>
+    </insert>
+    <!--=============== 保存商品选取的规格 =============== -->
+    <insert id="saveGoodsSpList" parameterType="java.util.Map"
+            useGeneratedKeys="false">
+        insert into wp_goods_specification
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            `goodsId`
+            <if test="specificationId != null">,`specificationId`</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{goodsId}
+            <if test="specificationId != null">,#{specificationId}</if>
+        </trim>
+    </insert>
+    <!--=============== 保存商品规格详细信息 =============== -->
+    <insert id="saveGoodsSpDetail" parameterType="java.util.Map"
+            useGeneratedKeys="false">
+        insert into wp_goods_specification_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            `goodsId`
+            <if test="content != null">,`content`</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{goodsId}
+            <if test="content != null">,#{content}</if>
+        </trim>
+    </insert>
+
+    <!--=============== 获取商品参数列表信息 =============== -->
+    <select id="getGoodsParamsList" resultType="java.util.Map">
+        select concat(`goodsId`) goodsId,concat(`parameterId`) parameterId, `content`
+        from wp_goods_parameter_detail
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+    <!--=============== 获取商品属性列表信息 =============== -->
+    <select id="getGoodsAttrsList" resultType="java.util.Map">
+        select
+        `goodsId`,`value1`,`value2`,`value3`,`value4`,`value5`,`value6`,`value7`,`value8`,`value9`,`value10`,`value11`,`value12`,`value13`,`value14`,`value15`,`value16`,`value17`,`value18`,`value19`,`value20`
+        from wp_goods_attribute_value
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+    <!--=============== 获取商品选中的规格 =============== -->
+    <select id="getCheckedSpList" resultType="java.util.Map">
+        select
+        goodsId,specificationId
+        from wp_goods_specification
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+    <!--=============== 获取当前商品的规格项 =============== -->
+    <select id="getCurrentSpItems" resultType="java.util.Map">
+        select
+        goodsId,content
+        from wp_goods_specification_detail
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+    <!--=============== 获取商品的规格项 =============== -->
+    <select id="getSpItemList" resultType="java.util.Map">
+        select
+        goodsId,content
+        from wp_goods_specification_detail
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+
+    <!--=============== 删除商品相关参数 =============== -->
+    <delete id="deleteParams">
+        delete from wp_goods_parameter_detail
+        where goodsId in
+        <foreach collection="list" item="goodsId" open="(" separator=","
+                 close=")">
+            #{goodsId}
+        </foreach>
+    </delete>
+    <!--=============== 删除商品相关属性 =============== -->
+    <delete id="deleteAttrs">
+        delete from wp_goods_attribute_value
+        where goodsId in
+        <foreach collection="list" item="goodsId" open="(" separator=","
+                 close=")">
+            #{goodsId}
+        </foreach>
+    </delete>
+    <!--=============== 删除商品相关规格 =============== -->
+    <delete id="deleteSpecs">
+        delete from wp_goods_specification
+        where goodsId in
+        <foreach collection="list" item="goodsId" open="(" separator=","
+                 close=")">
+            #{goodsId}
+        </foreach>
+    </delete>
+    <!--=============== 删除商品相关规格项 =============== -->
+    <delete id="deleteSpItems">
+        delete from wp_goods_specification_detail
+        where goodsId in
+        <foreach collection="list" item="goodsId" open="(" separator=","
+                 close=")">
+            #{goodsId}
+        </foreach>
+    </delete>
+
+    <!--=============== 删除商品相关图片 =============== -->
+    <delete id="deleteImages">
+        delete from wp_goods_images
+        where goodsId in
+        <foreach collection="list" item="goodsId" open="(" separator=","
+                 close=")">
+            #{goodsId}
+        </foreach>
+    </delete>
+
+    <!--=============== 更新商品属性详细信息 =============== -->
+    <update id="updateGoodsAttrValues" parameterType="java.util.Map">
+        update wp_goods_attribute_value
+        <set>
+            <if test="value1 != null">`value1` = #{value1}</if>
+            <if test="value2 != null">,`value2` = #{value2}</if>
+            <if test="value3 != null">,`value3` = #{value3}</if>
+            <if test="value4 != null">,`value4` = #{value4}</if>
+            <if test="value5 != null">,`value5` = #{value5}</if>
+            <if test="value6 != null">,`value6` = #{value6}</if>
+            <if test="value7 != null">,`value7` = #{value7}</if>
+            <if test="value8 != null">,`value8` = #{value8}</if>
+            <if test="value9 != null">,`value9` = #{value9}</if>
+            <if test="value10 != null">,`value10` = #{value10}</if>
+            <if test="value11 != null">,`value11` = #{value11}</if>
+            <if test="value12 != null">,`value12` = #{value12}</if>
+            <if test="value13 != null">,`value13` = #{value13}</if>
+            <if test="value14 != null">,`value14` = #{value14}</if>
+            <if test="value15 != null">,`value15` = #{value15}</if>
+            <if test="value16 != null">,`value16` = #{value16}</if>
+            <if test="value17 != null">,`value17` = #{value17}</if>
+            <if test="value18 != null">,`value18` = #{value18}</if>
+            <if test="value19 != null">,`value19` = #{value19}</if>
+            <if test="value20 != null">,`value20` = #{value20}</if>
+        </set>
+        where goodsId = #{goodsId}
+    </update>
+
+    <!--=============== 根据商品Id查询其商品的单品启用了哪些规格 =============== -->
+    <select id="getGoodsSpList" resultType="java.util.Map">
+        <!-- select
+        sp.`id`,sp.`tenantId`,sp.`name`,sp.`type`,sp.`orderNo`,sp.`enabled`,sp.`description`,sp.`createUser`,sp.`createDate`,sp.`modifyUser`,sp.`modifyDate`
+        from wp_goods_specification gsp,wp_specification sp,
+        (select gg.id from
+        wp_goods gg
+        where gg.productId in(select g.productId from wp_goods g
+        where g.id = #{id}
+        and g.tenantId = #{tenantId})) t
+        where gsp.goodsId =
+        t.id and gsp.specificationId = sp.id group by sp.id-->
+        select
+        CONCAT(sp.`id`) id,sp.`tenantId`,sp.`name`,sp.`type`,sp.`orderNo`,sp.`enabled`,sp.`description`,sp.`createUser`,sp.`createDate`,sp.`modifyUser`,sp.`modifyDate`
+        from wp_goods_specification gsp,wp_specification sp , wp_goods g
+        where gsp.goodsId = g.id and
+        gsp.specificationId = sp.id and g.id=#{id} and g.tenantId=#{tenantId} group by sp.id
+    </select>
+    <!--=============== 根据商品Id查询其商品的单品启用了哪些规格 =============== -->
+    <select id="getGoodsSpItemList" resultType="java.util.Map">
+        <!--select tmp.goodsId,concat((select setvalue from shared_system_set where setKey='imageUrl'),concat(concat(v.groupName,'/'),v.image)) as `pic`,
+        v.`id`,v.`tenantId`,v.`specificationId`,v.`name`,v.`groupName`,v.`image`,v.`orderNo`,v.`enabled`,v.`description`,v.`createUser`,v.`createDate`,v.`modifyUser`,v.`modifyDate`
+        from wp_specification_value v,
+        (select goodsId, content from
+        wp_goods_specification_detail
+        where goodsId in(select id from wp_goods
+        where tenantId = #{tenantId}
+        and productId = (select productId from
+        wp_goods where tenantId =
+        #{tenantId} and id = #{goodsId})
+        )
+        ) tmp
+        where
+        v.id = tmp.content -->
+        select CONCAT(tmp.goodsId) goodsId,concat((select setvalue from shared_system_set where
+        setKey='imageUrl'),concat(concat(v.groupName,'/'),v.image)) as `pic`,
+        CONCAT(v.`id`) id,v.`tenantId`,CONCAT(v.`specificationId`) specificationId,v.`name`,v.`groupName`,v.`image`,v.`orderNo`,v.`enabled`,v.`description`,v.`createUser`,v.`createDate`,v.`modifyUser`,v.`modifyDate`
+        from wp_specification_value v,
+        (select gsd.goodsId, gsd.content from
+        wp_goods_specification_detail gsd, wp_goods g
+        where gsd.goodsId = g.id and g.tenantId = #{tenantId} and g.id = #{goodsId}
+        ) tmp
+        where
+        v.id = tmp.content;
+    </select>
+
+    <!-- 根据标签id获取商品信息 -->
+    <select id="getGoodsByTagId" resultType="net.deepdragon.entity.weipu.Goods">
+        SELECT goods.*,gt.tagId
+        FROM wp_goods goods
+        LEFT JOIN `wp_goods_tag` AS
+        gt ON
+        gt.goodsId=goods.id
+        WHERE gt.tagId=#{tagId} AND (`platform`=#{categoryId} OR `platform`=2)
+        <if test="categoryId != null">
+            and `categoryPath` like CONCAT('%',#{categoryId},'%')
+        </if>
+        and isMarketable=#{isMarketable} order
+        by goods.createDate
+        desc limit
+        #{size} ;
+    </select>
+
+    <!-- 获取商品相关分类 -->
+    <select id="getGoods4Category" resultType="java.util.Map">
+		select c1.id l1_id,
+		c1.name l1_name, c2.id l2_id, c2.name l2_name, c3.id
+		l3_id, c3.name
+		l3_name
+		from wp_catelog c1 left join wp_catelog c2 on c1.id =
+		c2.parentId left join wp_catelog c3 on c2.id = c3.parentId
+		where c3.id = #{id} and c3.tenantId = #{tenantId};
+	</select>
+
+    <!-- 获取商品的同类其他品牌 -->
+    <select id="getGoodsRefBrand" resultType="net.deepdragon.entity.weipu.GoodsBrand">
+		select b.*
+		from
+		wp_goods_brand b, wp_goods g
+		where g.brandId = b.id
+		and g.categoryId =
+		#{categoryId}
+		and b.tenantId = #{tenantId}
+		group by b.id;
+	</select>
+
+    <!-- 获取店铺打了标签(wp_tag下的id)的商品列表 -->
+    <select id="getGoodsByTagIdInShop" resultType="net.deepdragon.entity.weipu.Goods">
+		SELECT
+		goods.*,gt.tagId
+		FROM wp_goods goods
+		LEFT JOIN `wp_goods_tag` AS gt ON
+		gt.goodsId=goods.id
+		WHERE gt.tagId=#{tagId}
+		and goods.shopId=#{shopId}
+		and goods.isMarketable=#{isMarketable}
+		and goods.tenantId = #{tenantId}
+		AND (goods.platform=#{platform} OR goods.platform=2)
+		order by goods.createDate desc
+		limit #{size} ;
+	</select>
+
+    <!-- 给商品打标签 -->
+    <insert id="saveGoodsTags" parameterType="java.util.Map"
+            useGeneratedKeys="false">
+        insert into wp_goods_tag
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            `goodsId`
+            <if test="tagId != null">,`tagId`</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{goodsId}
+            <if test="tagId != null">,#{tagId}</if>
+        </trim>
+    </insert>
+
+    <!-- 移除商品标签 -->
+    <delete id="removeGoodsTags">
+        delete from wp_goods_tag
+        where goodsId in
+        <foreach collection="list" item="goodsId" open="(" separator=","
+                 close=")">
+            #{goodsId}
+        </foreach>
+    </delete>
+
+    <!-- 获取商品头上的标签 -->
+    <select id="getGoodsTags" resultType="java.util.Map">
+		select goodsId, tagId
+		from
+		wp_goods_tag
+		where goodsId = #{goodsId};
+	</select>
+
+    <!-- 根据分类Id查询品牌列表 -->
+    <select id="getGoodsBrandByCategory" resultType="net.deepdragon.entity.weipu.GoodsBrand">
+		select id, name
+		from wp_goods_brand
+		where id in(select brandId from
+		wp_goods_category_brand where categoryId = #{categoryId})
+		and tenantId
+		= #{tenantId}
+	</select>
+
+    <!-- 根据店铺Id调整商品上/下架 -->
+    <update id="marketableGoods" parameterType="java.util.Map">
+        update wp_goods
+        <set>
+            isMarketable=#{isMarketable}
+        </set>
+        where `tenantId` = #{tenantId}
+        and `shopId` = #{shopId}
+    </update>
+
+    <!-- 根据标签获取商品信息,用于首页展示 -->
+    <select id="getTagGoods4Index" resultType="net.deepdragon.entity.weipu.Goods">
+        select
+            gt.goodsId,t.sign as tagSign,g.*
+        from wp_goods_tag gt left join wp_tag
+            t on tagId=t.id
+        left join (select a.id,
+        a.tenantId,
+        /**a.categoryId,
+        a.categoryPath,
+        a.brandId,*/
+        a.shopId,
+        /**a.productId,*/
+        a.name,
+        a.barcode,
+        /**
+        a.sn,
+        a.shortName,
+        a.phoneShopNo,
+        */
+        a.fullName,
+        a.price,
+        /**a.erpPkCode,
+        a.SupCode,
+        a.spec,
+        a.cost, */
+        a.marketPrice,
+        /**a.isMemberPrice,*/
+        a.unit,
+        /**
+        a.weight,
+        a.adwords,
+        a.image,
+        */
+        a.stock,
+        /**
+        a.stockMemo,
+        a.POINT,
+        */
+        a.defaultPrice,
+        a.isMarketable,
+        /**
+        a.isTop,
+        a.isList,
+        a.isGift,
+        a.isLianYing,
+        a.introduction,
+        a.keywords,
+        a.hits,
+        a.weekHits,
+        a.weekHitsDate,
+        a.monthHits,
+        a.monthHitsDate,*/
+        a.sales,
+        /**
+        a.weekSales,
+        a.weekSalesDate,
+        a.monthSales,
+        a.monthSalesDate,*/
+        a.scoreCount,
+        /**
+        a.scoreTotal,
+        a.score,
+        a.becScoreCount,
+        a.becScoreTotal,
+        a.becScore,*/
+        a.isIndex,
+        /**
+        a.indexOrder,
+        a.description,
+        a.createUser,
+        a.createDate,
+        a.modifyUser,
+        a.modifyDate,*/
+        a.STATUS,
+        /**
+        a.isDelete,
+        a.shippingOrderUrl,
+        a.scoreSet,
+        a.platform,
+        a.predictDay,
+        a.supplierId,
+        a.type,
+        a.checkDate,
+        a.hasRebate,
+        a.startNum,
+        a.limitNum,
+        a.packageModulus,
+        a.packageUnit,
+        a.packageBarCode,
+        a.phoneIntroduction,
+        a.enableBatchPrice, */ b.pic from wp_goods a left join
+        (select c.goodsId ,c.pic from ( select goodsId ,
+        concat((select
+        setvalue from shared_system_set where
+        setKey='imageUrl'),concat(concat(groupName,'/'),url)) as `pic`
+        from
+        wp_goods_images order by orderNo ) c group by c.goodsId ) b on a.id =
+        /**添加所属平台参数 hks 2015-11-10 18:09:58 modify start **/
+        b.goodsId where (a.platform = #{platform} or a.platform =2)) g on
+        /**添加所属平台参数 hks 2015-11-10 18:09:58 modify end **/
+        gt.goodsId=g.id
+        where g.STATUS = '5' and g.`tenantId` = #{tenantId} and
+        g.isMarketable=1 and t.sign=#{tagSign}
+
+        <!-- 标签添加所属平台查询条件 Auth:TianYu Time:2015-12-16 17:57:49 Start -->
+        and t.platform = #{tagPlatform}
+        <!-- 标签添加所属平台查询条件 Auth:TianYu Time:2015-12-16 17:57:55 End -->
+
+        <!-- 加上首页展示条件 Auth:zhangqiang Time:2015-09-21 16:05:06 Start -->
+        and g.isIndex=1
+        <!-- 加上首页展示条件 Auth:zhangqiang Time:2015-09-21 16:05:06 End -->
+        order by gt.tagGoodsOrder desc,createDate
+        desc limit #{size};
+    </select>
+    <!-- add by zx 20150702 -->
+    <select id="getTagGoods4IndexByID" resultType="net.deepdragon.entity.weipu.Goods">
+		select
+		gt.goodsId,t.sign as tagSign,g.* from wp_goods_tag gt left join wp_tag
+		t on tagId=t.id
+		left join (select a.*, b.pic from wp_goods a left join
+		(select c.goodsId ,c.pic from ( select goodsId ,
+		concat((select
+		setvalue from shared_system_set where
+		setKey='imageUrl'),concat(concat(groupName,'/'),url)) as `pic`
+		from
+		wp_goods_images order by orderNo ) c group by c.goodsId ) b on a.id =
+		b.goodsId
+		/**添加所属平台参数  hks 2015-11-10 18:09:58 modify  start **/
+		where (a.platform = #{platform} or a.platform =2)
+		/**添加所属平台参数  hks 2015-11-10 18:09:58 modify  end **/
+		) g on
+		gt.goodsId=g.id
+		where g.STATUS = '5' and
+		g.`tenantId` = #{tenantId} and
+		g.isMarketable=1 and t.sign=#{tagSign} and
+		g.categoryPath like CONCAT(#{categoryPath},'%')
+		order by isTop desc,createDate
+		desc limit #{size};
+	</select>
+
+    <select id="getPagerBysign" resultType="net.deepdragon.entity.weipu.Goods">
+        select g.* from (select a.*, b.pic from wp_goods a left join
+        (select
+        c.goodsId ,c.pic from ( select goodsId ,
+        concat((select setvalue from
+        shared_system_set where
+        setKey='imageUrl'),concat(concat(groupName,'/'),url)) as `pic`
+        from
+        wp_goods_images order by orderNo ) c group by c.goodsId ) b on a.id =
+        b.goodsId
+        where a.id in (select goodsId from wp_goods_tag where tagId
+        in (select id
+        from wp_tag where sign=#{sign}))) g
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+
+    <!--=============== 更新商品更新销量 =============== -->
+    <update id="updateGoodsSalesVolume" parameterType="java.util.Map">
+	<!--UPDATE
+		wp_goods w
+		SET w.weekSales = (CASE WHEN
+		w.weekSalesDate < CURDATE()-WEEKDAY(CURDATE()) THEN #{quantity} ELSE
+		IFNULL(w.weekSales,0)
+		+ #{quantity} END),
+		w.weekSalesDate = NOW(),
+		w.monthSales = (CASE WHEN
+		w.monthSalesDate <
+		DATE_ADD(CURDATE(),INTERVAL
+		-DAY(CURDATE())+1 DAY)
+		THEN #{quantity} ELSE
+		IFNULL(w.monthSales,0) +
+		#{quantity} END),
+		w.monthSalesDate = NOW(),
+		w.sales = IFNULL(w.sales,0) + #{quantity}
+		WHERE w.id = #{goodsId}-->
+	</update>
+
+    <!-- 根据标签标识和店铺ID获取商品信息,用于首页展示 -->
+    <select id="getTagGoods4Shop" resultType="net.deepdragon.entity.weipu.Goods">
+        <!--
+        select
+        gt.goodsId,t.sign as tagSign,g.* from wp_goods_tag gt left join wp_tag
+        t on tagId=t.id
+        left join (select a.*, b.pic from wp_goods a left join
+        (select c.goodsId ,c.pic from ( select goodsId ,
+        concat((select
+        setvalue from shared_system_set where
+        setKey='imageUrl'),concat(concat(groupName,'/'),url)) as `pic`
+        from
+        wp_goods_images order by orderNo ) c group by c.goodsId ) b on a.id =
+        b.goodsId) g on
+        gt.goodsId=g.id
+        where g.`tenantId` = #{tenantId} and
+        g.shopId=#{shopId} and
+        g.isMarketable=1 and t.sign=#{tagSign}
+        order by
+        isTop desc,createDate
+        desc limit
+        #{size};
+         -->
+
+        SELECT a.goodsId,a.sign AS tagSign, b.* ,
+        CONCAT((SELECT setvalue FROM shared_system_set WHERE setKey='imageUrl'),CONCAT(CONCAT(c.groupName,'/'),c.url))
+        AS pic
+        FROM (SELECT gt.goodsId,t.sign FROM wp_goods_tag gt LEFT JOIN wp_tag t ON gt.tagId=t.id ) a
+        LEFT JOIN wp_goods b ON a.goodsId = b.id
+        LEFT JOIN wp_goods_images c ON c.goodsId = b.id
+        WHERE b.`tenantId`=#{tenantId} AND
+        b.shopId=#{shopId} AND
+        /**添加所属平台参数 hks 2015-11-10 18:09:58 modify start **/
+        b.platform in (#{platform},2)
+        AND
+        /**添加所属平台参数 hks 2015-11-10 18:09:58 modify end **/
+        b.isMarketable=1 AND a.sign=#{tagSign} GROUP BY b.id
+        ORDER BY b.isTop DESC,b.createDate DESC LIMIT #{size};
+    </select>
+    <!-- 获取满足时间的零销售商品 -->
+    <select id="getRetailGoodsByTime" resultType="java.util.Map">
+		SELECT
+			w.barcode
+			,w.fullName
+			,w.unit
+			,w.stock
+				FROM wp_goods w
+			WHERE
+			  	w.isMarketable = 1 AND
+				w.id NOT IN (
+					SELECT DISTINCT
+						t.goodsId
+						FROM wp_order_item t
+						LEFT JOIN wp_order w ON t.orderSn = w.orderSn
+					WHERE (
+							w.orderStatus = 'trade_finished'
+							OR w.orderStatus='wait_seller_send_goods'
+							OR w.orderStatus='wait_buyer_confirm_goods'
+						)
+						AND w.createDate BETWEEN #{start}
+						AND #{end}
+				);
+	</select>
+
+    <!-- 根据 商品ID，数量 查询商品批发价  hks 2015-10-16 -->
+    <select id="getGoodsTradePrice" resultType="net.deepdragon.entity.weipu.B2BGoodsPrice">
+        SELECT * FROM b2b_goods_price WHERE goodsId = #{goodsId}
+        <if test="quantity != null">AND (startBatchNum &lt;= #{quantity} AND endBatchNum &gt;= #{quantity})</if>
+        ORDER BY startBatchNum DESC
+    </select>
+
+
+    <!-- 获取商品的同类其他品牌 -->
+    <select id="queryRelGoodsBrandByGoodsId" resultType="net.deepdragon.entity.weipu.GoodsBrand">
+		select
+			b.*
+		from
+			wp_goods_brand b
+			, wp_goods g
+		where
+			g.brandId = b.id
+			and g.categoryId = #{categoryId}
+			and g.brandId != (
+				select g1.brandId from wp_goods g1 where g1.id = #{goodsId}
+			)
+			and b.tenantId = #{tenantId}
+		group by b.id;
+	</select>
+
+    <!-- Desc:获取商品系统参数(国家;产地;保质期)-只适用于EC-gwq Auth:zhangqiang Time:2015-11-24 10:33:35  Start -->
+    <select id="getGoodsSystemparameter" resultType="java.util.Map">
+        <![CDATA[
+		SELECT
+              p.name pName,
+              d.content pValue
+          FROM
+              wp_goods_parameter_detail d,
+              wp_goods_parameter p
+         WHERE d.goodsId = #{id}
+           AND d.parameterId = p.id
+           AND p.name IN('国家','产地','保质期')
+           AND d.content IS NOT NULL
+           AND d.content <> ''
+        ]]>
+	</select>
+    <!-- Desc:获取商品系统参数(国家;产地;保质期) Auth:zhangqiang Time:2015-11-24 10:33:35  End -->
+
+    <!--=============== Desc:获取商品的阶梯价 Auth:zhangqiang Time:2015-11-26 13:50:54 Start =============== -->
+    <select id="getGoodsBatchPriceList" resultType="java.util.Map">
+        SELECT
+        CONCAT(
+        IFNULL(MIN(p.batchPrice), 0),
+        '~',
+        IFNULL(MAX(p.batchPrice), 0)
+        ) batchPrice,
+        IFNULL(MIN(p.startBatchNum), 1) total,
+        IFNULL(MAX(p.batchPrice), 0) ypice,
+        IFNULL(g.stock, 0) stock
+        FROM
+        b2b_goods_price p LEFT JOIN wp_goods g
+        ON g.id = p.goodsId
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+    <!--=============== Desc:获取商品的阶梯价 Auth:zhangqiang Time:2015-11-26 13:50:54 End =============== -->
+
+    <!--=============== Desc:获取商品的同分类下销量靠前6的数据并查阶梯价 Auth:zhangqiang Time:2015-11-27 11:50:54 Start =============== -->
+    <select id="getGoodsCatelogCountList" resultType="net.deepdragon.entity.weipu.Goods">
+        select a.id,a.name,a.fullName,a.price,a.barcode, CONCAT((SELECT
+        setvalue FROM shared_system_set WHERE
+        setKey='imageUrl'),CONCAT(CONCAT(groupName,'/'),d.url)) AS pic,
+        (SELECT CONCAT(IFNULL(MIN(batchPrice),0),'~',IFNULL(MAX(batchPrice),0)) sn FROM b2b_goods_price WHERE goodsId = a.id ) sn
+        from
+        wp_goods a
+        LEFT JOIN wp_goods_images d ON d.goodsId = a.id
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+    <!--=============== Desc:获取商品的同分类下销量靠前6的数据并查阶梯价 Auth:zhangqiang Time:2015-11-27 11:50:54 End =============== -->
+
+
+
+
+    <!-- 20151204 dzz 根据分类顶级节点查询品牌(品牌与品牌分类顶级节点关联) -->
+    <select id="queryBrandListByRootId" resultType="net.deepdragon.entity.weipu.GoodsBrand">
+        select b.* from wp_goods_brand b
+            where 1=1
+                and b.tenantId = #{tenantId}
+                and b.enabled = 1
+                and b.id in(
+                    select
+                        a.brandId
+                    from
+                        wp_goods_category_brand a
+
+                    where a.categoryId = #{categoryId}
+                )
+        ;
+    </select>
+    <!--
+    <select id="getZCGoodsByPager" resultType="net.deepdragon.entity.weipu.Goods">
+        SELECT
+        goods.*,
+        concat( (SELECT setvalue FROM shared_system_set WHERE setKey = 'imageUrl' ), concat(concat(groupName, '/'), img.url) ) AS `pic`
+        FROM
+        ( SELECT g.*, gz.zhongChouStatus,gz.startTime as zcStartTime,gz.endTime as zcEndTime,
+        gz.buyMinNum,gz.buyMaxNum,gz.maxNum,gz.thresholdType,gz.threshold,gz.thresholdUnit,
+        gz.successPrice,gz.prepaymentType,gz.prepaymentRatio,gz.remark,gz.reserve1,
+        gz.reserve2,gz.reserve3,gz.reserveDateTime1,gz.reserveDateTime2
+        FROM wp_goods g ,wp_goods_zhongchou gz
+        WHERE g.id = gz.id
+        AND g.type = 1
+        AND  g.status = 5
+        AND  gz.zhongChouStatus!=1
+        AND gz.endTime &gt;= DATE_SUB(NOW(), INTERVAL 1 DAY)
+        AND gz.startTime &lt;= DATE_ADD(NOW(), INTERVAL 3 DAY) ) goods LEFT JOIN wp_goods_images img on goods.id = img.goodsId WHERE (img.orderNo = 1 or img.orderNo is null)
+        ORDER BY goods.zcStartTime ASC;
+    </select>-->
+    <select id="getZCGoodsByPager" resultType="net.deepdragon.entity.weipu.Goods">
+        SELECT
+        goods.*,
+        concat( (SELECT setvalue FROM shared_system_set WHERE setKey = 'imageUrl' ), concat(concat((SELECT img.groupName FROM wp_goods_images img WHERE img.goodsId = goods.id LIMIT 1 ), '/'),(SELECT img.url FROM wp_goods_images img WHERE img.goodsId = goods.id LIMIT 1)) ) AS `pic`
+        FROM
+        ( SELECT g.*, gz.zhongChouStatus,gz.startTime as zcStartTime,gz.endTime as zcEndTime,
+        gz.buyMinNum,gz.buyMaxNum,gz.maxNum,gz.thresholdType,gz.threshold,gz.thresholdUnit,
+        gz.successPrice,gz.prepaymentType,gz.prepaymentRatio,gz.remark,gz.reserve1,
+        gz.reserve2,gz.reserve3,gz.reserveDateTime1,gz.reserveDateTime2
+        FROM wp_goods g ,wp_goods_zhongchou gz
+        WHERE g.id = gz.id
+        AND g.type = 1
+        AND  g.status = 5
+        AND  gz.zhongChouStatus!=1
+        AND gz.endTime &gt;= DATE_SUB(NOW(), INTERVAL 1 DAY)
+        AND gz.startTime &lt;= DATE_ADD(NOW(), INTERVAL 3 DAY) ) goods  WHERE 1=1
+        ORDER BY goods.zcStartTime ASC
+    </select>
+    <!--20151225众筹商品详情-->
+    <select id="getZhongchouById" resultType="net.deepdragon.entity.weipu.Goods">
+        SELECT
+        g.*,
+        gz.zhongChouStatus,gz.startTime as zcStartTime,gz.endTime as zcEndTime,gz.buyMinNum,gz.buyMaxNum,gz.maxNum,gz.thresholdType,gz.threshold,gz.thresholdUnit,gz.successPrice,gz.prepaymentType,gz.prepaymentRatio,gz.remark,gz.reserve1,gz.reserve2,gz.reserve3,gz.reserveDateTime1,gz.reserveDateTime2
+        <if test="memberId!=null and memberId!=''">
+            , (select COUNT(1) from wp_order o left join wp_order_item woi on o.orderSn=woi.orderSn where o.orderType='1' and o.memberId=#{memberId} and woi.goodsId=#{id}) as isNaNOrder
+        </if>
+        FROM wp_goods g ,wp_goods_zhongchou gz
+        WHERE g.id = #{id} AND g.id=gz.id
+    </select>
+    <!--众筹订单-->
+    <select id="getZhongchouOrder" resultType="net.deepdragon.entity.weipu.Order">
+        SELECT o.createDate,o.createUser,o.goodsTotalQuantity,o.totalAmount FROM wp_order o WHERE o.orderSn IN(
+        SELECT orderSn FROM wp_order_item WHERE goodsId = #{id} GROUP BY orderSn) AND orderType=1 AND orderStatus in('goodsTotalPrice','wait_seller_send_goods','wait_buyer_confirm_goods','trade_finished','unconfirm','wait_buyer_pay') AND tenantId = #{tenantId} order by o.createDate desc LIMIT #{size};
+    </select>
+    <!--众筹订单统计-->
+    <select id="getZhongchouOrderCount" resultType="java.util.Map">
+        SELECT COUNT(id) AS count1,IFNULL(SUM(goodsTotalPrice), 0) AS count2 FROM wp_order WHERE  orderSn IN(
+        SELECT orderSn FROM wp_order_item WHERE goodsId=#{id} GROUP BY orderSn) AND orderType=1 AND orderStatus in('goodsTotalPrice','wait_seller_send_goods','wait_buyer_confirm_goods','trade_finished','unconfirm','wait_buyer_pay') AND tenantId =  #{tenantId}
+    </select>
+    <!--=============== Desc:获取所有商品 Auth:TianYu Time:2016-1-29 09:46:26 Start =============== -->
+    <select id="getAllGoods" resultType="net.deepdragon.entity.weipu.Goods">
+        SELECT
+          o.*
+        FROM
+          (
+            SELECT
+                g.id,
+                g.tenantId,
+                g.categoryId,
+                g.categoryPath,
+                g.brandId,
+                g.shopId,
+                g.productId,
+                g.NAME,
+                g.sn,
+                g.shortName,
+                g.barcode,
+                g.phoneShopNo,
+                g.fullName,
+                g.price,
+               /* g.erpPkCode,
+                g.SupCode,
+                g.cost,
+                g.spec,*/
+                g.marketPrice,
+                g.isMemberPrice,
+                g.unit,
+                g.weight,
+                g.adwords,
+                /**img.image,*/
+                g.stock,
+                /*g.stockMemo,*/
+                g.point,
+                g.defaultPrice,
+                g.isMarketable,
+                g.isTop,
+                g.isList,
+                g.isGift,
+                g.isLianYing,
+                g.introduction,
+                g.keywords,
+                g.hits,
+                /*g.weekHits,
+                g.weekHitsDate,
+                g.monthHits,
+                g.monthHitsDate,*/
+                g.sales,
+                g.weekSales,
+                /*g.weekSalesDate,*/
+                g.monthSales,
+                /*g.monthSalesDate,*/
+                g.scoreCount,
+                g.scoreTotal,
+                g.score,
+                g.becScoreCount,
+                g.becScoreTotal,
+                g.becScore,
+                g.isIndex,
+                g.indexOrder,
+                g.description,
+                g.createUser,
+                g.createDate,
+                g.modifyUser,
+                g.modifyDate,
+                g. STATUS,
+                g.isDelete,
+                g.shippingOrderUrl,
+                g.scoreSet,
+                g.platform,
+                g.predictDay,
+                g.supplierId,
+                g.type,
+                g.checkDate,
+                g.hasRebate,
+                g.startNum,
+                g.limitNum,
+                g.packageModulus,
+                g.packageUnit,
+                g.packageBarCode,
+                g.phoneIntroduction,
+                g.enableBatchPrice,
+                g.isPost,
+                m. NAME AS shopName,
+                m.urlAddress shopUrlAddress,
+                ifnull(c.minBatchPrice, price) minBatchPrice,
+                ifnull(c.maxBatchPrice, price) maxBatchPrice,
+                concat(
+                c.minBatchPrice,
+                '~',
+                c.maxBatchPrice
+                ) batchPrice,
+                ifnull(c.startBatchNum, 1) startBatchNum
+                /**, clOut.clName*/
+            FROM
+                wp_goods g
+                LEFT JOIN (
+                SELECT
+                bgp.goodsId,
+                max(bgp.batchPrice) maxBatchPrice,
+                min(bgp.batchPrice) minBatchPrice,
+                min(bgp.startBatchNum) startBatchNum
+                FROM
+                b2b_goods_price bgp
+                GROUP BY
+                bgp.goodsId
+                ORDER BY
+                bgp.goodsId ASC
+                ) c ON c.goodsId = g.id
+                /**LEFT JOIN (
+                SELECT
+                goodsId,
+                concat(groupName, '/', url) image
+                FROM
+                wp_goods_images
+                GROUP BY
+                goodsId
+            ) img ON img.goodsId = g.id
+            -- 关联商品分类表信息查询分类名称
+            left join
+            (select
+            cl.id
+            , CONCAT(cl.p1, '-', cl.p2, '-', cl.p3) as clName
+            from
+            (select
+            g1.id
+            , (select g2.NAME from wp_catelog g2  where CONCAT(g2.id, '') = SUBSTRING(g1.path, 1, LOCATE(',', g1.path) - 1)) as p1
+            , (select g2.NAME from wp_catelog g2  where g2.id = g1.parentId) as p2
+            , g1.name as p3
+            from
+            wp_catelog g1
+            where g1.path like '%,%,%'
+            )
+            cl
+            )
+            clOut
+            on clOut.id = g.categoryId*/
+            ,wp_merchant m
+        WHERE
+            g.shopId = m.id
+            AND g.isMarketable = 1
+            AND g. STATUS = 5
+        ) o
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+    <!--=============== Desc:获取所有商品 Auth:TianYu Time:2016-1-29 09:46:26 End =============== -->
+
+    <!--=============== Desc:根据商品Id与查询条件查找商品 Auth:zhangqiang Time:2016-01-31 10:48:54 Start =============== -->
+    <select id="findConditionGoods" resultType="net.deepdragon.entity.weipu.Goods">
+        SELECT
+        o.*
+        FROM
+        (SELECT
+        a.*,CONCAT(
+        (SELECT
+        setvalue
+        FROM
+        shared_system_set
+        WHERE setKey = 'imageUrl'),
+        CONCAT(CONCAT(d.groupName, '/'), d.url)
+        ) AS pic,
+        m.name shopName
+        FROM
+        wp_goods a
+        LEFT JOIN wp_merchant m
+        ON a.shopId = m.id
+        LEFT JOIN wp_goods_images d
+        ON d.goodsId = a.id ) o
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+        GROUP BY id
+    </select>
+    <!--=============== Desc:根据商品Id与查询条件查找商品 Auth:zhangqiang Time:2016-01-31 10:48:54 11:50:54 End =============== -->
+
+    <!--根据商品ID和收货地址查询商品运费系数    yuech  2015-02-26 12:31   ========== -->
+    <select id="getModulus" resultType="net.deepdragon.entity.weipu.Modulus">
+        select
+        g.id,g.name,g.enableBatchPrice,m.goodsId,g.id,g.tenantId,
+        m.shipmentId,m.areaPath,m.areaId,m.shipmentModulus
+        from wp_goods g
+        left join ghj_shipment_modulus m
+        ON  g.id=m.goodsId
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+    <!--=============== Desc:根据商品条形码查商品 Auth:zhangqiang Time:2016-02-24 17:53:54 Start =============== -->
+    <select id="findBarcodeGoods" resultType="net.deepdragon.entity.weipu.Goods">
+        SELECT
+        <include refid="columnListAlias"/>
+        <if test="buyerId!=null and buyerId!=''">
+            , (select count(1) from b2b_goods_attention bga where bga.buyerId = #{buyerId} and bga.goodsId=g.id) as attentionCount
+        </if>
+        <if test="buyerId!=null or buyerId!=''">
+            , '-1' as attentionCount
+        </if>
+        FROM
+        wp_goods g
+        WHERE g.isDelete = 1
+        AND g.status = 5
+        AND g.isMarketable = 1
+        AND g.platform > 1
+        AND (g.barcode = #{value}
+        OR g.packageBarCode = #{value})
+    </select>
+
+    <!--获取促销商品-->
+    <select id="getCuxiaoGoods" resultType="net.deepdragon.entity.weipu.Goods">
+        SELECT
+        g.id,
+        g.tenantId,
+        g.categoryId,
+        g.categoryPath,
+        g.brandId,
+        g.shopId,
+        g.productId,
+        g.name,
+        g.sn,
+        g.barcode,
+        g.phoneShopNo,
+        g.fullName,
+        g.shortName,
+        g.price,
+        g.cost,
+        g.marketPrice,
+        g.defaultPrice,
+        g.isMemberPrice,
+        g.unit,
+        g.weight,
+        g.adwords,
+        g.image,
+        g.stock,
+        g.stockMemo,
+        g.point,
+        g.isMarketable,
+        g.isTop,
+        g.isList,
+        g.isGift,
+        g.isLianYing,
+        g.introduction,
+        g.keywords,
+        g.hits,
+        g.weekHits,
+        g.weekHitsDate,
+        g.monthHits,
+        g.monthHitsDate,
+        g.sales,
+        g.weekSales,
+        g.weekSalesDate,
+        g.monthSales,
+        g.monthSalesDate,
+        g.scoreCount,
+        g.scoreTotal,
+        g.score,
+        g.isIndex,
+        g.indexOrder,
+        g.description,
+        g.createUser,
+        g.createDate,
+        g.modifyUser,
+        g.modifyDate,
+        g.shippingOrderUrl,
+        g.predictDay,
+        g.hasRebate,
+        g.startNum,
+        g.limitNum,
+        g.packageModulus,
+        g.packageUnit,
+        g.packageBarCode,
+        g.phoneIntroduction,
+        g.enableBatchPrice,
+        g.isPost,CONCAT((SELECT setvalue FROM shared_system_set WHERE setKey='imageUrl'),CONCAT(CONCAT(groupName,'/'),d.url)) AS pic
+        FROM wp_goods g RIGHT JOIN goodsId_snap gs ON g.id = gs.goodsId LEFT JOIN wp_goods_images d ON d.goodsId = g.id
+        WHERE g.isMarketable = 1 AND g. STATUS = 5 AND g.isDelete = 1 AND gs.flag = #{flag} GROUP BY g.id
+        ORDER BY gs.orderSn
+    </select>
+
+
+    <select id="getPagerByTag4EC" resultType="net.deepdragon.entity.weipu.Goods">
+        select o.* from (
+        SELECT
+            gt.goodsId,
+            t.sign AS tagSign,
+            g.*
+        FROM
+            wp_goods_tag gt
+            LEFT JOIN wp_tag t ON tagId = t.id
+            LEFT JOIN (
+                SELECT
+                a.id,
+                a.tenantId,
+                a.categoryId,
+                /**a.categoryPath,
+                a.brandId,*/
+                a.shopId,
+                /**a.productId,*/
+                a. NAME,
+                a.barcode,
+                /**
+                a.sn,
+                a.shortName,
+                a.phoneShopNo,
+                */
+                a.fullName,
+                a.price,
+                /**a.erpPkCode,
+                a.SupCode,
+                a.spec,
+                a.cost, */
+                a.marketPrice,
+                /**a.isMemberPrice,*/
+                a.unit,
+                /**
+                a.weight,
+                a.adwords,
+                a.image,
+                */
+                a.stock,
+                /**
+                a.stockMemo,
+                a.POINT,
+                a.defaultPrice,
+                */
+                a.isMarketable,
+                /**
+                a.isTop,
+                a.isList,
+                a.isGift,
+                a.isLianYing,
+                a.introduction,
+                a.keywords,
+                a.hits,
+                a.weekHits,
+                a.weekHitsDate,
+                a.monthHits,
+                a.monthHitsDate,*/
+                a.sales,
+                /**
+                a.weekSales,
+                a.weekSalesDate,
+                a.monthSales,
+                a.monthSalesDate,*/
+                a.scoreCount,
+                /**
+                a.scoreTotal,
+                a.score,
+                a.becScoreCount,
+                a.becScoreTotal,
+                a.becScore,*/
+                a.isIndex,
+                /**
+                a.indexOrder,
+                a.description,
+                a.createUser,
+                a.createDate,
+                a.modifyUser,
+                a.modifyDate,*/
+                a. STATUS,
+                /**
+                a.isDelete,
+                a.shippingOrderUrl,
+                a.scoreSet,*/
+                a.platform,
+                /**a.predictDay,
+                a.supplierId,
+                a.type,
+                a.checkDate,
+                a.hasRebate,
+                a.startNum,
+                a.limitNum,
+                a.packageModulus,
+                a.packageUnit,
+                a.packageBarCode,
+                a.phoneIntroduction,
+                a.enableBatchPrice, */
+                b.pic
+                FROM
+                    wp_goods a
+                    LEFT JOIN (
+                        SELECT
+                            c.goodsId,
+                            c.pic
+                            FROM
+                            (
+                                SELECT
+                                    goodsId,
+                                    concat(
+                                    (
+                                        SELECT
+                                          setvalue
+                                        FROM
+                                          shared_system_set
+                                        WHERE
+                                          setKey = 'imageUrl'
+                                    ), concat(concat(groupName, '/'), url) ) AS `pic`
+                                FROM
+                                    wp_goods_images
+                                ORDER BY
+                                    orderNo
+                            ) c
+                            GROUP BY
+                                c.goodsId
+                    ) b ON a.id = b.goodsId
+                WHERE (a.platform = 1 or a.platform =2)
+            ) g on gt.goodsId = g.id
+        WHERE
+          g. STATUS = '5'
+          and g.isMarketable = 1
+
+        union ALL
+
+        SELECT
+            c.goodsId,
+            'todayCommend' AS tagSign,
+            g.*
+        FROM
+            wp_today_commend c
+            LEFT JOIN (
+                SELECT
+                    a.id,
+                    a.tenantId,
+                    a.categoryId,
+                    /**a.categoryPath,
+                    a.brandId,*/
+                    a.shopId,
+                    /**a.productId,*/
+                    a. NAME,
+                    a.barcode,
+                    /**
+                    a.sn,
+                    a.shortName,
+                    a.phoneShopNo,
+                    */
+                    a.fullName,
+                    a.price,
+                    /**a.erpPkCode,
+                    a.SupCode,
+                    a.spec,
+                    a.cost, */
+                    a.marketPrice,
+                    /**a.isMemberPrice,*/
+                    a.unit,
+                    /**
+                    a.weight,
+                    a.adwords,
+                    a.image,
+                    */
+                    a.stock,
+                    /**
+                    a.stockMemo,
+                    a.POINT,
+                    a.defaultPrice,
+                    */
+                    a.isMarketable,
+                    /**
+                    a.isTop,
+                    a.isList,
+                    a.isGift,
+                    a.isLianYing,
+                    a.introduction,
+                    a.keywords,
+                    a.hits,
+                    a.weekHits,
+                    a.weekHitsDate,
+                    a.monthHits,
+                    a.monthHitsDate,*/
+                    a.sales,
+                    /**
+                    a.weekSales,
+                    a.weekSalesDate,
+                    a.monthSales,
+                    a.monthSalesDate,*/
+                    a.scoreCount,
+                    /**
+                    a.scoreTotal,
+                    a.score,
+                    a.becScoreCount,
+                    a.becScoreTotal,
+                    a.becScore,*/
+                    1 as isIndex,
+                    /**
+                    a.indexOrder,
+                    a.description,
+                    a.createUser,
+                    a.createDate,
+                    a.modifyUser,
+                    a.modifyDate,*/
+                    a. STATUS,
+                    /**
+                    a.isDelete,
+                    a.shippingOrderUrl,
+                    a.scoreSet,*/
+                    a.platform,
+                    /**a.predictDay,
+                    a.supplierId,
+                    a.type,
+                    a.checkDate,
+                    a.hasRebate,
+                    a.startNum,
+                    a.limitNum,
+                    a.packageModulus,
+                    a.packageUnit,
+                    a.packageBarCode,
+                    a.phoneIntroduction,
+                    a.enableBatchPrice, */
+                    b.pic
+                FROM
+                    wp_goods a
+                    LEFT JOIN (
+                        SELECT
+                            c.goodsId,
+                            c.pic
+                        FROM
+                        (
+                            SELECT goodsId, concat( (SELECT setvalue FROM shared_system_set WHERE setKey = 'imageUrl' ),
+                                      concat(concat(groupName, '/'), url)
+                        ) AS `pic`
+                        FROM
+                            wp_goods_images
+                        ORDER BY
+                            orderNo
+                        ) c
+                    GROUP BY
+                        c.goodsId
+                    ) b ON a.id = b.goodsId
+                WHERE
+                  (a.platform = 1 OR a.platform = 2)
+                ) g ON c.goodsId = g.id
+            WHERE
+                g. STATUS = '5'
+                and c.status=1
+                AND g.isMarketable = 1
+                ORDER BY c.createDate desc
+        ) o
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+
+    <select id="getPagerByTag4BEC" resultType="net.deepdragon.entity.weipu.Goods">
+        select o.* from (
+        SELECT
+        gt.goodsId,
+        t.sign AS tagSign,
+        g.*
+        FROM
+        wp_goods_tag gt
+        LEFT JOIN wp_tag t ON tagId = t.id
+        LEFT JOIN (
+        SELECT
+        a.id,
+        a.tenantId,
+        /**a.categoryId,
+        a.categoryPath,
+        a.brandId,*/
+        a.shopId,
+        /**a.productId,*/
+        a. NAME,
+        a.barcode,
+        /**
+        a.sn,
+        a.shortName,
+        a.phoneShopNo,
+        */
+        a.fullName,
+        a.price,
+        /**a.erpPkCode,
+        a.SupCode,
+        a.spec,
+        a.cost, */
+        a.marketPrice,
+        /**a.isMemberPrice,*/
+        a.unit,
+        /**
+        a.weight,
+        a.adwords,
+        a.image,
+        */
+        a.stock,
+        /**
+        a.stockMemo,
+        a.POINT,
+        a.defaultPrice,
+        */
+        a.isMarketable,
+        /**
+        a.isTop,
+        a.isList,
+        a.isGift,
+        a.isLianYing,
+        a.introduction,
+        a.keywords,
+        a.hits,
+        a.weekHits,
+        a.weekHitsDate,
+        a.monthHits,
+        a.monthHitsDate,*/
+        a.sales,
+        /**
+        a.weekSales,
+        a.weekSalesDate,
+        a.monthSales,
+        a.monthSalesDate,*/
+        a.scoreCount,
+        /**
+        a.scoreTotal,
+        a.score,
+        a.becScoreCount,
+        a.becScoreTotal,
+        a.becScore,*/
+        a.isIndex,
+        /**
+        a.indexOrder,
+        a.description,
+        a.createUser,
+        a.createDate,
+        a.modifyUser,
+        a.modifyDate,*/
+        a. STATUS,
+        /**
+        a.isDelete,
+        a.shippingOrderUrl,
+        a.scoreSet,*/
+        a.platform,
+        /**a.predictDay,
+        a.supplierId,
+        a.type,
+        a.checkDate,
+        a.hasRebate,
+        a.startNum,
+        a.limitNum,
+        a.packageModulus,
+        a.packageUnit,
+        a.packageBarCode,
+        a.phoneIntroduction,
+        a.enableBatchPrice, */
+        b.pic
+        FROM
+        wp_goods a
+        LEFT JOIN (
+        SELECT
+        c.goodsId,
+        c.pic
+        FROM
+        (
+        SELECT
+        goodsId,
+        concat(
+        (
+        SELECT
+        setvalue
+        FROM
+        shared_system_set
+        WHERE
+        setKey = 'imageUrl'
+        ), concat(concat(groupName, '/'), url) ) AS `pic`
+        FROM
+        wp_goods_images
+        ORDER BY
+        orderNo
+        ) c
+        GROUP BY
+        c.goodsId
+        ) b ON a.id = b.goodsId
+        WHERE (a.platform = 3 or a.platform =2)
+        ) g on gt.goodsId = g.id
+        WHERE
+        g. STATUS = '5'
+        and g.isMarketable = 1
+        ) o
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+
+    <!-- 根据标签获取BEC商品信息 可传入 tagSign TianYu  2016-05-10 10:50:52 -->
+    <select id="getPagerByTag4BEC2" resultType="net.deepdragon.entity.weipu.Goods">
+        select o.* from (
+            select
+                <include refid="columnList"/>,
+                tagSign,pic, IFNULL(maxBatchPrice,price)  maxBatchPrice, IFNULL(minBatchPrice,price)  minBatchPrice,batchPrice,startBatchNum,shopName,clName
+            from (
+                SELECT
+                    a.*, img.image AS pic,
+                    c.maxBatchPrice,
+                    c.minBatchPrice,mm.name shopName,clOut.clName,
+                    concat(
+                    c.minBatchPrice,
+                    '~',
+                    c.maxBatchPrice
+                    ) batchPrice,
+                    ifnull(c.startBatchNum, 1) startBatchNum
+                FROM
+                    (
+                    SELECT
+                      goods.*, tag.tagSign
+                    FROM
+                        wp_goods goods,
+                        (
+                        SELECT
+                          gt.goodsId, t.sign as tagSign
+                        FROM
+                            wp_goods_tag gt,
+                            wp_tag t
+                        WHERE
+                            gt.tagId = t.id
+                            AND t.platform = 1
+                        ) tag
+                    where goods.id = tag.goodsId
+                    ) a
+                    LEFT JOIN (
+                        SELECT
+                        goodsId,
+                        concat((SELECT setvalue FROM shared_system_set WHERE setKey = 'imageUrl'),groupName, '/', url) image
+                        FROM
+                        wp_goods_images
+                        GROUP BY
+                        goodsId
+                    ) img ON img.goodsId = a.id
+                    LEFT JOIN (
+                        SELECT bgp.goodsId, max(bgp.batchPrice) maxBatchPrice, min(bgp.batchPrice) minBatchPrice,min(bgp.startBatchNum) startBatchNum
+                        FROM b2b_goods_price bgp
+                        GROUP BY bgp.goodsId
+                        ORDER BY bgp.goodsId ASC
+                    ) c ON c.goodsId = a.id
+                    LEFT JOIN (
+                        SELECT m.name,m.id FROM wp_merchant m
+                    ) mm  ON a.shopId = mm.id
+                    LEFT JOIN (
+                        SELECT
+                          cl.id, concat(cl.p1, '-', cl.p2, '-', cl.p3) clName
+                        FROM
+                        (
+                            SELECT
+                                g1.id,
+                                ( SELECT g2.NAME FROM wp_catelog g2 WHERE concat(g2.id,'') = substring(g1.path, 1, LOCATE(',',g1.path)-1) ) p1,
+                                ( SELECT g2. NAME FROM wp_catelog g2 WHERE g2.id = g1.parentId ) p2,
+                                g1.`name` p3
+                            FROM
+                                wp_catelog g1
+                            WHERE
+                                g1.path LIKE '%,%,%'
+                        ) cl
+                    ) clOut ON clOut.id = a.categoryId
+            ) i
+        ) o
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+
+
+
+    <!-- 20160511 dzz -->
+    <!-- 查询商品促销信息(返利商品信息): 1.根据分类查询商品信息, 以及相关组装条件查询商品信息(备注: 根据分类查询此分类下的所有返利商品) -->
+    <select id="queryListPromotionOfHasRebate" resultType="net.deepdragon.entity.weipu.Goods">
+        select
+            o.*
+            from
+            (select
+                id
+                , tenantId
+                , categoryId
+                , categoryPath
+                , brandId
+                , shopId
+                , productId
+                , name
+                , sn
+                , shortName
+                , barcode
+                , phoneShopNo
+                , fullName
+                , price
+                , erpPkCode
+                , SupCode
+                , cost
+                , spec
+                , marketPrice
+                , isMemberPrice
+                , unit
+                , weight
+                , adwords
+                , image
+                , stock
+                , stockMemo
+                , point
+                , defaultPrice
+                , isMarketable
+                , isTop
+                , isList
+                , isGift
+                , isLianYing
+                , introduction
+                , keywords
+                , hits
+                , weekHits
+                , weekHitsDate
+                , monthHits
+                , monthHitsDate
+                , sales
+                , weekSales
+                , weekSalesDate
+                , monthSales
+                , monthSalesDate
+                , scoreCount
+                , scoreTotal
+                , score
+                , becScoreCount
+                , becScoreTotal
+                , becScore
+                , isIndex
+                , indexOrder
+                , description
+                , createUser
+                , createDate
+                , modifyUser
+                , modifyDate
+                , status
+                , isDelete
+                , shippingOrderUrl
+                , scoreSet
+                , platform
+                , predictDay
+                , supplierId
+                , type
+                , checkDate
+                , hasRebate
+                , startNum
+                , limitNum
+                , packageModulus
+                , packageUnit
+                , packageBarCode
+                , phoneIntroduction
+                , enableBatchPrice
+                , isPost
+                , pic
+                , IFNULL(maxBatchPrice, price) as maxBatchPrice
+                , IFNULL(minBatchPrice, price) as minBatchPrice
+                , batchPrice
+                , startBatchNum
+                , shopName
+                , clName
+            from
+                (select
+                        a.*
+                        , img.image as pic
+                        , c.maxBatchPrice
+                        , c.minBatchPrice
+                        , mm.name as shopName
+                        , clOut.clName
+                        , CONCAT(c.minBatchPrice, '~', c.maxBatchPrice) as batchPrice
+                        , IFNULL(c.startBatchNum, 1) as startBatchNum
+                from wp_goods a
+                left join
+                        (select
+                        goodsId
+                        , CONCAT((select setvalue from shared_system_set where setKey = 'imageUrl') , groupName , '/' , url ) as image
+                        from
+                        wp_goods_images
+                        group by goodsId)
+                        img
+                        on img.goodsId = a.id
+                left join
+                        (select
+                        bgp.goodsId
+                        , MAX(bgp.batchPrice) as maxBatchPrice
+                        , MIN(bgp.batchPrice) as minBatchPrice
+                        , MIN(bgp.startBatchNum) as startBatchNum
+                        from
+                        b2b_goods_price bgp
+                        group by bgp.goodsId
+                        order by bgp.goodsId asc)
+                        c
+                on c.goodsId = a.id
+                left join
+                        (select
+                        m.name
+                        , m.id
+                        from
+                        wp_merchant m)
+                        mm
+                on a.shopId = mm.id
+                left join
+                        (select
+                                cl.id
+                                , CONCAT(cl.p1, '-', cl.p2, '-', cl.p3) as clName
+                                from
+                                    (select
+                                            g1.id
+                                            , (select g2.NAME from wp_catelog g2  where CONCAT(g2.id, '') = SUBSTRING(g1.path, 1, LOCATE(',', g1.path) - 1)) as p1
+                                            , (select g2.NAME from wp_catelog g2  where g2.id = g1.parentId) as p2
+                                            , g1.name as p3
+                                    from
+                                    wp_catelog g1
+                                    where g1.path like '%,%,%'
+                                    ) cl
+                        ) clOut
+                        on clOut.id = a.categoryId
+            ) i
+        ) o
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+
+
+    <!-- 20160516 dzz -->
+    <!-- 查询所有众筹商品信息 -->
+    <select id="queryListZhongChouGoods" resultType="net.deepdragon.entity.weipu.Goods">
+        select o.*
+            from (
+            select
+                goods.*
+                , CONCAT((select setvalue from shared_system_set where setKey = 'imageUrl'), CONCAT(CONCAT(goods.groupName, '/'), goods.url)) as `pic`
+                , mm.name as shopName
+                , clOut.clName
+                from
+                    (select
+                        g.*
+                        , gz.zhongChouStatus
+                        , gz.startTime as zcStartTime
+                        , gz.endTime as zcEndTime
+                        , gz.buyMinNum
+                        , gz.buyMaxNum
+                        , gz.maxNum
+                        , gz.thresholdType
+                        , gz.threshold
+                        , gz.thresholdUnit
+                        , gz.successPrice
+                        , gz.prepaymentType
+                        , gz.prepaymentRatio
+                        , gz.remark
+                        , gz.reserve1
+                        , gz.reserve2
+                        , gz.reserve3
+                        , gz.reserveDateTime1
+                        , gz.reserveDateTime2
+                        , gz.startTime
+                        , gz.endTime
+                        , (select wgi.groupName from wp_goods_images wgi where wgi.goodsId=g.id and wgi.orderNo='1' limit 1) as groupName
+                        , (select wgi.url from wp_goods_images wgi where wgi.goodsId=g.id and wgi.orderNo='1' limit 1) as url
+                        , (select wgi.orderNo from wp_goods_images wgi where wgi.goodsId=g.id and wgi.orderNo='1' limit 1) as orderNo
+                    from
+                        wp_goods g
+                        , wp_goods_zhongchou gz
+                    where g.id = gz.id
+                    )
+                goods
+                left join
+                    (select
+                        cl.id
+                        , CONCAT(cl.p1, '-', cl.p2, '-', cl.p3) as clName
+                        from
+                        (select
+                            g1.id
+                            , (select g2.NAME from wp_catelog g2  where CONCAT(g2.id, '') = SUBSTRING(g1.path, 1, LOCATE(',', g1.path) - 1)) as p1
+                            , (select g2.NAME from wp_catelog g2  where g2.id = g1.parentId) as p2
+                            , g1.name as p3
+                            from
+                            wp_catelog g1
+                            where g1.path like '%,%,%'
+                        )
+                        cl
+                    )
+                    clOut
+                on clOut.id = goods.categoryId
+                left join
+                    (select
+                        m.name
+                        , m.id
+                        from
+                        wp_merchant m
+                    )
+                    mm
+                on goods.shopId = mm.id
+            ) o
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+
+    <!-- 20160519 dzz -->
+    <!-- 根据众筹商品Id信息获取商品信息 -->
+    <select id="getZCOrderInfoById" resultType="net.deepdragon.entity.weipu.Goods">
+        select o.*
+            from (
+            select
+            goods.*
+            , CONCAT((select setvalue from shared_system_set where setKey = 'imageUrl'), CONCAT(CONCAT(goods.groupName, '/'), goods.url)) as `pic`
+            , mm.id as merchantId
+            , mm.name as shopName
+            , mm.urlAddress
+            , mm.urlAddress as shopUrlAddress
+            , clOut.clName
+            from
+            (select
+            g.*
+            , gz.zhongChouStatus
+            , gz.startTime as zcStartTime
+            , gz.endTime as zcEndTime
+            , gz.buyMinNum
+            , gz.buyMaxNum
+            , gz.maxNum
+            , gz.thresholdType
+            , gz.threshold
+            , gz.thresholdUnit
+            , gz.successPrice
+            , gz.prepaymentType
+            , gz.prepaymentRatio
+            , gz.remark
+            , gz.reserve1
+            , gz.reserve2
+            , gz.reserve3
+            , gz.reserveDateTime1
+            , gz.reserveDateTime2
+
+            , gz.startTime
+            , gz.endTime
+            , (select wgi.groupName from wp_goods_images wgi where wgi.goodsId=g.id and wgi.orderNo='1' limit 1) as groupName
+            , (select wgi.url from wp_goods_images wgi where wgi.goodsId=g.id and wgi.orderNo='1' limit 1) as url
+            , (select wgi.orderNo from wp_goods_images wgi where wgi.goodsId=g.id and wgi.orderNo='1' limit 1) as orderNo
+            from
+            wp_goods g
+            , wp_goods_zhongchou gz
+            where g.id = gz.id
+            )
+            goods
+            left join
+            (select
+            cl.id
+            , CONCAT(cl.p1, '-', cl.p2, '-', cl.p3) as clName
+            from
+            (select
+            g1.id
+            , (select g2.NAME from wp_catelog g2  where CONCAT(g2.id, '') = SUBSTRING(g1.path, 1, LOCATE(',', g1.path) - 1)) as p1
+            , (select g2.NAME from wp_catelog g2  where g2.id = g1.parentId) as p2
+            , g1.name as p3
+            from
+            wp_catelog g1
+            where g1.path like '%,%,%'
+            )
+            cl
+            )
+            clOut
+            on clOut.id = goods.categoryId
+            left join
+            (select
+            m.name
+            , m.id
+            , m.urlAddress
+            from
+            wp_merchant m)
+            mm
+            on goods.shopId = mm.id
+            ) o
+             WHERE o.id = #{id}
+    </select>
+
+    <!-- 20160617 dzz -->
+    <!-- 验证当前众筹商品是否存在订单信息 -->
+    <select id="validateZcOrderNan" resultType="net.deepdragon.entity.weipu.Goods">
+        select
+            COUNT(1) as isNaNOrder
+            from wp_order o
+            left join wp_order_item woi on o.orderSn=woi.orderSn
+            where o.orderType='1'
+            and o.memberId=#{memberId}
+            and woi.goodsId=#{id}
+    </select>
+
+
+    <!-- 20160715 dzz -->
+    <!--  -->
+    <select id="getGoodsInfoById" resultType="map">
+        select
+            g.name gname, g.barcode, g.categoryId, g.volume, g.weight
+        from
+            wp_goods g
+        where
+            g.id in
+        <foreach collection="ids" item="id" index="index" open="("
+                 close=")" separator=",">#{id}</foreach>
+        order by c.createDate
+    </select>
+
+
+    <!--更具关键字查询店铺内部商品-->
+    <select id="getGoods4Pager4JULI4SJ" parameterType="java.util.Map" resultType="net.deepdragon.entity.weipu.Goods">
+        SELECT
+        goods.*,
+        img.image AS pic
+        FROM
+        (SELECT
+        CONCAT(g.id, '') AS id,
+        g.tenantId,
+        CONCAT(g.categoryId, '') AS categoryId,
+        CONCAT(g.shopId, '') AS shopId,
+        g.name,
+        g.shortName,
+        g.barcode,
+        g.fullName,
+        g.price,
+        g.marketPrice,
+        g.unit,
+        g.stock,
+        g.sales,
+        g.scoreCount,
+        g.hasRebate
+        FROM
+        wp_goods g,
+        wp_catelog c
+        WHERE g.categoryId = c.id
+        AND g.STATUS = 5
+        AND g.isDelete = 1
+        AND g.isMarketable = 1
+        AND g.platform &lt;= 2
+        AND g.type = 0
+        AND g.shopId=#{shopId}
+        AND c.enabled = 1
+        <if test="queryop =='search'">
+            AND (
+                g.NAME LIKE CONCAT('%',#{keywords}, '%')
+                OR g.fullName LIKE CONCAT('%', #{keywords}, '%')
+                OR g.keywords LIKE CONCAT('%',#{keywords}, '%')
+                OR g.barcode LIKE CONCAT('%',#{keywords}, '%')
+                OR g.packageBarCode LIKE CONCAT('%', #{keywords}, '%')
+                OR c.NAME LIKE CONCAT('%', #{keywords}, '%')
+                OR c.sign LIKE CONCAT('%',#{keywords}, '%')
+            )
+        </if>
+        <if test="queryop =='query'">
+            AND g.categoryPath like (#{categoryPath})
+        </if>
+        UNION
+        SELECT
+        CONCAT(g.id, '') AS id,
+        g.tenantId,
+        CONCAT(g.categoryId, '') AS categoryId,
+        CONCAT(g.shopId, '') AS shopId,
+        g.name,
+        g.shortName,
+        g.barcode,
+        g.fullName,
+        g.price,
+        g.marketPrice,
+        g.unit,
+        g.stock,
+        g.sales,
+        g.scoreCount,
+        g.hasRebate
+        FROM
+        wp_goods g,
+        wp_goods_brand b
+        WHERE g.brandId = b.id
+        AND g.STATUS = 5
+        AND g.isDelete = 1
+        AND g.isMarketable = 1
+        AND g.platform &lt;= 2
+        AND g.type = 0
+        AND b.enabled = 1
+        AND g.shopId=#{shopId}
+        <if test="queryop =='search'">
+            AND (
+                b.NAME LIKE CONCAT('%',#{keywords}, '%')
+                OR b.sign LIKE CONCAT('%',#{keywords}, '%')
+                OR b.description LIKE CONCAT('%',#{keywords}, '%')
+            )
+        </if>
+        <if test="queryop =='query'">
+            AND g.categoryPath like (#{categoryPath})
+        </if>
+        UNION
+        SELECT
+        CONCAT(g.id, '') AS id,
+        g.tenantId,
+        CONCAT(g.categoryId, '') AS categoryId,
+        CONCAT(g.shopId, '') AS shopId,
+        g.name,
+        g.shortName,
+        g.barcode,
+        g.fullName,
+        g.price,
+        g.marketPrice,
+        g.unit,
+        g.stock,
+        g.sales,
+        g.scoreCount,
+        g.hasRebate
+        FROM
+        wp_goods g
+        INNER JOIN
+        (SELECT
+        t.goodsId AS goodsId,
+        GROUP_CONCAT(w.NAME SEPARATOR ' | ') AS tagname
+        FROM
+        wp_goods_tag t
+        LEFT JOIN
+        (SELECT
+        id,
+        NAME
+        FROM
+        wp_tag) w
+        ON t.tagId = w.id
+        GROUP BY t.goodsId) tag
+        ON g.id = tag.goodsId
+        WHERE g.STATUS = 5
+        AND g.isDelete = 1
+        AND g.isMarketable = 1
+        AND g.platform &lt;= 2
+        AND g.type = 0
+        AND g.shopId=#{shopId}
+        <if test="queryop =='search'">
+            AND tag.tagname LIKE CONCAT('%',#{keywords}, '%')
+        </if>
+        <if test="queryop =='query'">
+            AND g.categoryPath like (#{categoryPath})
+        </if>
+        UNION
+        SELECT
+        CONCAT(g.id, '') AS id,
+        g.tenantId,
+        CONCAT(g.categoryId, '') AS categoryId,
+        CONCAT(g.shopId, '') AS shopId,
+        g.name,
+        g.shortName,
+        g.barcode,
+        g.fullName,
+        g.price,
+        g.marketPrice,
+        g.unit,
+        g.stock,
+        g.sales,
+        g.scoreCount,
+        g.hasRebate
+        FROM
+        wp_goods g
+        INNER JOIN
+        (SELECT
+        gpd.goodsId AS goodsId,
+        GROUP_CONCAT(gpd.content SEPARATOR ' | ') AS paramecontent
+        FROM
+        wp_goods_parameter_detail gpd
+        LEFT JOIN
+        (SELECT
+        p.id,
+        p.NAME
+        FROM
+        wp_goods_parameter p
+        LEFT JOIN wp_goods_parameter_group g
+        ON p.groupId = g.id
+        WHERE g.enabled = 1) gp
+        ON gpd.parameterId = gp.id
+        GROUP BY gpd.goodsId) param
+        ON g.id = param.goodsId
+        WHERE g.STATUS = 5
+        AND g.isDelete = 1
+        AND g.isMarketable = 1
+        AND g.platform &lt;= 2
+        AND g.type = 0
+        AND g.shopId=#{shopId}
+        <if test="queryop =='search'">
+            AND param.paramecontent LIKE CONCAT('%', #{keywords}, '%')
+        </if>
+        <if test="queryop =='query'">
+            AND g.categoryPath like (#{categoryPath})
+        </if>
+        ) goods
+        LEFT JOIN
+        (SELECT
+        goodsId,
+        CONCAT(
+        (SELECT
+        setvalue
+        FROM
+        shared_system_set
+        WHERE setKey = 'imageUrl'),
+        groupName,
+        '/',
+        url
+        ) AS image
+        FROM
+        wp_goods_images
+        GROUP BY goodsId) img
+        ON img.goodsId = goods.id
+        <if test="limtString != null"> LIMIT 0,#{e} </if>
+    </select>
+
+</mapper>

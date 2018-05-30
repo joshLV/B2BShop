@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.RepairplantMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`name`,`linkman`,`phone`,`mobile`,`zipcode`,`status`,`areaId`,`areaPath`,`address`,`introduction`,concat((select setvalue from shared_system_set where setKey='imageUrl'),concat(concat(groupName,'/'),logo)) as `pic`,`logo`,`groupName`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.Repairplant">
+		select
+		<include refid="columnList" />
+		from wp_repairplant
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.Repairplant">
+		select
+		<include refid="columnList" />
+		from wp_repairplant
+		where tenantId = #{tenantId} and
+		${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.Repairplant">
+		select
+		<include refid="columnList" />
+		from wp_repairplant
+		where tenantId = #{tenantId} and
+		${property}=#{value}
+	</select>
+
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.Repairplant">
+		select
+		<include refid="columnList" />
+		from wp_repairplant
+		where id in
+		<foreach collection="list" item="id" index="index" open="("
+			close=")" separator=",">#{id}</foreach>
+	</select>
+
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.Repairplant">
+		select
+		<include refid="columnList" />
+		from wp_repairplant
+		where tenantId = #{tenantId}
+	</select>
+
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.Repairplant">
+		select
+		<include refid="columnList" />
+		from wp_repairplant
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getList" resultType="net.deepdragon.entity.weipu.Repairplant">
+		select
+		<include refid="columnList" />
+		from wp_repairplant
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_repairplant where tenantId = #{tenantId}
+	</select>
+
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from
+		wp_repairplant
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.Repairplant"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_repairplant
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="name != null">,`name`</if>
+			<if test="linkman != null">,`linkman`</if>
+			<if test="phone != null">,`phone`</if>
+			<if test="mobile != null">,`mobile`</if>
+			<if test="zipcode != null">,`zipcode`</if>
+			<if test="status != null">,`status`</if>
+			<if test="areaId != null">,`areaId`</if>
+			<if test="areaPath != null">,`areaPath`</if>
+			<if test="address != null">,`address`</if>
+			<if test="introduction != null">,`introduction`</if>
+			<if test="logo != null">,`logo`</if>
+			<if test="groupName != null">,`groupName`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="name != null">,#{name}</if>
+			<if test="linkman != null">,#{linkman}</if>
+			<if test="phone != null">,#{phone}</if>
+			<if test="mobile != null">,#{mobile}</if>
+			<if test="zipcode != null">,#{zipcode}</if>
+			<if test="status != null">,#{status}</if>
+			<if test="areaId != null">,#{areaId}</if>
+			<if test="areaPath != null">,#{areaPath}</if>
+			<if test="address != null">,#{address}</if>
+			<if test="introduction != null">,#{introduction}</if>
+			<if test="logo != null">,#{logo}</if>
+			<if test="groupName != null">,#{groupName}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.Repairplant">
+		update wp_repairplant
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="name != null">,`name` = #{name}</if>
+			<if test="linkman != null">,`linkman` = #{linkman}</if>
+			<if test="phone != null">,`phone` = #{phone}</if>
+			<if test="mobile != null">,`mobile` = #{mobile}</if>
+			<if test="zipcode != null">,`zipcode` = #{zipcode}</if>
+			<if test="status != null">,`status` = #{status}</if>
+			<if test="areaId != null">,`areaId` = #{areaId}</if>
+			<if test="areaPath != null">,`areaPath` = #{areaPath}</if>
+			<if test="address != null">,`address` = #{address}</if>
+			<if test="introduction != null">,`introduction` = #{introduction}</if>
+			<if test="logo != null">,`logo` = #{logo}</if>
+			<if test="groupName != null">,`groupName` = #{groupName}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_repairplant
+		where id = #{id}
+	</delete>
+
+	<!-- 维护维修厂和车型的关系 -->
+	<insert id="saveRepairtCartypeMapping" parameterType="java.util.Map"
+		useGeneratedKeys="false">
+		insert into wp_repairt_cartype
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="repairId != null">`repairId`</if>
+			<if test="cartypeId != null">,`cartypeId`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="repairId != null">#{repairId}</if>
+			<if test="cartypeId != null">,#{cartypeId}</if>
+		</trim>
+	</insert>
+	<!-- 根据维修厂ID删除车型关系 -->
+	<delete id="deleteRepairtCartype">
+		delete from wp_repairt_cartype
+		where repairId =
+		#{repairId}
+	</delete>
+
+	<!-- 根据维修厂ID查找车型关系 -->
+	<select id="getRepairtCartype" resultType="net.deepdragon.entity.weipu.Cartype">
+		select b.* from
+		wp_repairt_cartype a left join wp_cartype b on a.cartypeId =b.id
+		where
+		a.repairId = #{repairId}
+	</select>
+
+</mapper>

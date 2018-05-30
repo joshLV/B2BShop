@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.OrderRefundImagesMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`refundId`,`type`,`groupName`,concat((select setvalue from shared_system_set where setKey='imageUrl'),concat(concat(groupName,'/'),url)) as `url`,`createUser`,`createDate`,`modifyUser`,`modifyDate`,platform
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.OrderRefundImages">
+		select
+		<include refid="columnList" />
+		from wp_order_refund_images
+		where id = #{id}
+		and tenantId = #{tenantId}
+		and platform = #{platform}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.OrderRefundImages">
+		select
+		<include refid="columnList" />
+		from wp_order_refund_images
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.OrderRefundImages">
+		select
+		<include refid="columnList" />
+		from wp_order_refund_images
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.OrderRefundImages">
+		select
+		<include refid="columnList" />
+		from wp_order_refund_images
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+		and tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.OrderRefundImages">
+		select
+		<include refid="columnList" />
+		from wp_order_refund_images 
+		where tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.OrderRefundImages">
+		select
+		<include refid="columnList" />
+		from wp_order_refund_images 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.OrderRefundImages">
+		select
+		<include refid="columnList" />
+		from wp_order_refund_images 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_order_refund_images where tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_order_refund_images 
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.OrderRefundImages"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_order_refund_images
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`,`platform`
+			<if test="refundId != null">,`refundId`</if>
+			<if test="type != null">,`type`</if>
+			<if test="groupName != null">,`groupName`</if>
+			<if test="url != null">,`url`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId},#{platform}
+			<if test="refundId != null">,#{refundId}</if>
+			<if test="type != null">,#{type}</if>
+			<if test="groupName != null">,#{groupName}</if>
+			<if test="url != null">,#{url}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.OrderRefundImages">
+		update wp_order_refund_images
+		<set>
+			`tenantId` = #{tenantId},`platform` = #{platform}
+			<if test="refundId != null">,`refundId` = #{refundId}</if>
+			<if test="type != null">,`type` = #{type}</if>
+			<if test="groupName != null">,`groupName` = #{groupName}</if>
+			<if test="url != null">,`url` = #{url}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_order_refund_images
+		where id =	#{id}
+		and tenantId = #{tenantId}
+		and platform = #{platform}
+	</delete>
+	
+</mapper>

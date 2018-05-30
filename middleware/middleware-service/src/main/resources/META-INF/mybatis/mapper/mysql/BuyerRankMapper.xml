@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.BuyerRankMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`name`,`sign`,`scale`,`amount`,`socreSetId`,`needScoreTotal`,`isDefault`,`orderNo`,`isDelete`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.BuyerRank">
+		select
+		<include refid="columnList" />
+		from b2b_buyer_rank
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.BuyerRank">
+		select
+		<include refid="columnList" />
+		from b2b_buyer_rank
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.BuyerRank">
+		select
+		<include refid="columnList" />
+		from b2b_buyer_rank
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.BuyerRank">
+		select
+		<include refid="columnList" />
+		from b2b_buyer_rank
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.BuyerRank">
+		select
+		<include refid="columnList" />
+		from b2b_buyer_rank 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.BuyerRank">
+		select
+		<include refid="columnList" />
+		from b2b_buyer_rank 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.BuyerRank">
+		select
+		<include refid="columnList" />
+		from b2b_buyer_rank 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from b2b_buyer_rank where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from b2b_buyer_rank 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.BuyerRank"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into b2b_buyer_rank
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="name != null">,`name`</if>
+			<if test="sign != null">,`sign`</if>
+			<if test="scale != null">,`scale`</if>
+			<if test="amount != null">,`amount`</if>
+			<if test="socreSetId != null">,`socreSetId`</if>
+			<if test="needScoreTotal != null">,`needScoreTotal`</if>
+			<if test="isDefault != null">,`isDefault`</if>
+			<if test="orderNo != null">,`orderNo`</if>
+			<if test="isDelete != null">,`isDelete`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="name != null">,#{name}</if>
+			<if test="sign != null">,#{sign}</if>
+			<if test="scale != null">,#{scale}</if>
+			<if test="amount != null">,#{amount}</if>
+			<if test="socreSetId != null">,#{socreSetId}</if>
+			<if test="needScoreTotal != null">,#{needScoreTotal}</if>
+			<if test="isDefault != null">,#{isDefault}</if>
+			<if test="orderNo != null">,#{orderNo}</if>
+			<if test="isDelete != null">,#{isDelete}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.BuyerRank">
+		update b2b_buyer_rank
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="name != null">,`name` = #{name}</if>
+			<if test="sign != null">,`sign` = #{sign}</if>
+			<if test="scale != null">,`scale` = #{scale}</if>
+			<if test="amount != null">,`amount` = #{amount}</if>
+			<if test="socreSetId != null">,`socreSetId` = #{socreSetId}</if>
+			<if test="needScoreTotal != null">,`needScoreTotal` = #{needScoreTotal}</if>
+			<if test="isDefault != null">,`isDefault` = #{isDefault}</if>
+			<if test="orderNo != null">,`orderNo` = #{orderNo}</if>
+			<if test="isDelete != null">,`isDelete` = #{isDelete}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from b2b_buyer_rank
+		where id =	#{id}
+	</delete>
+
+	<select id="getDefaultBuyerRank" resultType="net.deepdragon.entity.weipu.BuyerRank">
+		select
+		<include refid="columnList" />
+		from b2b_buyer_rank
+		where `tenantId` = #{tenantId} and isDefault=1
+	</select>
+	
+</mapper>

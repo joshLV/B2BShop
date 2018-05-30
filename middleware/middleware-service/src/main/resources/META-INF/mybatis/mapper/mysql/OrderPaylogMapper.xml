@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.OrderPaylogMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`orderSn`,`memberId`,`no`,`sign`,`name`,`uniqueno`,`amount`,`payDate`,`status`,`info`,`createUser`,`createDate`,`modifyUser`,`modifyDate`,`isDetele`,`mergeOrderSn`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.OrderPaylog">
+		select
+		<include refid="columnList" />
+		from wp_order_paylog
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.OrderPaylog">
+		select
+		<include refid="columnList" />
+		from wp_order_paylog
+		where tenantId = #{tenantId} and
+		${property}=#{value}
+		and isDetele = 'N'
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.OrderPaylog">
+		select
+		<include refid="columnList" />
+		from wp_order_paylog
+		where tenantId = #{tenantId} and
+		${property}=#{value}
+	</select>
+
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.OrderPaylog">
+		select
+		<include refid="columnList" />
+		from wp_order_paylog
+		where id in
+		<foreach collection="list" item="id" index="index" open="("
+			close=")" separator=",">#{id}</foreach>
+	</select>
+
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.OrderPaylog">
+		select
+		<include refid="columnList" />
+		from wp_order_paylog
+		where tenantId = #{tenantId}
+	</select>
+
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.OrderPaylog">
+		select
+		<include refid="columnList" />
+		from wp_order_paylog
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getList" resultType="net.deepdragon.entity.weipu.OrderPaylog">
+		select
+		<include refid="columnList" />
+		from wp_order_paylog
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_order_paylog where tenantId = #{tenantId}
+	</select>
+
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from
+		wp_order_paylog
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="getPayCount" resultType="net.deepdragon.entity.weipu.OrderPaylog">
+		SELECT `name`,
+		DATE_FORMAT(createDate,"%Y-%m-%d") AS createDate,SUM(amount) AS amount
+		FROM wp_order_paylog
+		WHERE createDate BETWEEN #{start} AND #{end}
+		GROUP
+		BY DATE_FORMAT( createDate, "%Y-%m-%d" ) ,`name`
+		ORDER BY createDate
+		DESC
+	</select>
+
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.OrderPaylog"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_order_paylog
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="orderSn != null">,`orderSn`</if>
+			<if test="memberId != null">,`memberId`</if>
+			<if test="no != null">,`no`</if>
+			<if test="sign != null">,`sign`</if>
+			<if test="name != null">,`name`</if>
+			<if test="uniqueno != null">,`uniqueno`</if>
+			<if test="amount != null">,`amount`</if>
+			<if test="payDate != null">,`payDate`</if>
+			<if test="status != null">,`status`</if>
+			<if test="info != null">,`info`</if>
+			<if test="mergeOrderSn != null">,`mergeOrderSn`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="orderSn != null">,#{orderSn}</if>
+			<if test="memberId != null">,#{memberId}</if>
+			<if test="no != null">,#{no}</if>
+			<if test="sign != null">,#{sign}</if>
+			<if test="name != null">,#{name}</if>
+			<if test="uniqueno != null">,#{uniqueno}</if>
+			<if test="amount != null">,#{amount}</if>
+			<if test="payDate != null">,#{payDate}</if>
+			<if test="status != null">,#{status}</if>
+			<if test="info != null">,#{info}</if>
+			<if test="mergeOrderSn != null">,#{mergeOrderSn}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.OrderPaylog">
+		update wp_order_paylog
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="orderSn != null">,`orderSn` = #{orderSn}</if>
+			<if test="memberId != null">,`memberId` = #{memberId}</if>
+			<if test="no != null">,`no` = #{no}</if>
+			<if test="sign != null">,`sign` = #{sign}</if>
+			<if test="name != null">,`name` = #{name}</if>
+			<if test="uniqueno != null">,`uniqueno` = #{uniqueno}</if>
+			<if test="amount != null">,`amount` = #{amount}</if>
+			<if test="payDate != null">,`payDate` = #{payDate}</if>
+			<if test="status != null">,`status` = #{status}</if>
+			<if test="info != null">,`info` = #{info}</if>
+			<if test="mergeOrderSn != null">,`mergeOrderSn` = #{mergeOrderSn}</if>
+			<if test="isDetele != null">,`isDetele` = #{isDetele}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_order_paylog
+		where id = #{id}
+	</delete>
+
+
+	<select id="getPaidAmountTotalByOrderSn" resultType="java.lang.Double">
+		SELECT
+			IFNULL(sum(pl.amount),0) as paidAmountTotal
+		FROM
+			wp_order_paylog pl
+		where pl.`status` = 'true'
+		 and tenantId = #{tenantId}
+		 and pl.orderSn = #{orderSn}
+		<if test="no != null">and pl.no = #{no}</if>
+		/*group by pl.orderSn*/
+	</select>
+
+
+	<!-- 根据订单号和采购商ID分组统计每个红包支付的总金额 TianYu 2016-3-11 09:28:00 Start -->
+	<select id="getRPayTotalGroupByR" resultType="net.deepdragon.entity.weipu.OrderPaylog">
+		SELECT
+			uniqueno,
+			ifnull(sum(amount), 0) amount
+		FROM
+			wp_order_paylog
+		WHERE
+			tenantId = #{tenantId}
+		AND no = '红包支付'
+		AND orderSn = #{orderSn}
+		AND memberId = #{memberId}
+		AND status = 'true'
+		GROUP BY uniqueno
+	</select>
+	<!-- 根据订单号和采购商ID分组统计每个红包支付的总金额 TianYu 2016-3-11 09:28:00 End -->
+
+	<!-- 根据订单号和采购商ID分组统计订单使用各种支付方式支付金额 TianYu 2016-3-22 15:53:43 Start -->
+	<select id="getPayTotalGroupByType" resultType="net.deepdragon.entity.weipu.OrderPaylog">
+		SELECT
+			p.name,
+			ifnull(sum(p.amount),0) amount
+		FROM
+			wp_order_paylog p
+		WHERE
+			p.tenantId = #{tenantId}
+			AND p.orderSn = #{orderSn}
+			AND p.memberId = #{memberId}
+			and p.`status` = 'true'
+		group by p.name
+	</select>
+	<!-- 根据订单号和采购商ID分组统计订单使用各种支付方式支付金额 TianYu 2016-3-22 15:53:43 End -->
+</mapper>

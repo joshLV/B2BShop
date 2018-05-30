@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.OrderDistributionMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`orderSn`,`logisticsCompanyId`,`logisticsNo`,`deliveryManId`,`deliveryManName`,`deliveryManDesc`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.OrderDistribution">
+		select
+		<include refid="columnList" />
+		from wp_order_distribution
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.OrderDistribution">
+		select
+		<include refid="columnList" />
+		from wp_order_distribution
+		where tenantId = #{tenantId} and
+		${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.OrderDistribution">
+		select
+		<include refid="columnList" />
+		from wp_order_distribution
+		where tenantId = #{tenantId} and
+		${property}=#{value}
+	</select>
+
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.OrderDistribution">
+		select
+		<include refid="columnList" />
+		from wp_order_distribution
+		where id in
+		<foreach collection="list" item="id" index="index" open="("
+			close=")" separator=",">#{id}</foreach>
+	</select>
+
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.OrderDistribution">
+		select
+		<include refid="columnList" />
+		from wp_order_distribution
+		where tenantId = #{tenantId}
+	</select>
+
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.OrderDistribution">
+		<!-- select -->
+		<!-- <include refid="columnList" /> -->
+		<!-- from wp_order_distribution -->
+		<!-- <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if> -->
+		select c.*,d.shippingStatus,d.orderStatus,d.deliveryMethodName from
+		(select a.*,b.name as logisticsCompany from wp_order_distribution a
+		left join shared_logistics_company b on a.logisticsCompanyId = b.id )
+		c left join wp_order d on c.orderSn =d.orderSn
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getList" resultType="net.deepdragon.entity.weipu.OrderDistribution">
+		select
+		<include refid="columnList" />
+		from wp_order_distribution
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_order_distribution where tenantId = #{tenantId}
+	</select>
+
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from
+		wp_order_distribution
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.OrderDistribution"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_order_distribution
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="orderSn != null">,`orderSn`</if>
+			<if test="logisticsCompanyId != null">,`logisticsCompanyId`</if>
+			<if test="logisticsNo != null">,`logisticsNo`</if>
+			<if test="deliveryManId != null">,`deliveryManId`</if>
+			<if test="deliveryManName != null">,`deliveryManName`</if>
+			<if test="deliveryManDesc != null">,`deliveryManDesc`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="orderSn != null">,#{orderSn}</if>
+			<if test="logisticsCompanyId != null">,#{logisticsCompanyId}</if>
+			<if test="logisticsNo != null">,#{logisticsNo}</if>
+			<if test="deliveryManId != null">,#{deliveryManId}</if>
+			<if test="deliveryManName != null">,#{deliveryManName}</if>
+			<if test="deliveryManDesc != null">,#{deliveryManDesc}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.OrderDistribution">
+		update wp_order_distribution
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="orderSn != null">,`orderSn` = #{orderSn}</if>
+			<if test="logisticsCompanyId != null">,`logisticsCompanyId` = #{logisticsCompanyId}</if>
+			<if test="logisticsNo != null">,`logisticsNo` = #{logisticsNo}</if>
+			<if test="deliveryManId != null">,`deliveryManId` = #{deliveryManId}</if>
+			<if test="deliveryManName != null">,`deliveryManName` = #{deliveryManName}</if>
+			<if test="deliveryManDesc != null">,`deliveryManDesc` = #{deliveryManDesc}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_order_distribution
+		where id = #{id}
+	</delete>
+	
+	<!-- 配送员配送记录报表 -->
+	<select id="getDeliveryAmountReport" resultType="java.util.Map">
+		SELECT d.`deliveryManId`,d.`deliveryManName`,SUM(w.`totalAmount` - IFNULL(w.discount,0)) AS totalAmount FROM wp_order_distribution d
+  		LEFT JOIN wp_order w ON d.`orderSn` = w.`orderSn`
+	<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	 GROUP BY d.`deliveryManId`
+	</select>
+
+</mapper>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.OrderRefundMapper">
+
+	<sql id="columnList">
+		wp_order_refund.id, wp_order_refund.tenantId, wp_order_refund.shopId, wp_order_refund.orderSn, wp_order_refund.memberId  , wp_order_refund.amount,wp_order_refund.cardNo,wp_order_refund.type,wp_order_refund.status,wp_order_refund.reason,wp_order_refund.info,wp_order_refund.logisticsName,wp_order_refund.logisticsNo,wp_order_refund.shipName,wp_order_refund.shipAreaId,wp_order_refund.shipAreaPath,wp_order_refund.shipAddress,wp_order_refund.shipZipCode,wp_order_refund.shipPhone,wp_order_refund.shipMobile,wp_order_refund.attn,wp_order_refund.createUser,wp_order_refund.createDate,wp_order_refund.modifyUser,wp_order_refund.modifyDate,wp_order_refund.platform
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.OrderRefund">
+	SELECT
+	<!--sql有误 shipAddress字段没有明确表,查询错误 Auth:zhangqiang Time:2015-09-23 14:10:35 Start-->
+	<!--wp_order_refund.*,CONCAT(shared_area.fullName,shipAddress) as-->
+	wp_order_refund.*,CONCAT(shared_area.fullName,wp_order_refund.shipAddress) as
+	<!--sql有误 shipAddress字段没有明确表,查询错误 Auth:zhangqiang Time:2015-09-23 14:10:35 End-->
+		address,wp_order.id as orderId
+	FROM wp_order_refund
+	LEFT JOIN shared_area ON
+	wp_order_refund.shipAreaId=shared_area.id LEFT JOIN wp_order ON wp_order_refund.orderSn=wp_order.orderSn
+	where wp_order_refund.id = #{id}
+		and wp_order_refund.tenantId = #{tenantId}
+		and wp_order_refund.platform = #{platform}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.OrderRefund">
+		select
+		<include refid="columnList" />
+		from wp_order_refund
+		where tenantId = #{tenantId} and platform = #{platform} and
+		${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.OrderRefund">
+		select
+		<include refid="columnList" />
+		from wp_order_refund
+		where tenantId = #{tenantId} and platform = #{platform} and
+		${property}=#{value}
+		order by modifyDate,createDate desc
+	</select>
+
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.OrderRefund">
+		select
+		<include refid="columnList" />
+		from wp_order_refund
+		where id in
+		<foreach collection="list" item="id" index="index" open="("
+			close=")" separator=",">#{id}</foreach>
+		and tenantId = #{tenantId} and platform = #{platform}
+	</select>
+
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.OrderRefund">
+		select
+		<include refid="columnList" />
+		from wp_order_refund
+		where tenantId = #{tenantId} and platform = #{platform}
+	</select>
+
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.OrderRefund">
+		select
+		<include refid="columnList" />,wp_order.id as orderId
+		from wp_order_refund LEFT JOIN wp_order ON wp_order_refund.orderSn=wp_order.orderSn
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getList" resultType="net.deepdragon.entity.weipu.OrderRefund">
+		select
+		<include refid="columnList" />
+		from wp_order_refund
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_order_refund where tenantId = #{tenantId} and platform = #{platform}
+	</select>
+
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from
+		wp_order_refund
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.OrderRefund"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_order_refund
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`
+			,`tenantId`
+			,`platform`
+			<if test="shopId != null">,`shopId`</if>
+			<if test="orderSn != null">,`orderSn`</if>
+			<if test="memberId != null">,`memberId`</if>
+			<if test="amount != null">,`amount`</if>
+			<if test="cardNo != null">,`cardNo`</if>
+			<if test="type != null">,`type`</if>
+			<if test="status != null">,`status`</if>
+			<if test="reason != null">,`reason`</if>
+			<if test="info != null">,`info`</if>
+			<if test="logisticsName != null">,`logisticsName`</if>
+			<if test="logisticsNo != null">,`logisticsNo`</if>
+			<if test="shipName != null">,`shipName`</if>
+			<if test="shipAreaId != null">,`shipAreaId`</if>
+			<if test="shipAreaPath != null">,`shipAreaPath`</if>
+			<if test="shipAddress != null">,`shipAddress`</if>
+			<if test="shipZipCode != null">,`shipZipCode`</if>
+			<if test="shipPhone != null">,`shipPhone`</if>
+			<if test="shipMobile != null">,`shipMobile`</if>
+			<if test="attn != null">,`attn`</if>
+			<if test="orderType != null">,`orderType`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id}
+			,#{tenantId}
+			,#{platform}
+			<if test="shopId != null">,#{shopId}</if>
+			<if test="orderSn != null">,#{orderSn}</if>
+			<if test="memberId != null">,#{memberId}</if>
+			<if test="amount != null">,#{amount}</if>
+			<if test="cardNo != null">,#{cardNo}</if>
+			<if test="type != null">,#{type}</if>
+			<if test="status != null">,#{status}</if>
+			<if test="reason != null">,#{reason}</if>
+			<if test="info != null">,#{info}</if>
+			<if test="logisticsName != null">,#{logisticsName}</if>
+			<if test="logisticsNo != null">,#{logisticsNo}</if>
+			<if test="shipName != null">,#{shipName}</if>
+			<if test="shipAreaId != null">,#{shipAreaId}</if>
+			<if test="shipAreaPath != null">,#{shipAreaPath}</if>
+			<if test="shipAddress != null">,#{shipAddress}</if>
+			<if test="shipZipCode != null">,#{shipZipCode}</if>
+			<if test="shipPhone != null">,#{shipPhone}</if>
+			<if test="shipMobile != null">,#{shipMobile}</if>
+			<if test="attn != null">,#{attn}</if>
+			<if test="orderType != null">,#{orderType}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.OrderRefund">
+		update wp_order_refund
+		<set>
+			`tenantId` = #{tenantId},`platform` = #{platform}
+			<if test="shopId != null">,`shopId` = #{shopId}</if>
+			<if test="orderSn != null">,`orderSn` = #{orderSn}</if>
+			<if test="memberId != null">,`memberId` = #{memberId}</if>
+			<if test="amount != null">,`amount` = #{amount}</if>
+			<if test="cardNo != null">,`cardNo` = #{cardNo}</if>
+			<if test="type != null">,`type` = #{type}</if>
+			<if test="status != null">,`status` = #{status}</if>
+			<if test="reason != null">,`reason` = #{reason}</if>
+			<if test="info != null">,`info` = #{info}</if>
+			<if test="logisticsName != null">,`logisticsName` = #{logisticsName}</if>
+			<if test="logisticsNo != null">,`logisticsNo` = #{logisticsNo}</if>
+			<if test="shipName != null">,`shipName` = #{shipName}</if>
+			<if test="shipAreaId != null">,`shipAreaId` = #{shipAreaId}</if>
+			<if test="shipAreaPath != null">,`shipAreaPath` = #{shipAreaPath}</if>
+			<if test="shipAddress != null">,`shipAddress` = #{shipAddress}</if>
+			<if test="shipZipCode != null">,`shipZipCode` = #{shipZipCode}</if>
+			<if test="shipPhone != null">,`shipPhone` = #{shipPhone}</if>
+			<if test="shipMobile != null">,`shipMobile` = #{shipMobile}</if>
+			<if test="attn != null">,`attn` = #{attn}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_order_refund
+		where id = #{id}
+		and tenantId = #{tenantId}
+		and platform = #{platform}
+	</delete>
+
+	<!-- 退款成功时，增库存 -->
+	<update id="updateGoodsStock" parameterType="java.util.Map">
+		update  WP_GOODS
+		<set>
+			stock = (stock+#{quantity})
+		</set>
+		where
+		id = #{goodsId}
+	</update>
+
+</mapper>

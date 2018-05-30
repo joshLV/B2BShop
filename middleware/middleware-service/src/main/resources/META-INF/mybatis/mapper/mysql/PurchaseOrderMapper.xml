@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.PurchaseOrderMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`buyerId`,`parentBuyerId`,`uploadTime`,`title`,`type`,`status`,`isDelete`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.PurchaseOrder">
+		select
+		<include refid="columnList" />
+		from ghj_purchase_order
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.PurchaseOrder">
+		select
+		<include refid="columnList" />
+		from ghj_purchase_order
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.PurchaseOrder">
+		select
+		<include refid="columnList" />
+		from ghj_purchase_order
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findListByIds" parameterType="java.lang.String"
+			resultType="net.deepdragon.entity.weipu.PurchaseOrder">
+		select
+		<include refid="columnList" />
+		from ghj_purchase_order
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.PurchaseOrder">
+		select
+		<include refid="columnList" />
+		from ghj_purchase_order
+		where tenantId = #{tenantId}
+	</select>
+
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.PurchaseOrder">
+		select
+		o.*,DATE_FORMAT(uploadTime,'%Y-%m-%d %H:%i:%s') changeTime,
+		IFNULL(
+		(
+		SELECT
+		ROUND(((sum(i.inputPrice * i.quantity) - sum(i.price * i.quantity))/sum(i.inputPrice * i.quantity) * 100),2)
+		FROM
+		(
+		SELECT
+		d.purchaseOrderId,
+		d.goodsName,
+		d.inputPrice,
+		case
+		when g.enableBatchPrice = 0 then g.price
+		when g.enableBatchPrice = 1 then
+		(SELECT p.batchPrice FROM b2b_goods_price p WHERE p.goodsId = g.id AND ((p.startBatchNum &lt;= d.quantity AND p.endBatchNum &gt;= d.quantity) or p.endBatchNum &lt; d.quantity) order by p.endBatchNum desc LIMIT 1)
+		else g.price end price,
+		d.quantity
+		FROM
+		ghj_purchase_order_detail d,
+		wp_goods g
+		where d.goodsId = g.id
+		) i
+		WHERE
+		i.purchaseOrderId = o.id
+		AND o.type = 1
+		),
+		0
+		) AS preferentialRatio
+		from ghj_purchase_order o
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getList" resultType="net.deepdragon.entity.weipu.PurchaseOrder">
+		select
+		<include refid="columnList" />
+		from ghj_purchase_order
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from ghj_purchase_order where tenantId = #{tenantId}
+	</select>
+
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from ghj_purchase_order 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.PurchaseOrder"
+			useGeneratedKeys="true" keyProperty="id">
+		insert into ghj_purchase_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="buyerId != null">,`buyerId`</if>
+			<if test="parentBuyerId != null">,`parentBuyerId`</if>
+			<if test="uploadTime != null">,`uploadTime`</if>
+			<if test="title != null">,`title`</if>
+			<if test="type != null">,`type`</if>
+			<if test="status != null">,`status`</if>
+			<if test="isDelete != null">,`isDelete`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="buyerId != null">,#{buyerId}</if>
+			<if test="parentBuyerId != null">,#{parentBuyerId}</if>
+			<if test="uploadTime != null">,#{uploadTime}</if>
+			<if test="title != null">,#{title}</if>
+			<if test="type != null">,#{type}</if>
+			<if test="status != null">,#{status}</if>
+			<if test="isDelete != null">,#{isDelete}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.PurchaseOrder">
+		update ghj_purchase_order
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="buyerId != null">,`buyerId` = #{buyerId}</if>
+			<if test="parentBuyerId != null">,`parentBuyerId` = #{parentBuyerId}</if>
+			<if test="uploadTime != null">,`uploadTime` = #{uploadTime}</if>
+			<if test="title != null">,`title` = #{title}</if>
+			<if test="type != null">,`type` = #{type}</if>
+			<if test="status != null">,`status` = #{status}</if>
+			<if test="isDelete != null">,`isDelete` = #{isDelete}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from ghj_purchase_order
+		where id =	#{id}
+	</delete>
+
+</mapper>

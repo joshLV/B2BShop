@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.ComplaintMapper">
+
+    <select id="get" resultType="net.deepdragon.entity.weipu.Complaint">
+        select id,tenantId,orderSn,complaintUserName,complaintUserMobile,content,handleUserName,handleTime,handleResultStatu,
+        handleResult,createUser,createDate,modifyUser,modifyDate from ghj_complaint_form
+        where orderSn = #{id}
+    </select>
+    <insert id="save" parameterType="net.deepdragon.entity.weipu.Complaint"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into ghj_complaint_form
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            `id`,`tenantId`
+            <if test="orderSn != null">,`orderSn`</if>
+            <if test="complaintUserName != null">,`complaintUserName`</if>
+            <if test="complaintUserMobile != null">,`complaintUserMobile`</if>
+            <if test="content != null">,`content`</if>
+            <if test="createUser != null">,`createUser`</if>
+            <if test="createDate != null">,`createDate`</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id},#{tenantId}
+            <if test="orderSn != null">,#{orderSn}</if>
+            <if test="complaintUserName != null">,#{complaintUserName}</if>
+            <if test="complaintUserMobile != null">,#{complaintUserMobile}</if>
+            <if test="content != null">,#{content}</if>
+            <if test="createUser != null">,#{createUser}</if>
+            <if test="createDate != null">,#{createDate}</if>
+        </trim>
+    </insert>
+
+    <delete id="delete">
+        delete from ghj_assets_bankcard
+        where id =	#{id}
+    </delete>
+
+</mapper>

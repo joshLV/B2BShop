@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.cuxiao.PromotionsMapper">
+    <sql id="columnList">
+        `id`,`tenantId`,`pName`,`pFlag`,`description`,`imgUrl`,`startTime`,`endTime`,`isDelete`,`createUser`,`createDate`,`modifyUser`,`modifyDate`,`isOpen`
+    </sql>
+    <select id="get" resultType="net.deepdragon.entity.cuxiao.Promotions">
+        SELECT
+        <include refid="columnList" />
+        FROM cx_promotions
+        WHERE isDelete = 'N' and id = #{id} and tenantId = #{tenantId}
+    </select>
+
+    <select id="find" resultType="net.deepdragon.entity.cuxiao.Promotions">
+        select
+        <include refid="columnList"/>
+        from cx_promotions
+        where tenantId = #{tenantId} and ${property}=#{value}
+    </select>
+
+    <select id="findList" resultType="net.deepdragon.entity.cuxiao.Promotions">
+        select
+        <include refid="columnList"/>
+        from cx_promotions
+        where tenantId = #{tenantId} and ${property}=#{value} and isDelete='N'
+    </select>
+
+    <select id="findListByIds" parameterType="java.lang.String"
+            resultType="net.deepdragon.entity.cuxiao.Promotions">
+        select
+        <include refid="columnList"/>
+        from cx_promotions
+        where id in
+        <foreach collection="list" item="id" index="index" open="("
+                 close=")" separator=",">#{id}
+        </foreach>
+        and status='5'
+    </select>
+
+    <select id="getAll" resultType="net.deepdragon.entity.cuxiao.Promotions">
+        select
+        <include refid="columnList"/>
+        from cx_promotions
+        where tenantId = #{tenantId}
+    </select>
+
+    <select id="getByFlag" resultType="net.deepdragon.entity.cuxiao.Promotions">
+        SELECT
+        <include refid="columnList" />
+        FROM cx_promotions
+        WHERE isDelete = 'N' and pFlag = #{flag} and tenantId = #{tenantId}
+    </select>
+    <select id="listPromotions" resultType="net.deepdragon.entity.cuxiao.Promotions">
+        SELECT
+        <include refid="columnList" />
+        FROM cx_promotions
+        WHERE isDelete = 'N' and tenantId = #{tenantId}
+        <if test="startTime != null">and startTime = #{startTime}</if>
+        <if test="endTime != null">and startTime = #{endTime}</if>
+        ORDER BY createDate DESC
+    </select>
+    <update id="updateIsOpen">
+        UPDATE cx_promotions SET isOpen = #{isOpen} where id = #{id}
+    </update>
+
+
+    <select id="getMxAndTgPager" resultType="net.deepdragon.entity.cuxiao.MTPromotions">
+        select o.* from (
+            SELECT
+                p.id
+                , p.startTime
+                , p.endTime
+                , p.isOpen
+                , p.activityType
+                , pg.id pgId
+                , pg.promotionsPrice
+                , pg.goodsPrice
+                , case
+                        when p.startTime &gt; NOW() then 'before'
+                        when (p.startTime &lt;= NOW() &amp;&amp; p.endTime &gt; NOW()) then 'ing'
+                        when p.endTime &lt;= NOW() then 'after'
+                        else 'undefind' end as status
+                , TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP(), p.startTime) intervalStartTime
+                , TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP(), p.endTime) intervalEndTime
+
+                , (select wg.id from wp_goods wg where wg.id=pg.goodsId) as goodsId
+                , (select wg.fullName from wp_goods wg where wg.id=pg.goodsId) as goodsFullName
+                , (select wg.name from wp_goods wg where wg.id=pg.goodsId) as goodsName
+                , (select wg.price from wp_goods wg where wg.id=pg.goodsId) as price
+                , (select wg.startNum from wp_goods wg where wg.id=pg.goodsId) as startNum
+                , (select wg.limitNum from wp_goods wg where wg.id=pg.goodsId) as limitNum
+                , (select wg.categoryId from wp_goods wg where wg.id=pg.goodsId) as categoryId
+                , (select wg.categoryPath from wp_goods wg where wg.id=pg.goodsId) as categoryPath
+                , (select CONCAT((select setvalue from shared_system_set where setKey='imageUrl'),CONCAT(CONCAT(wgi.groupName,'/'),wgi.url)) from wp_goods_images wgi where wgi.goodsId=pg.goodsId limit 1) as url
+            FROM
+                cx_promotions p,
+                cx_promotions_goods pg
+            WHERE
+                p.id = pg.promotionsId
+                AND p.isDelete = 'N'
+                AND (p.isOpen = 'start' or p.isOpen = 'create')
+                AND (
+                        p.startTime &gt; now()
+                        OR (
+                        p.startTime &lt;= now()
+                        AND p.endTime &gt; now()
+                    )
+                )
+            and pg.isDelete = 'N'
+        ) o
+        <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+    </select>
+
+    <select id="getMTProtions4ValidGoodsNumsByGoodsId" resultType="net.deepdragon.entity.cuxiao.MTPromotions">
+        SELECT
+            p.id
+            , p.startTime
+            , p.endTime
+            , p.isOpen
+            , pg.id pgId
+            , case
+            when p.startTime &gt; NOW() then 'before'
+            when (p.startTime &lt;= NOW() &amp;&amp; p.endTime &gt; NOW()) then 'ing'
+            when p.endTime &lt;= NOW() then 'after'
+            else 'undefind' end as status
+        FROM
+            cx_promotions p,
+            cx_promotions_goods pg
+        WHERE
+            p.id = pg.promotionsId
+            AND p.isDelete = 'N'
+            AND (p.isOpen = 'start' or p.isOpen = 'create')
+            AND (
+                    p.startTime &gt; now()
+                    OR (
+                    p.startTime &lt;= now()
+                    AND p.endTime &gt; now()
+                    )
+            )
+            and pg.isDelete = 'N'
+            and pg.id = #{goodsId}
+        LIMIT 1
+    </select>
+
+    <select id="getCountPromotions" resultType="net.deepdragon.entity.cuxiao.MTPromotions">
+        select
+             cpg.goodsId
+             , wg.shortName as goodsName
+             , wg.name as goodsFullName
+             , IFNULL(wg.startNum, 0) as startNum
+             , IFNULL(wg.limitNum, 0) as limitNum
+             , cp.id as promotionsId
+             , cp.startTime
+             , cp.endTime
+             , case
+               when cp.startTime &gt; NOW() then 'before'
+                 when (cp.startTime &lt;= NOW() and cp.endTime &gt; NOW()) then 'ing'
+                 when cp.endTime &lt;= NOW() then 'after'
+                  else 'undefind' end as status
+             , cp.isOpen
+             , cp.activityType
+             , cp.restore
+            , cpg.orderNo
+            , cpg.goodsPrice
+            , cpg.promotionsPrice
+            , cpg.oldStartNum
+            , cpg.oldLimitNum
+            , cpg.newStartNum
+            , cpg.newLimitNum
+        from
+            cx_promotions_goods cpg
+            left join wp_goods wg on wg.id=cpg.goodsId
+            left join cx_promotions cp on cp.id=cpg.promotionsId
+        where 1=1
+        <if test="goodsId != null">and cpg.goodsId = #{goodsId}</if>
+        <if test="promotionsId != null">and cp.id = #{promotionsId}</if>
+    </select>
+
+    <select id="getBuyCount" resultType="net.deepdragon.entity.cuxiao.MTPromotions">
+        SELECT
+        o.id,
+        i.goodsId,
+        o.memberId,
+        sum(i.quantity) resultCount
+        FROM
+        wp_order_item i
+        LEFT JOIN wp_order o ON o.orderSn = i.orderSn
+        WHERE 1=1
+        <if test="memberId != null">and o.memberId = #{memberId}</if>
+        <if test="goodsId != null">AND i.goodsId = #{goodsId}</if>
+        AND i.createDate &gt; #{startTime}
+        AND i.createDate &lt; #{endTime}
+        GROUP BY
+        i.goodsId,
+        o.memberId
+    </select>
+
+    <!-- 20160804 dzz 统计当前用户下单订单数量为多少 -->
+    <select id="getCountPromotionsOrder" resultType="net.deepdragon.entity.cuxiao.MTPromotions">
+        select
+              SUM(i.quantity) as resultCount
+              , cx.promotionsId
+              , o.memberId
+              , i.goodsId
+        from wp_order_item i
+        left join wp_order o on o.orderSn = i.orderSn
+        left join (
+                select
+                    cp.id as promotionsId
+                    , cpg.goodsId
+                    , cp.startTime
+                    , cp.endTime
+                    from
+                    cx_promotions_goods cpg
+                    left join cx_promotions cp on cp.id=cpg.promotionsId
+                ) cx on cx.goodsId = i.goodsId
+            where
+              1=1
+              and i.createDate &gt; cx.startTime
+              and i.createDate &lt; cx.endTime
+              and o.memberId = #{memberId}
+              and cx.promotionsId = #{promotionsId}
+              group by i.goodsId
+              order by i.createDate desc
+    </select>
+
+
+
+    <update id="update" parameterType="net.deepdragon.entity.cuxiao.Promotions">
+        update cx_promotions
+        <set>
+            tenantId = #{tenantId}
+            <if test=" pName!=null and pName!=''">, pName = #{pName}</if>
+            <if test=" pFlag!=null and pFlag!=''">, pFlag = #{pFlag}</if>
+            <if test=" description!=null and description!=''">, description = #{description}</if>
+            <if test=" imgUrl!=null and imgUrl!=''">, imgUrl = #{imgUrl}</if>
+            <if test=" startTime!=null and startTime!=''">, startTime = #{startTime}</if>
+            <if test=" endTime!=null and endTime!=''">, endTime = #{endTime}</if>
+            <if test=" isDelete!=null and isDelete!=''">, isDelete = #{isDelete}</if>
+            <if test=" createUser!=null and createUser!=''">, createUser = #{createUser}</if>
+            <if test=" createDate!=null and createDate!=''">, createDate = #{createDate}</if>
+            <if test=" modifyUser!=null and modifyUser!=''">, modifyUser = #{modifyUser}</if>
+            <if test=" modifyDate!=null and modifyDate!=''">, modifyDate = #{modifyDate}</if>
+            <if test=" isOpen!=null and isOpen!=''">, isOpen = #{isOpen}</if>
+            <if test=" activityType!=null and activityType!=''">, activityType = #{activityType}</if>
+            <if test=" restore!=null and restore!=''">, restore = #{restore}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

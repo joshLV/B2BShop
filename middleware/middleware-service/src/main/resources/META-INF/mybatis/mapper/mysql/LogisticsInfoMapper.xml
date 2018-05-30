@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.LogisticsInfoMapper">
+
+	<sql id="columnList">
+		  `id`,`tenantId`,`orderSn`,`logisticsSn`,`logisticsTime`,`logisticsContent`,`remarks1`,`remarks2`,`createUser`,`createDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.LogisticsInfo">
+		select
+		<include refid="columnList" />
+		from ghj_logistics_info
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.LogisticsInfo">
+		select
+		<include refid="columnList" />
+		from ghj_logistics_info
+		where ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.LogisticsInfo">
+		select
+		<include refid="columnList" />
+		from ghj_logistics_info
+		where ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.LogisticsInfo">
+		select
+		<include refid="columnList" />
+		from ghj_logistics_info
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.LogisticsInfo">
+		select
+		<include refid="columnList" />
+		from ghj_logistics_info
+		where tenantId = #{tenantId} and orderSn = #{orderSn} order by createDate desc
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.LogisticsInfo">
+		select
+		<include refid="columnList" />
+		from ghj_logistics_info
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.LogisticsInfo">
+		select
+		<include refid="columnList" />
+		from ghj_logistics_info
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from ghj_logistics_info
+	</select>
+	
+
+	
+
+
+
+
+	<delete id="delete">
+		delete from ghj_logistics_info
+		where id =	#{id}
+	</delete>
+	
+</mapper>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.ActivityFullcutMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`merchantId`,`mjName`,`description`,`participateRange`,`startTime`,`endTime`,`isDelete`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.ActivityFullcut">
+		select
+		<include refid="columnList" />
+		from cx_activity_fullcut
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.ActivityFullcut">
+		select
+		<include refid="columnList" />
+		from cx_activity_fullcut
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.ActivityFullcut">
+		select
+		<include refid="columnList" />
+		from cx_activity_fullcut
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.ActivityFullcut">
+		select
+		<include refid="columnList" />
+		from cx_activity_fullcut
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+		AND isDelete =1
+		AND startTime &lt;= SYSDATE()
+		AND endTime &gt;= SYSDATE()
+		order by createDate DESC
+		limit 1
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.ActivityFullcut">
+		select
+		<include refid="columnList" />
+		from cx_activity_fullcut 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.ActivityFullcut">
+		select
+		<include refid="columnList" />
+		from cx_activity_fullcut 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.ActivityFullcut">
+		select
+		<include refid="columnList" />
+		from cx_activity_fullcut 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from cx_activity_fullcut where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from cx_activity_fullcut 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.ActivityFullcut"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into cx_activity_fullcut
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="merchantId != null">,`merchantId`</if>
+			<if test="mjName != null">,`mjName`</if>
+			<if test="description != null">,`description`</if>
+			<if test="participateRange != null">,`participateRange`</if>
+			<if test="startTime != null">,`startTime`</if>
+			<if test="endTime != null">,`endTime`</if>
+			<if test="isDelete != null">,`isDelete`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="merchantId != null">,#{merchantId}</if>
+			<if test="mjName != null">,#{mjName}</if>
+			<if test="description != null">,#{description}</if>
+			<if test="participateRange != null">,#{participateRange}</if>
+			<if test="startTime != null">,#{startTime}</if>
+			<if test="endTime != null">,#{endTime}</if>
+			<if test="isDelete != null">,#{isDelete}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.ActivityFullcut">
+		update cx_activity_fullcut
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="merchantId != null">,`merchantId` = #{merchantId}</if>
+			<if test="mjName != null">,`mjName` = #{mjName}</if>
+			<if test="description != null">,`description` = #{description}</if>
+			<if test="participateRange != null">,`participateRange` = #{participateRange}</if>
+			<if test="startTime != null">,`startTime` = #{startTime}</if>
+			<if test="endTime != null">,`endTime` = #{endTime}</if>
+			<if test="isDelete != null">,`isDelete` = #{isDelete}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from cx_activity_fullcut
+		where id =	#{id}
+	</delete>
+	
+</mapper>

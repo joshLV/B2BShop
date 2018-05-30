@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.FlashMemberMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`memberId`,`saleId`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.FlashMember">
+		select
+		<include refid="columnList" />
+		from wp_flash_member
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.FlashMember">
+		select
+		<include refid="columnList" />
+		from wp_flash_member
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.FlashMember">
+		select
+		<include refid="columnList" />
+		from wp_flash_member
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.FlashMember">
+		select
+		<include refid="columnList" />
+		from wp_flash_member
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.FlashMember">
+		select
+		<include refid="columnList" />
+		from wp_flash_member 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.FlashMember">
+		select
+		<include refid="columnList" />
+		from wp_flash_member 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.FlashMember">
+		select
+		<include refid="columnList" />
+		from wp_flash_member 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_flash_member where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_flash_member 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.FlashMember"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_flash_member
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="memberId != null">,`memberId`</if>
+			<if test="saleId != null">,`saleId`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="memberId != null">,#{memberId}</if>
+			<if test="saleId != null">,#{saleId}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.FlashMember">
+		update wp_flash_member
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="memberId != null">,`memberId` = #{memberId}</if>
+			<if test="saleId != null">,`saleId` = #{saleId}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_flash_member
+		where id =	#{id}
+	</delete>
+	
+</mapper>

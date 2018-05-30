@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+	updateCheck="false" monitoring="autodetect" dynamicConfig="true">
+
+	<diskStore path="java.io.tmpdir/cache4ViserviceWeipuAdmin" />
+
+	<cacheManagerPeerProviderFactory
+			class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
+			properties="peerDiscovery=automatic, multicastGroupAddress=231.0.0.1,multicastGroupPort=4446,timeToLive=1"
+			propertySeparator=","/>
+
+	<cacheManagerPeerListenerFactory
+			class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory"
+			properties="port=40003, socketTimeoutMillis=2000"
+	/><!--hostName=192.168.1.14-->
+
+	<defaultCache eternal="false" maxElementsInMemory="1000"
+		overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="600" memoryStoreEvictionPolicy="LRU" >
+		<cacheEventListenerFactory
+				class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
+				properties="replicateAsynchronously=true, replicatePuts=true,
+                            replicatePutsViaCopy=true, replicateUpdates=true,
+                            replicateUpdatesViaCopy=true, replicateRemovals=true,
+                            asynchronousReplicationIntervalMillis=200"/>
+		<bootstrapCacheLoaderFactory class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
+	</defaultCache>
+
+	<!-- 存放指定session过期的username,失效时间与web.xml中session失效时间对应 -->
+	<!--<cache name="sessionInvalidateUserCache" maxElementsInMemory="100"
+		maxElementsOnDisk="500" diskPersistent="false" eternal="false"
+		timeToIdleSeconds="1800" timeToLiveSeconds="1800" overflowToDisk="true"  memoryStoreEvictionPolicy="LRU" >
+		<cacheEventListenerFactory
+				class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
+				properties="replicateAsynchronously=true, replicatePuts=true,
+                            replicatePutsViaCopy=true, replicateUpdates=true,
+                            replicateUpdatesViaCopy=true, replicateRemovals=true,
+                            asynchronousReplicationIntervalMillis=200"/>
+		<bootstrapCacheLoaderFactory class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
+	</cache>
+	
+	<cache name="shiro-activeSessionCache" maxElementsInMemory="10000"
+		overflowToDisk="true" eternal="true" timeToLiveSeconds="0"
+		timeToIdleSeconds="0" diskPersistent="true"
+		diskExpiryThreadIntervalSeconds="600"  memoryStoreEvictionPolicy="LRU" >
+		<cacheEventListenerFactory
+				class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
+				properties="replicateAsynchronously=true, replicatePuts=true,
+                            replicatePutsViaCopy=true, replicateUpdates=true,
+                            replicateUpdatesViaCopy=true, replicateRemovals=true,
+                            asynchronousReplicationIntervalMillis=200"/>
+		<bootstrapCacheLoaderFactory class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
+	</cache>
+
+	<cache name="shiro.authorizationCache" maxElementsInMemory="100"
+		eternal="false" timeToLiveSeconds="600" overflowToDisk="false"  memoryStoreEvictionPolicy="LRU" >
+		<cacheEventListenerFactory
+				class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
+				properties="replicateAsynchronously=true, replicatePuts=true,
+                            replicatePutsViaCopy=true, replicateUpdates=true,
+                            replicateUpdatesViaCopy=true, replicateRemovals=true,
+                            asynchronousReplicationIntervalMillis=200"/>
+		<bootstrapCacheLoaderFactory class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
+	</cache>-->
+
+	<!-- 系统中一些常用数据缓存 -->
+	<cache name="becdeepdragonweipu" maxElementsInMemory="10000"
+		overflowToDisk="false" eternal="true" timeToLiveSeconds="600"
+		timeToIdleSeconds="600" diskPersistent="true"
+		diskExpiryThreadIntervalSeconds="600"  memoryStoreEvictionPolicy="LRU" >
+		<cacheEventListenerFactory
+				class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
+				properties="replicateAsynchronously=true, replicatePuts=true,
+                            replicatePutsViaCopy=true, replicateUpdates=true,
+                            replicateUpdatesViaCopy=true, replicateRemovals=true,
+                            asynchronousReplicationIntervalMillis=200"/>
+		<bootstrapCacheLoaderFactory class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" properties="bootstrapAsynchronously=false"/>
+	</cache>
+	
+	<!-- 自定义的系统默认缓存-->
+	<cache name="bigDataCache" eternal="false" maxElementsInMemory="10000"
+		overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="600" memoryStoreEvictionPolicy="LRU" >
+		<cacheEventListenerFactory
+				class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
+				properties="replicateAsynchronously=true, replicatePuts=true,
+                            replicatePutsViaCopy=true, replicateUpdates=true,
+                            replicateUpdatesViaCopy=true, replicateRemovals=true,
+                            asynchronousReplicationIntervalMillis=200"/>
+		<bootstrapCacheLoaderFactory class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"  properties="bootstrapAsynchronously=false"/>
+	</cache>
+		
+</ehcache>

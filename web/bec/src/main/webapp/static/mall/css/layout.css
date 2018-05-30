@@ -1,0 +1,170 @@
+/*
+1205px grid system ~ Core CSS.
+48 columns ~ margin: 5px
+
+Based on the golden grid system - http://code.google.com/p/the-golden-grid/
+by Vladimir Carrer
+
+Created by the Grid System Generator - v1.00
+Learn more ~ http://www.gridsystemgenerator.com/
+*/
+
+/* =Containers
+--------------------------------------------------------------------------------*/
+.main
+{
+	margin-left: auto;
+	margin-right: auto;
+	width: 1205px;
+}
+
+/* =Grid >> Global
+--------------------------------------------------------------------------------*/
+.g25, .g50, .g75, .g100, .g125, .g150, .g175, .g200, .g225, .g250, .g275, .g300, .g325, .g350, .g375, .g400, .g425, .g450, .g475, .g500, .g525, .g550, .g575, .g600, .g625, .g650, .g675, .g700, .g725, .g750, .g775, .g800, .g825, .g850, .g875, .g900, .g925, .g950, .g975, .g1000, .g1025, .g1050, .g1075, .g1100, .g1125, .g1150, .g1175, .g1200 {
+	display: inline;
+	float: left;
+	margin-left: 5px;
+}
+
+/* =Grid >> 48 Columns
+--------------------------------------------------------------------------------*/
+.g25{width:20px;}
+.g50{width:45px;}
+.g75{width:70px;}
+.g100{width:95px;}
+.g125{width:120px;}
+.g150{width:145px;}
+.g175{width:170px;}
+.g200{width:195px;}
+.g225{width:220px;}
+.g250{width:245px;}
+.g275{width:270px;}
+.g300{width:295px;}
+.g325{width:320px;}
+.g350{width:345px;}
+.g375{width:370px;}
+.g400{width:395px;}
+.g425{width:420px;}
+.g450{width:445px;}
+.g475{width:470px;}
+.g500{width:495px;}
+.g525{width:520px;}
+.g550{width:545px;}
+.g575{width:570px;}
+.g600{width:595px;}
+.g625{width:620px;}
+.g650{width:645px;}
+.g675{width:670px;}
+.g700{width:695px;}
+.g725{width:720px;}
+.g750{width:745px;}
+.g775{width:770px;}
+.g800{width:795px;}
+.g825{width:820px;}
+.g850{width:845px;}
+.g875{width:870px;}
+.g900{width:895px;}
+.g925{width:920px;}
+.g950{width:945px;}
+.g975{width:970px;}
+.g1000{width:995px;}
+.g1025{width:1020px;}
+.g1050{width:1045px;}
+.g1075{width:1070px;}
+.g1100{width:1095px;}
+.g1125{width:1120px;}
+.g1150{width:1145px;}
+.g1175{width:1170px;}
+.g1200{width:1195px;}
+
+
+/* =Grid >> 48 Columns - no left margin
+--------------------------------------------------------------------------------*/
+.ml25{margin-left:30px;}
+.ml50{margin-left:55px;}
+.ml75{margin-left:80px;}
+.ml100{margin-left:105px;}
+.ml125{margin-left:130px;}
+.ml150{margin-left:155px;}
+.ml175{margin-left:180px;}
+.ml200{margin-left:205px;}
+.ml225{margin-left:230px;}
+.ml250{margin-left:255px;}
+.ml275{margin-left:280px;}
+.ml300{margin-left:305px;}
+.ml325{margin-left:330px;}
+.ml350{margin-left:355px;}
+.ml375{margin-left:380px;}
+.ml400{margin-left:405px;}
+.ml425{margin-left:430px;}
+.ml450{margin-left:455px;}
+.ml475{margin-left:480px;}
+.ml500{margin-left:505px;}
+.ml525{margin-left:530px;}
+.ml550{margin-left:555px;}
+.ml575{margin-left:580px;}
+.ml600{margin-left:605px;}
+.ml625{margin-left:630px;}
+.ml650{margin-left:655px;}
+.ml675{margin-left:680px;}
+.ml700{margin-left:705px;}
+.ml725{margin-left:730px;}
+.ml750{margin-left:755px;}
+.ml775{margin-left:780px;}
+.ml800{margin-left:805px;}
+.ml825{margin-left:830px;}
+.ml850{margin-left:855px;}
+.ml875{margin-left:880px;}
+.ml900{margin-left:905px;}
+.ml925{margin-left:930px;}
+.ml950{margin-left:955px;}
+.ml975{margin-left:980px;}
+.ml1000{margin-left:1005px;}
+.ml1025{margin-left:1030px;}
+.ml1050{margin-left:1055px;}
+.ml1075{margin-left:1080px;}
+.ml1100{margin-left:1105px;}
+.ml1125{margin-left:1130px;}
+.ml1150{margin-left:1155px;}
+.ml1175{margin-left:1180px;}
+.ml1200{margin-left:1205px;}
+
+
+.inside{margin-left:0;}
+/* `Clear Floated Elements
+----------------------------------------------------------------------------------------------------*/
+/* http://sonspring.com/journal/clearing-floats */
+
+.clear {
+	clear: both;
+	display: block;
+	overflow: hidden;
+	visibility: hidden;
+	width: 0;
+	height: 0;
+}
+
+/* http://perishablepress.com/press/2008/02/05/lessons-learned-concerning-the-clearfix-css-hack */
+
+.clearfix:after {
+	clear: both;
+	content:' ';
+	display: block;
+	font-size: 0;
+	line-height: 0;
+	visibility: hidden;
+	width: 0;
+	height: 0;
+}
+
+.clearfix {
+	display: inline-block;
+}
+
+* html .clearfix {
+	height: 1%;
+}
+
+.clearfix {
+	display: block;
+}

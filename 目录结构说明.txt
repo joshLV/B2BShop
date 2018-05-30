@@ -1,0 +1,150 @@
+- weipu		项目根目录
+  |
+  |- common		公共类库  修改时请先向直属上级申请
+  | +-common-util Util工具类
+  |  +-net.deepdragon.bean 分页等的工具对象封装
+  |  +-net.deepdragon.condition 查询结果集封装
+  |  +-net.deepdragon.exceptions 异常处理封装
+  |  +-net.deepdragon.http HTTP协议封装
+  |  +-net.deepdragon.procedure 存储过程等的封装
+  |  +-net.deepdragon.regex 正则调用封装
+  |  +-net.deepdragon.util 常用工具类封装：String、Date、Regex等
+  |
+  | +-common-mybatis MyBatis工具类封装及对MyBatis源代码修改
+  |
+  |- database	数据库
+  | +-pdm 数据库设计源文件
+  | +-sql SQL脚本
+  | +-WeiPuDB PDM文件生成的HTML页面
+  |
+  |- document	文档
+  | +-area 地区信息(JSON格式)
+  | +-doc 注意事项以及开发步骤等文档
+  | +-shiro Shiro资料
+  |
+  |- middleware	中间件相关
+  | +-middleware-router 数据源相关类 修改时请先向直属上级申请
+  |
+  | +-middleware-service 中间件启动入口
+  |  +-java
+  |  +-net.deepdragon.dao DAO层代码，接口以及其实现类
+  |  +-net.deepdragon.service Service层接口的实现类
+  |  +-net.deepdragon.Main 后台程序入口
+  |  +-
+  |  +-resources
+  |  +-config DAO层配置文件：数据源、数据监控
+  |  +-
+  |  +-META-INF
+  |  ---+-mybatis
+  |  -----+-mapper.mysql mybatis数据库映射文件
+  |  -----+-mybatis-config.xml mybatis相关配置
+  |  ---+-spring  Spring项目相关配置文件
+  |  -----+-spring.xml Spring配置
+  |  -----+-spring-dubbo.xml Dubbo配置
+  |  -----+-spring-dubbo-open.xml 开放平台提供的服务定义
+  |  -----+-spring-dubbo-shared.xml 提供的服务定义
+  |  -----+-spring-dubbo-weipu.xml 提供的服务定义
+  |  -----+-spring-dubbo-weipu-extend.xml 提供的服务定义
+  |  -----+-spring-dubbo-weipu-qinchu.xml 提供的服务定义
+  |  -----+-spring-mybatis.xml Spring和mybatis整合配置
+  |  -----+-spring-tx.xml 事物相关配置
+  |  ---+-config.properties 全局参数定义
+  |  ---+-log4j.properties Log4J配置
+  |
+  | +-middleware-test 单元测试，代码生成器
+  | ---+generate 代码生成后存储的目录
+  | ---+net.deepdragon.powerdesign.parse.generate.GenerteCode 代码生成器入口
+  |
+  |
+  |- shared		共享jar文件
+  | +-shared-api service接口定义及Entity定义
+  |
+  |- web		web应用相关 
+  | +-ec 商城系统
+  | ---+-java
+  | -------+-com 第三方插件
+  | -------+-net.deepdragon
+  | ---------+-erp.yunji 与云极ERP对接代码
+  | ---------+-weipu
+  | -----------+-bean  BEAN
+  | -----------+-cache 缓存相关
+  | -----------+-captcha 验证码相关
+  | -----------+-controller controller层代码
+  | -----------+-gzip 压缩相关
+  | -----------+-intercepter 拦截器
+  | -----------+-listeners 监听
+  | -----------+-resolver 全局异常处理
+  | -----------+-shiro Shiro权限控制
+  | -----------+-tools 工具类
+  | ---+-resources
+  | -----+-ehcache ECache相关
+  | -----+-i18n 系统用常量定义
+  | -----+-spring 相关配置文件 controller、缓存、验证码、Dubbo、权限管理等
+  | -----+-applicationContext.properties 全局参数
+  | -----+-fdfs_client.conf 文件服务器相关配置
+  | -----+-log4j.properties 日志
+  | -----+-session.properties Session相关
+  |
+  |
+  |
+  | +-ECManager ECM 商城综合管理系统  (目前新版本已代替，不用)
+  | ---+-java
+  | -----+-com 第三方插件
+  | -----+-java
+  | -------+-net.deepdragon 商城管理相关代码：DAO、Service、entity、Controller、云极ERP对接等
+  | ---+-resources
+  | -----+-config DAO层配置文件：数据源、数据监控
+  | -----+-ehcache 缓存配置
+  | -----+-i18n 常量设置
+  | -----+-mybatis mybatis配置
+  | -----+-spring spring相关配置：controller、缓存、验证码、常量、mybatis、shiro权限、事物
+  | -----+-applicationContext.properties 全局参数
+  | -----+-config.properties 全局参数
+  | -----+-fdfs_client.conf 文件服务器相关配置
+  | -----+-log4j.properties 日志
+  | -----+-session.properties Session相关
+  | ---+-webapp
+  | -----+-html
+  | -----+-logs
+  | -----+- payment
+  | -----+-static js、css、image等静态文件
+  | -----+- ueditor 富文本编辑器
+  | -----+- WEB-INF
+  | -------+-cert 安全证书
+  | -------+-lib jar库
+  | -------+-template freemaker模板文件
+  | ---------+-admin 管理系统相关页面
+  | ---------+-error 错误处理相关页面
+  |
+  | +-MerchantManager MCM 商户管理系统  (目前新版本已代替，不用)
+  | ---+-java
+  | -----+-com 第三方插件
+  | -----+-java
+  | -------+-net.deepdragon 商城管理相关代码：DAO、Service、entity、Controller、云极ERP对接等
+  | ---+-resources
+  | -----+-config DAO层配置文件：数据源、数据监控
+  | -----+-ehcache 缓存配置
+  | -----+-i18n 常量设置
+  | -----+-mybatis mybatis配置
+  | -----+-spring spring相关配置：controller、缓存、验证码、常量、mybatis、shiro权限、事物
+  | -----+-applicationContext.properties 全局参数
+  | -----+-config.properties 全局参数
+  | -----+-fdfs_client.conf 文件服务器相关配置
+  | -----+-log4j.properties 日志
+  | -----+-session.properties Session相关
+  | ---+-webapp
+  | -----+-html
+  | -----+-logs
+  | -----+- payment
+  | -----+-static js、css、image等静态文件
+  | -----+- ueditor 富文本编辑器
+  | -----+- WEB-INF
+  | -------+-cert 安全证书
+  | -------+-lib jar库
+  | -------+-template freemaker模板文件
+  | ---------+-mall 页面头、脚
+  | ---------+-merchant 商户系统相关页面
+
+
+
+  web-open-core 、web-open-ui 对外提供接口以及接口说明文档，目前不用。

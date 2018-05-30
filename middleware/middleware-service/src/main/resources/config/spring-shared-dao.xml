@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+	<description>系统默认数据源</description>
+
+   <bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+        <!--慢SQL统计，如果SQL执行时间超过一定时间则记录为慢SQL  -->
+        <property name="slowSqlMillis" value="3000" />
+        <!--慢SQL统计日志输出  -->
+        <property name="logSlowSql" value="true" />
+        <!--合并SQL统计 例如select * from table t where t.id =1，会被变为select * from table t where t.id =？来统计  -->
+        <property name="mergeSql" value="true" />
+    </bean>
+
+    <bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig" init-method="init">
+        <!-- 指定配置装载的目录  -->
+        <property name="dir" value="META-INF/druid/wall/mysql" />
+        <property name="selectWhereAlwayTrueCheck" value="false" />
+        <property name="selectHavingAlwayTrueCheck" value="false" />
+    </bean>
+
+    <bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
+        <property name="dbType" value="mysql" />
+        <property name="config" ref="wall-filter-config" />
+    </bean>
+
+    
+	<!-- Master数据源 -->
+	<bean id="master_shared" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<!-- 农商场 内网 -->
+		<!--<property name="url"
+			value="jdbc:mysql://192.168.1.9:3306/weipu?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false" />
+-->
+		<!-- 机电 内网 -->
+		<!--<property name="url" value="jdbc:mysql://127.0.0.1:3306/weipu_jd?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false" />-->
+		<property name="url" value="jdbc:mysql://127.0.0.1:3306/slo2o_ghj?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false" />
+		<property name="username" value="root" />
+		<property name="password" value="" />
+		<!--<property name="username" value="root" />
+		<property name="password" value="mysql" />-->
+		<!--<property name="password" value="sl2015_!@#_11780" />-->
+
+		<property name="initialSize" value="50" />
+
+		<property name="maxWait" value="20000" />
+		<property name="minIdle" value="50" />
+		<property name="maxActive" value="500" />
+		<property name="timeBetweenEvictionRunsMillis" value="6000" />
+		<property name="minEvictableIdleTimeMillis" value="30000" />
+
+		<property name="validationQuery" value="SELECT 1" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+
+		<!-- 关闭长时间不使用的连接 -->
+        <property name="removeAbandoned" value="true" /> <!-- 打开removeAbandoned功能 -->
+        <property name="removeAbandonedTimeout" value="1200" /> <!-- 1200秒，也就是20分钟 -->
+        <property name="logAbandoned" value="true" /> <!-- 关闭abanded连接时输出错误日志 -->
+
+        <!-- 数据库监控，及日志配置 -->
+        <property name="filters" value="stat,log4j" />
+        <!-- 合并统计多个数据源 -->
+        <property name="useGloalDataSourceStat" value="true" />
+
+        <property name="proxyFilters">
+            <list>
+                <ref bean="stat-filter" />
+                <!--
+                <ref bean="wall-filter" />
+                 -->
+            </list>
+        </property>
+
+	</bean>
+
+	<bean id="druid-stat-interceptor"
+          class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor">
+    </bean>
+
+    <aop:config>
+        <aop:advisor advice-ref="druid-stat-interceptor"
+                     pointcut-ref="druid-stat-pointcut" />
+    </aop:config>
+
+	<!-- Slave数据源 -->
+	<bean id="slave_shared" class="com.alibaba.druid.pool.DruidDataSource"
+		 destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+
+		<!-- 农商场 -->
+		<!--<property name="url" value="jdbc:mysql://192.168.1.9:3306/slo2o_tester?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false" />-->
+		<!-- 机电 -->
+		<!--<property name="url" value="jdbc:mysql://127.0.0.1:3306/weipu_jd?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false" />-->
+		<property name="url" value="jdbc:mysql://127.0.0.1:3306/slo2o_ghj?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false" />
+		<property name="username" value="root" />
+		<property name="password" value="" />
+		<!--<property name="username" value="root" />
+		<property name="password" value="mysql" />-->
+		<!--<property name="password" value="sl2015_!@#_11780" />-->
+
+		<property name="initialSize" value="100" />
+		<property name="maxActive" value="500" />
+		<property name="minIdle" value="50" />
+		<property name="maxWait" value="20000" />
+		<property name="validationQuery" value="select 1" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+
+		<!-- 关闭长时间不使用的连接 -->
+		<property name="removeAbandoned" value="true" /> <!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandonedTimeout" value="1200" /> <!-- 1200秒，也就是20分钟 -->
+		<property name="logAbandoned" value="true" /> <!-- 关闭abanded连接时输出错误日志 -->
+	</bean>
+
+	<bean id="dataSource_shared" class="net.deepdragon.router.datasource.DataSourceDescriptor"
+		destroy-method="destroy">
+		<property name="identity" value="shared" />
+		<property name="masterDataSource" ref="master_shared" />
+		<property name="standbyDataSource" ref="slave_shared" />
+		<property name="slaveDataSource" ref="slave_shared" />
+		<property name="enableMasterStandby" value="true" />
+		<property name="enableMasterSlave" value="true" />
+	</bean>
+
+</beans>

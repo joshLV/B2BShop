@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.open.OpenModuleMapper">
+
+	<sql id="columnList">
+		`id`,`name`,`url`,`icon`,`parentId`,`sign`,`leftValue`,`rightValue`,`level`,`orderNo`,`description`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.open.OpenModule">
+		select
+		<include refid="columnList" />
+		from wop_module
+		where id = #{id}
+	</select>
+
+	<select id="getAll" resultType="net.deepdragon.entity.open.OpenModule">
+		select
+		<include refid="columnList" />
+		from wop_module 
+		order by leftValue,orderNo;
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.open.OpenModule">
+		select
+		<include refid="columnList" />
+		from wop_module 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.open.OpenModule">
+		select
+		<include refid="columnList" />
+		from wop_module 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wop_module
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wop_module 
+		where ${property}=#{value}
+	</select>
+		
+</mapper>

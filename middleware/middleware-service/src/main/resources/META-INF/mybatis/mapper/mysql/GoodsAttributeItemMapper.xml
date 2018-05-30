@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.GoodsAttributeItemMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`attributeId`,`options`,`orderNo`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.GoodsAttributeItem">
+		select
+		<include refid="columnList" />
+		from wp_goods_attribute_item
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.GoodsAttributeItem">
+		select
+		<include refid="columnList" />
+		from wp_goods_attribute_item
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.GoodsAttributeItem">
+		select
+		<include refid="columnList" />
+		from wp_goods_attribute_item
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.GoodsAttributeItem">
+		select
+		<include refid="columnList" />
+		from wp_goods_attribute_item
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.GoodsAttributeItem">
+		select
+		<include refid="columnList" />
+		from wp_goods_attribute_item 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.GoodsAttributeItem">
+		select
+		<include refid="columnList" />
+		from wp_goods_attribute_item 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.GoodsAttributeItem">
+		select
+		<include refid="columnList" />
+		from wp_goods_attribute_item 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_goods_attribute_item where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_goods_attribute_item 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.GoodsAttributeItem"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_goods_attribute_item
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="attributeId != null">,`attributeId`</if>
+			<if test="options != null">,`options`</if>
+			<if test="orderNo != null">,`orderNo`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="attributeId != null">,#{attributeId}</if>
+			<if test="options != null">,#{options}</if>
+			<if test="orderNo != null">,#{orderNo}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.GoodsAttributeItem">
+		update wp_goods_attribute_item
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="attributeId != null">,`attributeId` = #{attributeId}</if>
+			<if test="options != null">,`options` = #{options}</if>
+			<if test="orderNo != null">,`orderNo` = #{orderNo}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_goods_attribute_item
+		where id =	#{id}
+	</delete>
+    <delete id="deleteByProperty">
+        delete from wp_goods_attribute_item
+        where tenantId =
+        #{tenantId} and ${property}=#{value}
+    </delete>
+</mapper>

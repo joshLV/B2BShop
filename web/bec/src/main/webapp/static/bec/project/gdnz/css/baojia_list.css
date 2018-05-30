@@ -1,0 +1,46 @@
+@charset "utf-8";
+/* CSS Document */
+/*报价列表页 last time:2015-10-21  author:xsm*/
+
+.baojia_list{ width:980px; float:right; overflow:hidden;}
+.baojia_list h1{ width:100%; height:30px; line-height:30px; overflow:hidden; font-size:18px; color:#555; font-weight:normal;}
+#bjzzjs_net_1 {width:100%; float:left;}
+#bjtabcon0 ul{display: none;}
+#bjtabcon0 ul.block{display: block;}
+.bjtabcon{ width:100%; float:left; }
+.bj_ss,.bj_con{ width:100%; float:left; margin-top: 10px;}
+.bj_sear{  float: left;}
+.go-tab-bjframe{border: 1px solid #ddd; font-size:14px;text-align: left;width:978px;border-spacing: 0;border-collapse: collapse; color:#666; line-height:1.5;}
+.go-tab-bjframe .go-tab-bjhead{border: none;}
+.go-tab-bjframe .go-tab-bjhead td{border-right: 1px solid #e8e8e8; background: #F5F5F5;}
+.go-tab-bjframe tr{}
+.go-tab-bjframe .cell-a{ text-align: left;/*width:280px;*/height: 44px;}
+.go-tab-bjframe .cell-b{  width: 100px; border-right: none}
+.go-tab-bjframe .cell-c{  width:78px;}
+.go-tab-bjframe td.receive-quotation-num{ width:180px!important;text-align: left;padding: 5px 20px;}
+.go-tab-bjframe .cell-op dl { padding-top: 5px;line-height: 1.3; margin-bottom: 5px; float:left;}
+.go-tab-bjframe .cell-op dd {margin-top: 5px;}
+.cell-gys{ text-align: center;width:180px; height: 40px;border-right: 1px solid #e8e8e8;}
+.cell-ze{ text-align: center;width:220px; border-right: 1px solid #e8e8e8;}
+.cell-times{ text-align: center;width:160px; border-right: 1px solid #e8e8e8;}
+.cell-cz{ width:138px; padding-left: 22px; text-align: center;}
+.go-bjbtn-g-s{background-color: #1985d9;  height: 30px;min-width: 48px;*width:40px;line-height: 30px;font-size: 12px;vertical-align: middle;  padding:0 20px; margin-bottom:5px; color: #ffffff; border-radius: 3px;}
+.go-less{ color:#999;}
+.go-btn-g-s:hover,.sear_btn:hover{ color:#fff; background:#006dc1;}
+.manage-bjtable{}
+.manage-bjtable td{ border-bottom: 1px solid #E8E8E8; border-right: 1px solid #E8E8E8;}
+.manage-bjtable td.accept-quotation{text-align: left;width: 104px;padding-left: 0;}
+.manage-bjtable td.cell-op{width: 130px;}
+.manage-bjtable td.cell-op {width: 130px;}
+.preclose-btn{color: #ff6000;}
+.go-tab-pad td{padding:0 10px 0 10px;}
+.go-tab-bjtit{background: #F5F5F5; font-size: 16px;}
+.cell-single{display: block; width: 80px; height: 24px; background: #e72418; color: #ffffff; text-align: center; line-height: 24px; margin-top: -10px !important; margin-left: 23px;}
+#triangle-down {
+    width: 0;
+    height: 0;
+    border-left: 40px solid transparent;
+    border-right:40px solid transparent;
+    border-top: 8px solid #e72418;
+    margin-left: 23px;
+}

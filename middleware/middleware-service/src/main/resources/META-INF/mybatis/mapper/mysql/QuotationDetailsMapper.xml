@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.QuotationDetailsMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`quotationId`,`goodsId`,`goodsName`,`purchaseNum`,`units`,`quotationPrice`,`containTax`,`freight`,`productCount`,`isDelete`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.QuotationDetails">
+		select
+		<include refid="columnList" />
+		from b2b_quotation_details
+		where id = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.QuotationDetails">
+		select
+		<include refid="columnList" />
+		from b2b_quotation_details
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.QuotationDetails">
+		select
+		<include refid="columnList" />
+		from b2b_quotation_details
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.QuotationDetails">
+		select
+		<include refid="columnList" />
+		from b2b_quotation_details
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.QuotationDetails">
+		select
+		<include refid="columnList" />
+		from b2b_quotation_details 
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.QuotationDetails">
+		select
+		<include refid="columnList" />
+		from b2b_quotation_details 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.QuotationDetails">
+		select
+		<include refid="columnList" />
+		from b2b_quotation_details 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from b2b_quotation_details where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from b2b_quotation_details 
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.QuotationDetails"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into b2b_quotation_details
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`
+			<if test="quotationId != null">,`quotationId`</if>
+			<if test="goodsId != null">,`goodsId`</if>
+			<if test="goodsName != null">,`goodsName`</if>
+			<if test="purchaseNum != null">,`purchaseNum`</if>
+			<if test="units != null">,`units`</if>
+			<if test="quotationPrice != null">,`quotationPrice`</if>
+			<if test="containTax != null">,`containTax`</if>
+			<if test="freight != null">,`freight`</if>
+			<if test="productCount != null">,`productCount`</if>
+			<if test="isDelete != null">,`isDelete`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId}
+			<if test="quotationId != null">,#{quotationId}</if>
+			<if test="goodsId != null">,#{goodsId}</if>
+			<if test="goodsName != null">,#{goodsName}</if>
+			<if test="purchaseNum != null">,#{purchaseNum}</if>
+			<if test="units != null">,#{units}</if>
+			<if test="quotationPrice != null">,#{quotationPrice}</if>
+			<if test="containTax != null">,#{containTax}</if>
+			<if test="freight != null">,#{freight}</if>
+			<if test="productCount != null">,#{productCount}</if>
+			<if test="isDelete != null">,#{isDelete}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.QuotationDetails">
+		update b2b_quotation_details
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="quotationId != null">,`quotationId` = #{quotationId}</if>
+			<if test="goodsId != null">,`goodsId` = #{goodsId}</if>
+			<if test="goodsName != null">,`goodsName` = #{goodsName}</if>
+			<if test="purchaseNum != null">,`purchaseNum` = #{purchaseNum}</if>
+			<if test="units != null">,`units` = #{units}</if>
+			<if test="quotationPrice != null">,`quotationPrice` = #{quotationPrice}</if>
+			<if test="containTax != null">,`containTax` = #{containTax}</if>
+			<if test="freight != null">,`freight` = #{freight}</if>
+			<if test="productCount != null">,`productCount` = #{productCount}</if>
+			<if test="isDelete != null">,`isDelete` = #{isDelete}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from b2b_quotation_details
+		where id =	#{id}
+	</delete>
+
+	<!-- 根据报价单ID获取 hks  -->
+	<select id="getListByQuotationId" resultType="net.deepdragon.entity.weipu.QuotationDetails">
+		SELECT c.*, a.name as name, a.sn as sn,  CONCAT((SELECT
+		setvalue FROM shared_system_set WHERE
+		setKey='imageUrl'),CONCAT(CONCAT(d.groupName,'/'),d.url)) AS pic
+		FROM
+		b2b_quotation_details c
+		LEFT JOIN wp_goods a ON c.goodsId = a.id
+		LEFT JOIN wp_goods_images d ON d.goodsId = c.goodsId
+		WHERE
+		 c.tenantId = #{tenantId}
+		and c.quotationId = #{quotationId}
+		ORDER BY c.createDate desc
+	</select>
+
+</mapper>

@@ -1,0 +1,37 @@
+/* CSS Document */
+/* 返回 */
+.mui-bar .mui-btn-link {
+    font-size: 16px;
+    line-height: 44px;
+    top: 0px;
+    padding: 0px;
+    color: #2e970f;
+    border: 0px none;
+}
+.mui-bar .mui-title {
+	font-size:18px;
+	color:#2e970f;
+	font-family:"微软雅黑";
+	left:40px;
+}
+.mui-content{
+	padding-bottom:50px;
+	}
+.mui-slider .mui-slider-group .mui-slider-item img {
+    width: 100%;
+}
+/* 提交btn */
+.mui-btn-blue, .mui-btn-primary, input[type="submit"] {
+    color: #FFF;
+    border: 1px solid #2e970f;
+    background-color: #2e970f;
+}
+.mui-btn-blue.mui-active:enabled, .mui-btn-blue:enabled:active, .mui-btn-primary.mui-active:enabled, .mui-btn-primary:enabled:active, input[type=submit].mui-active:enabled, input[type=submit]:enabled:active {
+	color: #fff;
+	border: 1px solid #2e970f;
+	background-color: #2e970f
+}
+a {
+  text-decoration: none;
+  color: #fff;
+}

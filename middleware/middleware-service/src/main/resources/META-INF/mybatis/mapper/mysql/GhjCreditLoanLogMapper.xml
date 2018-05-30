@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.GhjCreditLoanLogMapper">
+
+	<sql id="columnList">
+		`loanLogId`,`replyId`,`buyerId`,`applyLoanTime`,`applyLoanAmount`,`actualLoanAmount`,`loanStatus`,`loanUser`,`actualLoanTime`,`remark`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.GhjCreditLoanLog">
+		select
+		<include refid="columnList" />
+		from ghj_credit_loan_log
+		where loanLogId = #{id}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.GhjCreditLoanLog">
+		select
+		<include refid="columnList" />
+		from ghj_credit_loan_log
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.GhjCreditLoanLog">
+		select
+		<include refid="columnList" />
+		from ghj_credit_loan_log
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.GhjCreditLoanLog">
+		select
+		<include refid="columnList" />
+		from ghj_credit_loan_log
+		where loanLogId in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.GhjCreditLoanLog">
+		select
+		<include refid="columnList" />
+		from ghj_credit_loan_log
+		where tenantId = #{tenantId}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.GhjCreditLoanLog">
+		select
+		<include refid="columnList" />
+		from ghj_credit_loan_log
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.GhjCreditLoanLog">
+		select
+		<include refid="columnList" />
+		from ghj_credit_loan_log
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(loanLogId) as result
+		from ghj_credit_loan_log where tenantId = #{tenantId}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(loanLogId) as result from ghj_credit_loan_log
+		where tenantId = #{tenantId} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.GhjCreditLoanLog"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into ghj_credit_loan_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`loanLogId`,`tenantId`,createUser,createDate
+			<if test="replyId != null">,`replyId`</if>
+			<if test="buyerId != null">,`buyerId`</if>
+			<if test="applyLoanTime != null">,`applyLoanTime`</if>
+			<if test="applyLoanAmount != null">,`applyLoanAmount`</if>
+			<if test="actualLoanAmount != null">,`actualLoanAmount`</if>
+			<if test="loanStatus != null">,`loanStatus`</if>
+			<if test="loanUser != null">,`loanUser`</if>
+			<if test="actualLoanTime != null">,`actualLoanTime`</if>
+			<if test="remark != null">,`remark`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId},#{createUser},#{createDate}
+			<if test="replyId != null">,#{replyId}</if>
+			<if test="buyerId != null">,#{buyerId}</if>
+			<if test="applyLoanTime != null">,#{applyLoanTime}</if>
+			<if test="applyLoanAmount != null">,#{applyLoanAmount}</if>
+			<if test="actualLoanAmount != null">,#{actualLoanAmount}</if>
+			<if test="loanStatus != null">,#{loanStatus}</if>
+			<if test="loanUser != null">,#{loanUser}</if>
+			<if test="actualLoanTime != null">,#{actualLoanTime}</if>
+			<if test="remark != null">,#{remark}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.GhjCreditLoanLog">
+		update ghj_credit_loan_log
+		<set>
+			`tenantId` = #{tenantId}
+			<if test="loanLogId != null">,`loanLogId` = #{loanLogId}</if>
+			<if test="replyId != null">,`replyId` = #{replyId}</if>
+			<if test="buyerId != null">,`buyerId` = #{buyerId}</if>
+			<if test="applyLoanTime != null">,`applyLoanTime` = #{applyLoanTime}</if>
+			<if test="applyLoanAmount != null">,`applyLoanAmount` = #{applyLoanAmount}</if>
+			<if test="actualLoanAmount != null">,`actualLoanAmount` = #{actualLoanAmount}</if>
+			<if test="loanStatus != null">,`loanStatus` = #{loanStatus}</if>
+			<if test="loanUser != null">,`loanUser` = #{loanUser}</if>
+			<if test="actualLoanTime != null">,`actualLoanTime` = #{actualLoanTime}</if>
+			<if test="remark != null">,`remark` = #{remark}</if>
+		</set>
+		where loanLogId = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from ghj_credit_loan_log
+		where loanLogId =	#{id}
+	</delete>
+	
+</mapper>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.CatelogIndexMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`rowno`,`catelogId`,platform
+	</sql>
+
+	<sql id="columnListNew">
+		wci.id, wci.tenantId, wci.rowno, wci.catelogId, wci.platform
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.CatelogIndex">
+		select
+		<include refid="columnList" />
+		from wp_catelog_index
+		where id = #{id}
+		and tenantId = #{tenantId}
+		and platform = #{platform}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.CatelogIndex">
+		select
+		<include refid="columnList" />
+		from wp_catelog_index
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.CatelogIndex">
+		select
+		<include refid="columnList" />
+		from wp_catelog_index
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+	
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.CatelogIndex">
+		select
+		<include refid="columnList" />
+		from wp_catelog_index
+		where id in
+		<foreach collection="list" item="id" index="index" open="("	close=")" separator=",">#{id}</foreach>
+		and tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.CatelogIndex">
+		select
+		<include refid="columnList" />
+		from wp_catelog_index 
+		where tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.CatelogIndex">
+		select
+		<include refid="columnList" />
+		from wp_catelog_index 
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+	
+	<select id="getList" resultType="net.deepdragon.entity.weipu.CatelogIndex">
+		select
+		<include refid="columnListNew" />
+		, (select wc.name from wp_catelog wc where wc.id=wci.catelogId) as catelogName
+		from wp_catelog_index wci
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_catelog_index where tenantId = #{tenantId} and platform = #{platform}
+	</select>
+	
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from wp_catelog_index 
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+	
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.CatelogIndex"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_catelog_index
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`,`platform`
+			<if test="rowno != null">,`rowno`</if>
+			<if test="catelogId != null">,`catelogId`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId},#{platform}
+			<if test="rowno != null">,#{rowno}</if>
+			<if test="catelogId != null">,#{catelogId}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.CatelogIndex">
+		update wp_catelog_index
+		<set>
+			`tenantId` = #{tenantId},`platform` = #{platform}
+			<if test="rowno != null">,`rowno` = #{rowno}</if>
+			<if test="catelogId != null">,`catelogId` = #{catelogId}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_catelog_index
+		where id =	#{id}
+		and tenantId = #{tenantId}
+		and platform = #{platform}
+	</delete>
+	
+	<delete id="deleteAll">
+		delete from wp_catelog_index
+	</delete>
+</mapper>

@@ -1,0 +1,32 @@
+/* CSS Document */
+.cxbanner{width:100%; height:450px; background:#4fc6df url(../img/cxbanner.jpg) center center no-repeat;}
+.z_main .dp{height:347px;}
+.z_main .dp li{float:left; background:#e4e4e4; width:228px; height:347px; margin-right:15px; text-align:center;}
+.z_main .dp .last{margin:0;}
+.z_main .dp img{display:block; vertical-align:bottom;}
+.z_main .dp li .brand{ padding-left:10px; height:44px; line-height:44px;}
+.z_main .dp li .yh{width:100%; text-align:center; height:74px; line-height:74px; font-size:20px; font-weight:bold;}
+.z_main .dp a{display:block;width:104px; height:30px; line-height:30px; text-align:center; margin:0 auto; background:#e12f45; color:#ffffff;}
+.z_main .cxbrand{width:1200px; height:350px; background:#ffffff;}
+.z_main .cxbrand .left{width:167px; height:350px; background:#ec277e;}
+.z_main .cxbrand .left img{margin:11px;}
+.z_main .cxbrand .right{width:1025px; height:350px; overflow:hidden;}
+.z_main .cxbrand .right ul{width:1033px; height:px;}
+.z_main .cxbrand .right li{float:left; margin:0 0 20px 15px; width:150px; height:100px; line-height:80px; background:#eeeeee; text-align:center;}
+.z_main .cxbrand .right li img{vertical-align:middle;}
+.z_main .floortitle{width:1200px; height:60px; line-height:60px; font-size:24px; margin:20px auto; text-align:center; background:url(../img/cxxx.png) left center repeat-x;}
+.z_main .floortitle a{display:inline-block; padding:0 75px; background:#f7f7f7;}
+.z_main .floorcontent{width:1200px; height:790px; overflow:hidden;}
+.z_main .floorcontent ul{width:1210px; height:796px;}
+.z_main .floorcontent li{float:left; background:#ffffff;width:230px; height:388px; margin:0 10px 10px 0;font-size:14px;}
+.z_main .floorcontent li .p-pic{width:230px; height:230px; margin:10px 0;}
+.z_main .floorcontent li img{width:230px; height:230px; border:0;}
+.z_main .floorcontent li .p-name{padding:0 15px; overflow:hidden; line-height:22px; height:44px;}
+.z_main .floorcontent li .p-tm{padding:0 15px; line-height:22px; height:22px; color:#a4a4a4;}
+.z_main .floorcontent li .p-price{ padding:0 15px; height:28px; line-height:28px; color:#bd0000; font-size:16px;}
+.z_main .floorcontent li .p-price span{font-size:20px;}
+.z_main .floorcontent li .p-btn{padding:0 15px; height:30px; text-align:right; margin-top:10px;}
+.z_main .floorcontent li .p-btn button{width:114px; height:30px; border:0; background:#ff1b50; color:#ffffff;}
+.pdb20{padding-bottom:20px;}
+
+

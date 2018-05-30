@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.deepdragon.entity.weipu.AdvertisingImageMapper">
+
+	<sql id="columnList">
+		`id`,`tenantId`,`name`,`advertisingId`,`link`,concat((select setvalue from shared_system_set where setKey='imageUrl'),concat(concat(groupName,'/'),image)) as `pic`, `groupName`,`image`,`createUser`,`createDate`,`modifyUser`,`modifyDate`
+	</sql>
+
+	<select id="get" resultType="net.deepdragon.entity.weipu.AdvertisingImage">
+		select
+		<include refid="columnList" />
+		from wp_advertising_image
+		where id = #{id}
+		and tenantId = #{tenantId}
+		and platform = #{platform}
+	</select>
+
+	<select id="find" resultType="net.deepdragon.entity.weipu.AdvertisingImage">
+		select
+		<include refid="columnList" />
+		from wp_advertising_image
+		where tenantId = #{tenantId} and platform = #{platform} and
+		${property}=#{value}
+	</select>
+
+	<select id="findList" resultType="net.deepdragon.entity.weipu.AdvertisingImage">
+		select
+		<include refid="columnList" />
+		from wp_advertising_image
+		where tenantId = #{tenantId} and platform = #{platform} and
+		${property}=#{value}
+	</select>
+
+	<select id="findListByIds" parameterType="java.lang.String"
+		resultType="net.deepdragon.entity.weipu.AdvertisingImage">
+		select
+		<include refid="columnList" />
+		from wp_advertising_image
+		where id in
+		<foreach collection="list" item="id" index="index" open="("
+			close=")" separator=",">#{id}</foreach>
+		and tenantId = #{tenantId} and platform = #{platform}
+	</select>
+
+	<select id="getAll" resultType="net.deepdragon.entity.weipu.AdvertisingImage">
+		select
+		<include refid="columnList" />
+		from wp_advertising_image
+		where tenantId = #{tenantId} and platform = #{platform}
+	</select>
+
+	<select id="getPager" resultType="net.deepdragon.entity.weipu.AdvertisingImage">
+		<!-- select -->
+		<!-- <include refid="columnList" /> -->
+		<!-- from wp_advertising_image -->
+		<!-- <if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if> -->
+		select 	a.id,a.tenantId,a.advertisingId ,b.name as advertisingName,
+				a.name,a.link,a.groupName,a.image,a.createUser,
+				a.createDate,a.modifyUser,a.modifyDate,
+				concat((select setvalue from shared_system_set where setKey='imageUrl'),concat(concat(groupName,'/'),image)) as pic
+				from wp_advertising_image a left
+				join wp_advertising b on a.advertisingId = b.id
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">
+			${condition}
+		</if>
+	</select>
+
+	<select id="getList" resultType="net.deepdragon.entity.weipu.AdvertisingImage">
+		select
+		<include refid="columnList" />
+		from wp_advertising_image
+		<if test="(@net.deepdragon.util.OgnlUtils@isEmpty(condition))!=null">${condition}</if>
+	</select>
+
+	<select id="getTotalCount" resultType="java.lang.Long">
+		select count(id) as result
+		from wp_advertising_image where tenantId = #{tenantId} and platform = #{platform}
+	</select>
+
+	<select id="isExist" resultType="java.lang.Boolean">
+		select count(id) as result from
+		wp_advertising_image
+		where tenantId = #{tenantId} and platform = #{platform} and ${property}=#{value}
+	</select>
+
+	<insert id="save" parameterType="net.deepdragon.entity.weipu.AdvertisingImage"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into wp_advertising_image
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			`id`,`tenantId`,`platform`
+			<if test="name != null">,`name`</if>
+			<if test="advertisingId != null">,`advertisingId`</if>
+			<if test="link != null">,`link`</if>
+			<if test="groupName != null">,`groupName`</if>
+			<if test="image != null">,`image`</if>
+			<if test="createUser != null">,`createUser`</if>
+			<if test="createDate != null">,`createDate`</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},#{tenantId},#{platform}
+			<if test="name != null">,#{name}</if>
+			<if test="advertisingId != null">,#{advertisingId}</if>
+			<if test="link != null">,#{link}</if>
+			<if test="groupName != null">,#{groupName}</if>
+			<if test="image != null">,#{image}</if>
+			<if test="createUser != null">,#{createUser}</if>
+			<if test="createDate != null">,#{createDate}</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="net.deepdragon.entity.weipu.AdvertisingImage">
+		update wp_advertising_image
+		<set>
+			`tenantId` = #{tenantId},`platform` = #{platform}
+			<if test="name != null">,`name` = #{name}</if>
+			<if test="advertisingId != null">,`advertisingId` = #{advertisingId}</if>
+			<if test="link != null">,`link` = #{link}</if>
+			<if test="groupName != null">,`groupName` = #{groupName}</if>
+			<if test="image != null">,`image` = #{image}</if>
+			<if test="modifyUser != null">,`modifyUser` = #{modifyUser}</if>
+			<if test="modifyDate != null">,`modifyDate` = #{modifyDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from wp_advertising_image
+		where id = #{id}
+		and tenantId = #{tenantId}
+		and platform = #{platform}
+	</delete>
+	
+	<select id="getAds" resultType="net.deepdragon.entity.weipu.AdvertisingImage">
+		select adimg.*,adver.height as height,adver.width as width, concat((select setvalue from shared_system_set where setKey='imageUrl'),concat(concat(adimg.groupName,'/'),adimg.image)) as `pic` from wp_advertising_image adimg
+		left join wp_advertising adver on adimg.advertisingId=adver.id
+		where adimg.tenantId = #{tenantId} and adver.tenantId = adimg.tenantId
+		and adimg.platform = #{platform} and adver.platform = adimg.platform
+		and adver.sign=#{sign}
+		order by adver.sign asc,adimg.modifyDate desc, adimg.createDate desc
+		limit #{size}
+	</select>
+	
+	<select id="getNewAds" resultType="net.deepdragon.entity.weipu.AdvertisingImage">
+		select adimg.*, concat((select setvalue from shared_system_set where setKey='imageUrl'),concat(concat(adimg.groupName,'/'),adimg.image)) as `pic` from wp_advertising_image adimg
+		left join wp_advertising adver on adimg.advertisingId=adver.id
+		where adimg.tenantId = #{tenantId} and adver.tenantId = adimg.tenantId
+		and adimg.platform = #{platform} and adver.platform = adimg.platform
+		and adver.sign
+		like #{sign}
+		order by adver.sign asc
+		limit #{size}
+	</select>
+	
+</mapper>

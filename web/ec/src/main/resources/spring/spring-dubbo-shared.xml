@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<description>共享服务接口引用</description>
+
+
+	<!-- xsy测试服务-->
+	<!-- <dubbo:reference id="sharedXsytestService" interface="net.deepdragon.service.XsytestService"
+					 version="${shared.reference.version}" group="${shared.reference.group}"
+					 timeout="${shared.reference.timeout}" retries="${shared.reference.retries}" />-->
+
+
+	<!-- 用户表服务 -->
+	<dubbo:reference id="sharedUserService" interface="net.deepdragon.service.UserService"
+		version="${shared.reference.version}" group="${shared.reference.group}"
+		timeout="${shared.reference.timeout}" retries="${shared.reference.retries}" />
+
+	<!-- 角色表服务 -->
+	<!--<dubbo:reference id="sharedRoleService" interface="net.deepdragon.service.RoleService"
+		version="${shared.reference.version}" group="${shared.reference.group}"
+		timeout="${shared.reference.timeout}" retries="${shared.reference.retries}" />
+
+	&lt;!&ndash; 角色组表服务 &ndash;&gt;
+	<dubbo:reference id="sharedRoleGroupService"
+		interface="net.deepdragon.service.RoleGroupService" version="${shared.reference.version}"
+		group="${shared.reference.group}" timeout="${shared.reference.timeout}"
+		retries="${shared.reference.retries}" />
+
+	&lt;!&ndash; 资源表服务 &ndash;&gt;
+	<dubbo:reference id="sharedResourcesService"
+		interface="net.deepdragon.service.ResourcesService" version="${shared.reference.version}"
+		group="${shared.reference.group}" timeout="${shared.reference.timeout}"
+		retries="${shared.reference.retries}" />
+
+	&lt;!&ndash; 功能表服务 &ndash;&gt;
+	<dubbo:reference id="sharedFunctionsService"
+		interface="net.deepdragon.service.FunctionsService" version="${shared.reference.version}"
+		group="${shared.reference.group}" timeout="${shared.reference.timeout}"
+		retries="${shared.reference.retries}" />-->
+
+	<!-- 权限表服务 -->
+	<dubbo:reference id="sharedPermissionsService"
+		interface="net.deepdragon.service.PermissionsService" version="${shared.reference.version}"
+		group="${shared.reference.group}" timeout="${shared.reference.timeout}"
+		retries="${shared.reference.retries}" />
+
+	<!-- 模块表服务 -->
+	<!--<dubbo:reference id="sharedModuleService"
+		interface="net.deepdragon.service.ModuleService" version="${shared.reference.version}"
+		group="${shared.reference.group}" timeout="${shared.reference.timeout}"
+		retries="${shared.reference.retries}" />
+
+	&lt;!&ndash; 日志表服务 &ndash;&gt;
+	<dubbo:reference id="sharedLogService" interface="net.deepdragon.service.LogService"
+		version="${shared.reference.version}" group="${shared.reference.group}"
+		timeout="${shared.reference.timeout}" retries="${shared.reference.retries}" />
+
+	&lt;!&ndash; 日志配置表服务 &ndash;&gt;
+	<dubbo:reference id="sharedLogConfigService"
+		interface="net.deepdragon.service.LogConfigService" version="${shared.reference.version}"
+		group="${shared.reference.group}" timeout="${shared.reference.timeout}"
+		retries="${shared.reference.retries}" />
+
+	&lt;!&ndash; 租户管理服务 &ndash;&gt;
+	<dubbo:reference id="sharedTenantService"
+		interface="net.deepdragon.service.TenantService" version="${shared.reference.version}"
+		group="${shared.reference.group}" timeout="${shared.reference.timeout}"
+		retries="${shared.reference.retries}" />
+
+	&lt;!&ndash; 资源分类表服务 &ndash;&gt;
+	<dubbo:reference id="sharedResourcesTypeService"
+		interface="net.deepdragon.service.ResourcesTypeService" version="${shared.reference.version}"
+		group="${shared.reference.group}" timeout="${shared.reference.timeout}"
+		retries="${shared.reference.retries}" />
+
+	&lt;!&ndash; 扩展数据表服务 &ndash;&gt;
+	<dubbo:reference id="sharedExpandService"
+		interface="net.deepdragon.service.ExpandService" version="${shared.reference.version}"
+		group="${shared.reference.group}" timeout="${shared.reference.timeout}"
+		retries="${shared.reference.retries}" />
+
+	&lt;!&ndash; 扩展配置表服务 &ndash;&gt;
+	<dubbo:reference id="sharedExpandConfigService"
+		interface="net.deepdragon.service.ExpandConfigService" version="${shared.reference.version}"
+		group="${shared.reference.group}" timeout="${shared.reference.timeout}"
+		retries="${shared.reference.retries}" />
+
+	&lt;!&ndash; 个人收藏服务 &ndash;&gt;
+	<dubbo:reference id="sharedFavomenuService"
+		interface="net.deepdragon.service.FavomenuService" version="${shared.reference.version}"
+		group="${shared.reference.group}" timeout="${shared.reference.timeout}"
+		retries="${shared.reference.retries}" />-->
+
+	<!-- 地区信息表服务 -->
+	<dubbo:reference id="sharedAreaService" interface="net.deepdragon.service.AreaService"
+		version="${shared.reference.version}" group="${shared.reference.group}"
+		timeout="${shared.reference.timeout}" retries="${shared.reference.retries}" />
+
+	<!-- 支付方式服务 -->
+	<dubbo:reference id="sharedPaymentMethodService"
+		interface="net.deepdragon.service.PaymentMethodService" version="${shared.reference.version}"
+		group="${shared.reference.group}" timeout="${shared.reference.timeout}"
+		retries="${shared.reference.retries}" />
+
+	<!-- 送货日期服务 -->
+	<dubbo:reference id="sharedDeliveryTimeService"
+		interface="net.deepdragon.service.DeliveryTimeService" version="${shared.reference.version}"
+		group="${shared.reference.group}" timeout="${shared.reference.timeout}"
+		retries="${shared.reference.retries}" />
+
+	<!-- 物流公司服务 -->
+	<dubbo:reference id="sharedLogisticsCompanyService"
+		interface="net.deepdragon.service.LogisticsCompanyService" version="${shared.reference.version}"
+		group="${shared.reference.group}" timeout="${shared.reference.timeout}"
+		retries="${shared.reference.retries}" />
+
+	<!-- 配送方式服务 -->
+	<dubbo:reference id="sharedDeliveryMethodService"
+		interface="net.deepdragon.service.DeliveryMethodService" version="${shared.reference.version}"
+		group="${shared.reference.group}" timeout="${shared.reference.timeout}"
+		retries="${shared.reference.retries}" />
+
+	<!-- 系统设置服务 -->
+	<dubbo:reference id="sharedSystemSetService"
+		interface="net.deepdragon.service.SystemSetService" version="${shared.reference.version}"
+		group="${shared.reference.group}" timeout="${shared.reference.timeout}"
+		retries="${shared.reference.retries}" />
+<!-- 民族表服务 -->
+	<!--<dubbo:reference id="sharedNationService"
+					 interface="net.deepdragon.service.NationService" version="${shared.reference.version}"
+					 group="${shared.reference.group}" timeout="${shared.reference.timeout}"
+					 retries="${shared.reference.retries}" />-->
+
+</beans>
